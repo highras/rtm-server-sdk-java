@@ -8,7 +8,7 @@
 
 #### 关于线程 ####
 * 一个计时器线程`ThreadPool.getInstance().startTimerThread()`, 负责超时检测/安全检查 
-    * 默认实现`Executors.newScheduledThreadPool(1)`, 构造`RTMClint`时可以选择是否启用该线程
+    * 默认实现`Executors.newScheduledThreadPool(1)`, 构造`RTMClient`时可以选择是否启用该线程
     * 如果已有计时器, `NIOCore.getInstance().checkSecond()` 周期性调用该方法，以进行超时检查（建议频率1s）
 * 一个线程池, 接口`ThreadPool.IThreadPool` 
     * 默认实现`Executors.newFixedThreadPool(FPConfig.MAX_THREAD_COUNT)`
