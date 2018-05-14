@@ -53,27 +53,6 @@ client.getProcessor().getEvent().addListener(RTMConfig.SERVER_PUSH.recvPing, new
     }
 });
 
-// 发送消息
-client.sendMessage(778877, 778899, (byte) 8, "hello !", "", 5 * 1000, new FPCallback.ICallback() {
-
-    @Override
-    public void callback(FPCallback fpcb) {
-
-        Object obj = fpcb.getPayload();
-
-        if (obj != null) {
-
-            Map payload = (Map) obj;
-            System.out.println("\n[DATA] sendMessage:");
-            System.out.println(payload.toString());
-        } else {
-
-            System.err.println("\n[ERR] sendMessage:");
-            System.err.println(fpcb.getException().getMessage());
-        }
-    }
-});
-
 FPEvent.IListener listener = new FPEvent.IListener() {
 
     @Override
@@ -82,6 +61,21 @@ FPEvent.IListener listener = new FPEvent.IListener() {
         switch (event.getType()) {
             case "connect":
                 System.out.println("Connected!");
+                // 发送消息
+                client.sendMessage(778877, 778899, (byte) 8, "hello !", "", 5 * 1000, new FPCallback.ICallback() {
+                    @Override
+                    public void callback(FPCallback fpcb) {
+                        Object obj = fpcb.getPayload();
+                        if (obj != null) {
+                            Map payload = (Map) obj;
+                            System.out.println("\n[DATA] sendMessage:");
+                            System.out.println(payload.toString());
+                        } else {
+                            System.err.println("\n[ERR] sendMessage:");
+                            System.err.println(fpcb.getException().getMessage());
+                        }
+                    }
+                });
                 break;
             case "close":
                 System.out.println("Closed!");
