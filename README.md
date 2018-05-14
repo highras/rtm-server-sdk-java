@@ -1,12 +1,15 @@
 # FPNN RTM JAVA SDK #
+
 底层基于NIO实现, 支持FPNN加密.
 
 #### 关于依赖 ####
+
 两个Jar包:
 * [json-20180130.jar](https://github.com/stleary/JSON-java)
 * [msgpack-core-0.8.16.jar](https://github.com/msgpack/msgpack-java)
 
 #### 关于线程 ####
+
 * 一个计时器线程`ThreadPool.getInstance().startTimerThread()`, 负责超时检测/安全检查 
     * 默认实现`Executors.newScheduledThreadPool(1)`, 构造`RTMClient`时可以选择是否启用该线程
     * 如果已有计时器, `NIOCore.getInstance().checkSecond()` 周期性调用该方法，以进行超时检查（建议频率1s）
