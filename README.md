@@ -1,10 +1,9 @@
-# FPNN RTM JAVA SDK #
+# FPNN RTM Java SDK #
 
 底层基于NIO实现, 支持FPNN加密.
 
 #### 关于依赖 ####
 
-两个Jar包:
 * [json-20180130.jar](https://github.com/stleary/JSON-java)
 * [msgpack-core-0.8.16.jar](https://github.com/msgpack/msgpack-java)
 
@@ -21,6 +20,7 @@
 #### 一个例子 ####
 
 ```java
+
 // 创建Client
 RTMClient client = new RTMClient(
     1017,
@@ -93,9 +93,11 @@ FPEvent.IListener listener = new FPEvent.IListener() {
 ```
 
 #### 测试 ####
+
 参考`TestMain`:
 
 ```java
+
 // case 1
 baseTest();
 
@@ -107,12 +109,14 @@ baseTest();
 ```
 
 #### Events ####
+
 * `event`:
     * `connect`: 连接成功 
     * `error`: 发生异常
     * `close`: 连接关闭
 
-#### PushService #### 
+#### PushService ####
+
 请参考 `RTMConfig.SERVER_PUSH` 成员
 
 * `ping`: RTMGate主动ping
@@ -203,6 +207,7 @@ baseTest();
     * `data.data`: **(String)** `预留`
 
 #### API ####
+
 * `constructor(int pid, String secret, String host, int port, boolean reconnect, int timeout, boolean startTimerThread)`: 构造RTMClient
     * `pid`: **(int)** 应用编号, RTM提供
     * `secret`: **(String)** 应用加密, RTM提供
@@ -220,7 +225,7 @@ baseTest();
     * `timeout`: **(int)** 超时时间(ms), 默认: `30 * 1000`
     * `startTimerThread`: **(boolean)** 是否开启计时器线程 (负责超时检测/安全检查)
 
-* `processor`: **(FPProcessor)** 监听PushService的句柄
+* `getProcessor`: **(FPProcessor)** 监听PushService的句柄
 
 * `enableConnect()`: 开启连接(非加密模式) 
 
