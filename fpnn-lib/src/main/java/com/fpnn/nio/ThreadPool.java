@@ -50,12 +50,12 @@ public class ThreadPool {
 
                 this.setPool(new IThreadPool() {
 
-                    ExecutorService threadPool = Executors.newFixedThreadPool(FPConfig.MAX_THREAD_COUNT);
+                    ExecutorService executor = Executors.newFixedThreadPool(FPConfig.MAX_THREAD_COUNT);
 
                     @Override
                     public void execute(Runnable runnable) {
 
-                        threadPool.execute(runnable);
+                        executor.execute(runnable);
                     }
                 });
             } catch (Exception ex){
