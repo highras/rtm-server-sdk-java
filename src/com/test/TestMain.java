@@ -1,5 +1,6 @@
 package com.test;
 
+import com.fpnn.event.EventData;
 import com.fpnn.event.FPEvent;
 import com.rtm.RTMClient;
 import static java.lang.Thread.sleep;
@@ -60,7 +61,7 @@ public class TestMain {
         FPEvent.IListener listener = new FPEvent.IListener() {
 
             @Override
-            public void fpEvent(FPEvent event) {
+            public void fpEvent(EventData event) {
 
                 switch (event.getType()) {
                     case "connect":

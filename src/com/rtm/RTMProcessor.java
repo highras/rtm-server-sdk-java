@@ -3,7 +3,7 @@ package com.rtm;
 import com.fpnn.FPClient;
 import com.fpnn.FPData;
 import com.fpnn.FPProcessor;
-import com.fpnn.event.FPEvent;
+import com.fpnn.event.EventData;
 import com.fpnn.nio.NIOCore;
 import com.rtm.json.JsonHelper;
 import com.rtm.msgpack.PayloadPacker;
@@ -88,7 +88,7 @@ public class RTMProcessor implements FPProcessor.IProcessor {
                     this.ping(payload);
                     break;
                 default:
-                    this._fppr.getEvent().fireEvent(new FPEvent(this, data.getMethod(), payload));
+                    this._fppr.getEvent().fireEvent(new EventData(this, data.getMethod(), payload));
                     break;
             }
         }
@@ -116,12 +116,12 @@ public class RTMProcessor implements FPProcessor.IProcessor {
 
         if ((byte) data.get("ftype") > 0) {
 
-            this._fppr.getEvent().fireEvent(new FPEvent(this, RTMConfig.SERVER_PUSH.recvFile, data));
+            this._fppr.getEvent().fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvFile, data));
             return;
         }
 
         data.remove("ftype");
-        this._fppr.getEvent().fireEvent(new FPEvent(this, RTMConfig.SERVER_PUSH.recvMessage, data));
+        this._fppr.getEvent().fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvMessage, data));
     }
 
     /**
@@ -146,12 +146,12 @@ public class RTMProcessor implements FPProcessor.IProcessor {
 
         if ((byte) data.get("ftype") > 0) {
 
-            this._fppr.getEvent().fireEvent(new FPEvent(this, RTMConfig.SERVER_PUSH.recvFiles, data));
+            this._fppr.getEvent().fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvFiles, data));
             return;
         }
 
         data.remove("ftype");
-        this._fppr.getEvent().fireEvent(new FPEvent(this, RTMConfig.SERVER_PUSH.recvMessages, data));
+        this._fppr.getEvent().fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvMessages, data));
     }
 
     /**
@@ -176,12 +176,12 @@ public class RTMProcessor implements FPProcessor.IProcessor {
 
         if ((byte) data.get("ftype") > 0) {
 
-            this._fppr.getEvent().fireEvent(new FPEvent(this, RTMConfig.SERVER_PUSH.recvGroupFile, data));
+            this._fppr.getEvent().fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvGroupFile, data));
             return;
         }
 
         data.remove("ftype");
-        this._fppr.getEvent().fireEvent(new FPEvent(this, RTMConfig.SERVER_PUSH.recvGroupMessage, data));
+        this._fppr.getEvent().fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvGroupMessage, data));
     }
 
     /**
@@ -206,12 +206,12 @@ public class RTMProcessor implements FPProcessor.IProcessor {
 
         if ((byte) data.get("ftype") > 0) {
 
-            this._fppr.getEvent().fireEvent(new FPEvent(this, RTMConfig.SERVER_PUSH.recvRoomFile, data));
+            this._fppr.getEvent().fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvRoomFile, data));
             return;
         }
 
         data.remove("ftype");
-        this._fppr.getEvent().fireEvent(new FPEvent(this, RTMConfig.SERVER_PUSH.recvRoomMessage, data));
+        this._fppr.getEvent().fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvRoomMessage, data));
     }
 
     /**
@@ -224,7 +224,7 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      */
     private void pushevent(Map data) {
 
-        this._fppr.getEvent().fireEvent(new FPEvent(this, RTMConfig.SERVER_PUSH.recvEvent, data));
+        this._fppr.getEvent().fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvEvent, data));
     }
 
     /**
@@ -232,7 +232,7 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      */
     private void ping(Map data) {
 
-        this._fppr.getEvent().fireEvent(new FPEvent(this, RTMConfig.SERVER_PUSH.recvPing, data));
+        this._fppr.getEvent().fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvPing, data));
     }
 
     @Override

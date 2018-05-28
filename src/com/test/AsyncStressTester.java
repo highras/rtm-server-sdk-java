@@ -1,6 +1,7 @@
 package com.test;
 
 import com.fpnn.FPData;
+import com.fpnn.callback.CallbackData;
 import com.fpnn.callback.FPCallback;
 import com.rtm.RTMClient;
 import com.rtm.msgpack.PayloadPacker;
@@ -119,9 +120,9 @@ class AsyncStressTester {
                         client.sendQuest(buildStandardTestQuest(), client.questCallback(new FPCallback.ICallback() {
 
                                     @Override
-                                    public void callback(FPCallback fpcb) {
+                                    public void callback(CallbackData cbd) {
 
-                                        if (fpcb.getException() != null) {
+                                        if (cbd.getException() != null) {
                                             incRecvError();
                                         }else{
                                             incRecv();
