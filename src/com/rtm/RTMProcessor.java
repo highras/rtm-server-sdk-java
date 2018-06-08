@@ -23,7 +23,7 @@ public class RTMProcessor implements FPProcessor.IProcessor {
     }
 
     @Override
-    public void service(FPData data, FPClient.IAnswer answer) {
+    public void service(FPData data, FPProcessor.IAnswer answer) {
 
         Map payload = null;
 

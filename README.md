@@ -39,20 +39,6 @@ client.getEvent().addListener("connect", listener);
 client.getEvent().addListener("close", listener);
 client.getEvent().addListener("error", listener);
 
-// 开启连接
-client.enableConnect();
-
-// push service
-client.getProcessor().getEvent().addListener(RTMConfig.SERVER_PUSH.recvPing, new FPEvent.IListener() {
-
-    @Override
-    public void fpEvent(FPEvent event) {
-
-        System.out.println("\n[PUSH] ".concat(event.getType()).concat(":"));
-        System.out.println(event.getPayload().toString());
-    }
-});
-
 FPEvent.IListener listener = new FPEvent.IListener() {
 
     @Override
@@ -86,6 +72,20 @@ FPEvent.IListener listener = new FPEvent.IListener() {
         }
     }
 };
+
+// push service
+client.getProcessor().getEvent().addListener(RTMConfig.SERVER_PUSH.recvPing, new FPEvent.IListener() {
+
+    @Override
+    public void fpEvent(FPEvent event) {
+
+        System.out.println("\n[PUSH] ".concat(event.getType()).concat(":"));
+        System.out.println(event.getPayload().toString());
+    }
+});
+
+// 开启连接
+client.enableConnect();
 ```
 
 #### 测试 ####
