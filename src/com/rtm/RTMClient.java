@@ -82,8 +82,7 @@ public class RTMClient extends BaseClient {
         this._reconnect = reconnect;
         this._timeout = timeout;
 
-        FPProcessor processor = this.getProcessor();
-        processor.setProcessor(new RTMProcessor(processor));
+        this.getProcessor().setProcessor(new RTMProcessor());
     }
 
     /**
