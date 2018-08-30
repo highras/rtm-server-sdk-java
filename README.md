@@ -27,7 +27,7 @@
 RTMClient client = new RTMClient(
     1017,
     "10d09e42-05d3-4d3c-b97a-50c8f27aa6c7",
-    "highras-rtm-svrgated.ifunplus.cn",
+    "rtm-nx-front.ifunplus.cn",
     13315,
     true,
     20 * 1000,
