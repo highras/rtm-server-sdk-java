@@ -1,6 +1,5 @@
 package com.rtm;
 
-import com.fpnn.FPClient;
 import com.fpnn.FPData;
 import com.fpnn.FPProcessor;
 import com.fpnn.event.EventData;
@@ -18,10 +17,15 @@ public class RTMProcessor implements FPProcessor.IProcessor {
     private FPEvent _event;
     private Map _midMap = new HashMap();
 
-    @Override
-    public void setEvent(FPEvent event) {
+    public RTMProcessor(FPEvent event) {
 
         this._event = event;
+    }
+
+    @Override
+    public FPEvent getEvent() {
+
+        return this._event;
     }
 
     @Override
@@ -69,6 +73,46 @@ public class RTMProcessor implements FPProcessor.IProcessor {
 
         if (payload != null) {
 
+            if (payload.containsKey("pid")) {
+
+                payload.put("pid", wantInteger(payload, "pid"));
+            }
+
+            if (payload.containsKey("mid")) {
+
+                payload.put("mid", wantLong(payload, "mid"));
+            }
+
+            if (payload.containsKey("from")) {
+
+                payload.put("from", wantLong(payload, "from"));
+            }
+
+            if (payload.containsKey("to")) {
+
+                payload.put("to", wantLong(payload, "to"));
+            }
+
+            if (payload.containsKey("gid")) {
+
+                payload.put("gid", wantLong(payload, "gid"));
+            }
+
+            if (payload.containsKey("rid")) {
+
+                payload.put("rid", wantLong(payload, "rid"));
+            }
+
+            if (payload.containsKey("ftype")) {
+
+                payload.put("ftype", wantByte(payload, "ftype"));
+            }
+
+            if (payload.containsKey("mtype")) {
+
+                payload.put("mtype", wantByte(payload, "mtype"));
+            }
+
             switch (data.getMethod()) {
 
                 case RTMConfig.SERVER_PUSH.recvMessage:
@@ -94,6 +138,12 @@ public class RTMProcessor implements FPProcessor.IProcessor {
                     break;
             }
         }
+    }
+
+    public void destroy() {
+
+        this._midMap.clear();
+        this._event.removeListener();
     }
 
     /**
@@ -308,5 +358,20 @@ public class RTMProcessor implements FPProcessor.IProcessor {
                 this._midMap.remove(key);
             }
         }
+    }
+
+    public Integer wantInteger(Map data, String key) {
+
+        return Integer.valueOf(String.valueOf(data.get(key)));
+    }
+
+    public Long wantLong(Map data, String key) {
+
+        return Long.valueOf(String.valueOf(data.get(key)));
+    }
+
+    public Byte wantByte(Map data, String key) {
+
+        return Byte.valueOf(String.valueOf(data.get(key)));
     }
 }

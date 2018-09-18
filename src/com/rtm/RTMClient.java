@@ -2,6 +2,7 @@ package com.rtm;
 
 import com.fpnn.FPClient;
 import com.fpnn.FPData;
+import com.fpnn.FPPackage;
 import com.fpnn.FPProcessor;
 import com.fpnn.callback.CallbackData;
 import com.fpnn.callback.FPCallback;
@@ -38,6 +39,7 @@ public class RTMClient extends BaseClient {
     private String _secret;
     private boolean _reconnect;
     private int _timeout;
+    private RTMProcessor _processor;
 
     private FileClient _fileClient;
 
@@ -82,7 +84,22 @@ public class RTMClient extends BaseClient {
         this._reconnect = reconnect;
         this._timeout = timeout;
 
-        this.getProcessor().setProcessor(new RTMProcessor());
+        this._processor = new RTMProcessor(this.getEvent());
+        this.getProcessor().setProcessor(this._processor);
+    }
+
+    @Override
+    public void destroy() {
+
+        super.destroy();
+
+        this._reconnect = false;
+
+        if (this._fileClient != null) {
+
+            this._fileClient.destroy();
+            this._fileClient = null;
+        }
     }
 
     /**
@@ -2362,6 +2379,8 @@ class BaseClient extends FPClient {
         Map payload = null;
         FPData data = cbd.getData();
 
+        Boolean isAnswerException = false;
+
         if (data != null) {
 
             if (data.getFlag() == 0) {
@@ -2382,8 +2401,28 @@ class BaseClient extends FPClient {
                     ex.printStackTrace();
                 }
             }
+
+            if (this.getPackage().isAnswer(data)) {
+
+                isAnswerException = data.getSS() != 0;
+            }
         }
 
-        cbd.checkException(payload);
+        cbd.checkException(isAnswerException, payload);
+    }
+
+    public Integer wantInteger(Map data, String key) {
+
+        return Integer.valueOf(String.valueOf(data.get(key)));
+    }
+
+    public Long wantLong(Map data, String key) {
+
+        return Long.valueOf(String.valueOf(data.get(key)));
+    }
+
+    public Byte wantByte(Map data, String key) {
+
+        return Byte.valueOf(String.valueOf(data.get(key)));
     }
 }
