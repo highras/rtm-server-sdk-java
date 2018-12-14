@@ -1,11 +1,12 @@
-# FPNN RTM Java SDK #
+# fpnn rtm sdk java #
 
 底层基于NIO实现, 支持FPNN加密.
 
 #### 关于依赖 ####
 
-* [json-20180130.jar](https://github.com/stleary/JSON-java)
-* [msgpack-core-0.8.16.jar](https://github.com/msgpack/msgpack-java)
+* [fpnn.jar](https://github.com/highras/fpnn-sdk-java)
+* [json.jar](https://github.com/stleary/JSON-java)
+* [msgpack-core.jar](https://github.com/msgpack/msgpack-java)
 
 #### 关于线程 ####
 
@@ -22,6 +23,12 @@
 #### 一个例子 ####
 
 ```java
+import com.fpnn.callback.CallbackData;
+import com.fpnn.callback.FPCallback;
+import com.fpnn.event.EventData;
+import com.fpnn.event.FPEvent;
+import com.rtm.RTMClient;
+import com.rtm.RTMConfig;
 
 // 创建Client
 RTMClient client = new RTMClient(
@@ -48,7 +55,7 @@ FPEvent.IListener listener = new FPEvent.IListener() {
             case "connect":
                 System.out.println("Connected!");
                 // 发送消息
-                client.sendMessage(778877, 778899, (byte) 8, "hello !", "", 5 * 1000, new FPCallback.ICallback() {
+                client.sendMessage(778877, 778899, (byte) 8, "hello !", "", 0, 5 * 1000, new FPCallback.ICallback() {
                     @Override
                     public void callback(FPCallback cbd) {
                         Object obj = cbd.getPayload();
@@ -94,7 +101,7 @@ client.enableConnect();
 
 #### 测试 ####
 
-参考`TestMain`:
+参考`src/com/test/TestMain.java`:
 
 ```java
 
@@ -243,55 +250,60 @@ baseTest();
     * `streamMode`: **(boolean)** 是否开启流加密, `目前Java API不支持流加密`
     * `reinforce`: **(boolean)** 是否开启加强 ` 128 : 256 `
 
-* `sendMessage(long from, long to, byte mtype, String msg, String attrs, int timeout, CallbackData.ICallback callback)`: 发送消息
+* `sendMessage(long from, long to, byte mtype, String msg, String attrs, long mid, int timeout, CallbackData.ICallback callback)`: 发送消息
     * `from`: **(long)** 发送方 id
     * `to`: **(long)** 接收方uid
     * `mtype`: **(byte)** 消息类型
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 没有可传`""`
+    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(CallbackData.ICallback)** 回调方法
         * `exception`: **(Exception)** 
         * `payload`: **(Map)** 
 
-* `sendMessages(long from, List<Long> tos, byte mtype, String msg, String attrs, int timeout, CallbackData.ICallback callback)`: 发送多人消息
+* `sendMessages(long from, List<Long> tos, byte mtype, String msg, String attrs, long mid, int timeout, CallbackData.ICallback callback)`: 发送多人消息
     * `from`: **(long)** 发送方 id
     * `tos`: **(List<Long>)** 接收方uids
     * `mtype`: **(byte)** 消息类型
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 没有可传`""`
+    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(CallbackData.ICallback)** 回调方法
         * `exception`: **(Exception)** 
         * `payload`: **(Map)** 
 
-* `sendGroupMessage(long from, long gid, byte mtype, String msg, String attrs, int timeout, CallbackData.ICallback callback)`: 发送group消息
+* `sendGroupMessage(long from, long gid, byte mtype, String msg, String attrs, long mid, int timeout, CallbackData.ICallback callback)`: 发送group消息
     * `from`: **(long)** 发送方 id
     * `gid`: **(long)** group id
     * `mtype`: **(byte)** 消息类型
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 可传`""`
+    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(CallbackData.ICallback)** 回调方法
         * `exception`: **(Exception)** 
         * `payload`: **(Map)** 
 
-* `sendRoomMessage(long from, long rid, byte mtype, String msg, String attrs, int timeout, CallbackData.ICallback callback)`: 发送room消息
+* `sendRoomMessage(long from, long rid, byte mtype, String msg, String attrs, long mid, int timeout, CallbackData.ICallback callback)`: 发送room消息
     * `from`: **(long)** 发送方 id
     * `rid`: **(long)** room id
     * `mtype`: **(byte)** 消息类型
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 可传`""`
+    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(CallbackData.ICallback)** 回调方法
         * `exception`: **(Exception)** 
         * `payload`: **(Map)** 
 
-* `broadcastMessage(long from, byte mtype, String msg, String attrs, int timeout, CallbackData.ICallback callback)`: 广播消息(andmin id)
+* `broadcastMessage(long from, byte mtype, String msg, String attrs, long mid, int timeout, CallbackData.ICallback callback)`: 广播消息(andmin id)
     * `from`: **(long)** admin id
     * `mtype`: **(byte)** 消息类型
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 可传`""`
+    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(CallbackData.ICallback)** 回调方法
         * `exception`: **(Exception)** 
@@ -490,21 +502,23 @@ baseTest();
         * `exception`: **(Exception)** 
         * `payload`: **(List<ArrayList>)** 
 
-* `sendFile(long from, long to, byte mtype, String filePath, int timeout, CallbackData.ICallback callback)`: 发送文件
+* `sendFile(long from, long to, byte mtype, String filePath, long mid, int timeout, CallbackData.ICallback callback)`: 发送文件
     * `from`: **(long)** 发送方 id
     * `to`: **(long)** 接收方uid
     * `mtype`: **(byte)** 消息类型
-    * `filePath`: **(String)** 文件路径 
+    * `filePath`: **(String)** 文件路径
+    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(CallbackData.ICallback)** 回调方法
         * `exception`: **(Exception)** 
         * `payload`: **(Map)** 
         
-* `sendFile(long from, long to, byte mtype, byte[] fileBytes, int timeout, CallbackData.ICallback callback)`: 发送文件
+* `sendFile(long from, long to, byte mtype, byte[] fileBytes, long mid, int timeout, CallbackData.ICallback callback)`: 发送文件
     * `from`: **(long)** 发送方 id
     * `to`: **(long)** 接收方uid
     * `mtype`: **(byte)** 消息类型
     * `fileBytes`: **(byte[])** 文件内容
+    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(CallbackData.ICallback)** 回调方法
         * `exception`: **(Exception)** 

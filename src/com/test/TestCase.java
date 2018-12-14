@@ -17,9 +17,9 @@ public class TestCase {
     public TestCase() {
 
         this._client = new RTMClient(
-                1017,
-                "10d09e42-05d3-4d3c-b97a-50c8f27aa6c7",
-                "highras-rtm-svrgated.ifunplus.cn",
+                11000001,
+                "ef3617e5-e886-4a4e-9eef-7263c0320628",
+                "52.83.245.22",
                 13315,
                 true,
                 20 * 1000,
@@ -218,7 +218,7 @@ public class TestCase {
 
         //---------------------------------sendMessage--------------------------------------
         this.threadSleep(sleep);
-        this._client.sendMessage(from, to, (byte) 8, "hello !", "", timeout, new FPCallback.ICallback() {
+        this._client.sendMessage(from, to, (byte) 8, "hello !", "", 0, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -240,7 +240,7 @@ public class TestCase {
 
         //---------------------------------sendMessages--------------------------------------
         this.threadSleep(sleep);
-        this._client.sendMessages(from, tos, (byte) 8, "hello !", "", timeout, new FPCallback.ICallback() {
+        this._client.sendMessages(from, tos, (byte) 8, "hello !", "", 0, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -262,7 +262,7 @@ public class TestCase {
 
         //---------------------------------sendGroupMessage--------------------------------------
         this.threadSleep(sleep);
-        this._client.sendGroupMessage(from, gid, (byte) 8, "hello !", "", timeout, new FPCallback.ICallback() {
+        this._client.sendGroupMessage(from, gid, (byte) 8, "hello !", "", 0, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -284,7 +284,7 @@ public class TestCase {
 
         //---------------------------------sendRoomMessage--------------------------------------
         this.threadSleep(sleep);
-        this._client.sendRoomMessage(from, rid, (byte) 8, "hello !", "", timeout, new FPCallback.ICallback() {
+        this._client.sendRoomMessage(from, rid, (byte) 8, "hello !", "", 0, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -306,7 +306,7 @@ public class TestCase {
 
         //---------------------------------broadcastMessage--------------------------------------
         this.threadSleep(sleep);
-        this._client.broadcastMessage(from, (byte) 8, "hello !", "", timeout, new FPCallback.ICallback() {
+        this._client.broadcastMessage(from, (byte) 8, "hello !", "", 0, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -922,7 +922,7 @@ public class TestCase {
 
         //---------------------------------sendFile--------------------------------------
         this.threadSleep(sleep);
-        this._client.sendFile(from, to, (byte) 8, "key/java.jpeg", 30 * 1000, new FPCallback.ICallback() {
+        this._client.sendFile(from, to, (byte) 8, "key/java.jpeg", 0, 30 * 1000, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
