@@ -35,9 +35,6 @@ public class RTMClient extends BaseClient {
 
     private int _pid;
     private String _secret;
-    private boolean _reconnect;
-    private int _timeout;
-    private RTMProcessor _processor;
 
     /**
      * @param {int}     pid
@@ -77,19 +74,13 @@ public class RTMClient extends BaseClient {
 
         super.init(host, port, reconnect, timeout);
 
-        this._reconnect = reconnect;
-        this._timeout = timeout;
-
-        this._processor = new RTMProcessor(this.getEvent());
-        this.getProcessor().setProcessor(this._processor);
+        this.getProcessor().setProcessor(new RTMProcessor(this.getEvent()));
     }
 
     @Override
     public void destroy() {
 
         super.destroy();
-
-        this._reconnect = false;
     }
 
     /**
@@ -3633,20 +3624,5 @@ class BaseClient extends FPClient {
         }
 
         cbd.checkException(isAnswerException, payload);
-    }
-
-    public Integer wantInteger(Map data, String key) {
-
-        return Integer.valueOf(String.valueOf(data.get(key)));
-    }
-
-    public Long wantLong(Map data, String key) {
-
-        return Long.valueOf(String.valueOf(data.get(key)));
-    }
-
-    public Byte wantByte(Map data, String key) {
-
-        return Byte.valueOf(String.valueOf(data.get(key)));
     }
 }
