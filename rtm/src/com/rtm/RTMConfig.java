@@ -4,14 +4,20 @@ public class RTMConfig {
 
     public static final int MID_TTL = 5 * 1000;
 
+    public class FILE_TYPE {
+
+        public static final byte image = 40;        //图片
+        public static final byte audio = 41;        //语音
+        public static final byte video = 42;        //视频
+        public static final byte file = 50;         //泛指文件，服务器会修改此值（如果服务器可以判断出具体类型的话，仅在mtype=50的情况下）
+    }
+
     public class SERVER_PUSH {
 
         public static final String recvMessage = "pushmsg";
-        public static final String recvMessages = "pushmsgs";
         public static final String recvGroupMessage = "pushgroupmsg";
         public static final String recvRoomMessage = "pushroommsg";
         public static final String recvFile = "pushfile";
-        public static final String recvFiles = "pushfiles";
         public static final String recvGroupFile = "pushgroupfile";
         public static final String recvRoomFile = "pushroomfile";
         public static final String recvEvent = "pushevent";

@@ -73,11 +73,6 @@ public class RTMProcessor implements FPProcessor.IProcessor {
 
         if (payload != null) {
 
-            if (payload.containsKey("pid")) {
-
-                payload.put("pid", wantInteger(payload, "pid"));
-            }
-
             if (payload.containsKey("mid")) {
 
                 payload.put("mid", wantLong(payload, "mid"));
@@ -103,23 +98,21 @@ public class RTMProcessor implements FPProcessor.IProcessor {
                 payload.put("rid", wantLong(payload, "rid"));
             }
 
-            if (payload.containsKey("ftype")) {
-
-                payload.put("ftype", wantByte(payload, "ftype"));
-            }
-
             if (payload.containsKey("mtype")) {
 
                 payload.put("mtype", wantByte(payload, "mtype"));
             }
 
+            if (payload.containsKey("mtime")) {
+
+                payload.put("mtime", wantLong(payload, "mtime"));
+            }
+
+
             switch (data.getMethod()) {
 
                 case RTMConfig.SERVER_PUSH.recvMessage:
                     this.pushmsg(payload);
-                    break;
-                case RTMConfig.SERVER_PUSH.recvMessages:
-                    this.pushmsgs(payload);
                     break;
                 case RTMConfig.SERVER_PUSH.recvGroupMessage:
                     this.pushgroupmsg(payload);
@@ -147,132 +140,113 @@ public class RTMProcessor implements FPProcessor.IProcessor {
     }
 
     /**
-     * @param {int}    data.pid
-     * @param {long}   data.from
-     * @param {long}   data.to
-     * @param {byte}   data.mtype
-     * @param {byte}   data.ftype
-     * @param {long}   data.mid
-     * @param {String} data.msg
-     * @param {String} data.attrs
+     *  
+     * ServerGate (1)
+     *
+     * @param {long}        data.from
+     * @param {long}        data.to
+     * @param {byte}        data.mtype
+     * @param {long}        data.mid
+     * @param {String}      data.msg
+     * @param {String}      data.attrs
+     * @param {long}        data.mtime
      */
     private void pushmsg(Map data) {
 
         if (data.containsKey("mid")) {
 
-            if (!this.checkMid(1, (long) data.get("mid"), (long) data.get("from"), 0)) {
+            if (!this.checkMid(1, (long)data.get("mid"), (long)data.get("from"), 0)) {
 
                 return;
             }
         }
 
-        if ((byte) data.get("ftype") > 0) {
+        byte mtype = (byte)data.get("mtype");
+
+        if (mtype >= 40 && mtype <= 50) {
 
             this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvFile, data));
             return;
         }
 
-        data.remove("ftype");
         this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvMessage, data));
     }
 
     /**
-     * @param {int}        data.pid
-     * @param {long}       data.from
-     * @param {List<Long>} data.tos
-     * @param {byte}       data.mtype
-     * @param {byte}       data.ftype
-     * @param {long}       data.mid
-     * @param {String}     data.msg
-     * @param {String}     data.attrs
-     */
-    private void pushmsgs(Map data) {
-
-        if (data.containsKey("mid")) {
-
-            if (!this.checkMid(1, (long) data.get("mid"), (long) data.get("from"), 0)) {
-
-                return;
-            }
-        }
-
-        if ((byte) data.get("ftype") > 0) {
-
-            this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvFiles, data));
-            return;
-        }
-
-        data.remove("ftype");
-        this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvMessages, data));
-    }
-
-    /**
-     * @param {int}    data.pid
-     * @param {long}   data.from
-     * @param {long}   data.gid
-     * @param {byte}   data.mtype
-     * @param {byte}   data.ftype
-     * @param {long}   data.mid
-     * @param {String} data.msg
-     * @param {String} data.attrs
+     *  
+     * ServerGate (2)
+     *
+     * @param {long}        data.from
+     * @param {long}        data.gid
+     * @param {byte}        data.mtype
+     * @param {long}        data.mid
+     * @param {String}      data.msg
+     * @param {String}      data.attrs
+     * @param {long}        data.mtime
      */
     private void pushgroupmsg(Map data) {
 
         if (data.containsKey("mid")) {
 
-            if (!this.checkMid(2, (long) data.get("mid"), (long) data.get("from"), (long) data.get("gid"))) {
+            if (!this.checkMid(2, (long)data.get("mid"), (long)data.get("from"), (long)data.get("gid"))) {
 
                 return;
             }
         }
 
-        if ((byte) data.get("ftype") > 0) {
+        byte mtype = (byte)data.get("mtype");
+
+        if (mtype >= 40 && mtype <= 50) {
 
             this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvGroupFile, data));
             return;
         }
 
-        data.remove("ftype");
         this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvGroupMessage, data));
     }
 
     /**
-     * @param {int}    data.pid
-     * @param {long}   data.from
-     * @param {long}   data.rid
-     * @param {byte}   data.mtype
-     * @param {byte}   data.ftype
-     * @param {long}   data.mid
-     * @param {String} data.msg
-     * @param {String} data.attrs
+     *  
+     * ServerGate (3)
+     *
+     * @param {long}        data.from
+     * @param {long}        data.rid
+     * @param {byte}        data.mtype
+     * @param {long}        data.mid
+     * @param {String}      data.msg
+     * @param {String}      data.attrs
+     * @param {long}        data.mtime
      */
     private void pushroommsg(Map data) {
 
         if (data.containsKey("mid")) {
 
-            if (!this.checkMid(3, (long) data.get("mid"), (long) data.get("from"), (long) data.get("rid"))) {
+            if (!this.checkMid(3, (long)data.get("mid"), (long)data.get("from"), (long)data.get("rid"))) {
 
                 return;
             }
         }
 
-        if ((byte) data.get("ftype") > 0) {
+        byte mtype = (byte)data.get("mtype");
+
+        if (mtype >= 40 && mtype <= 50) {
 
             this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvRoomFile, data));
             return;
         }
 
-        data.remove("ftype");
         this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvRoomMessage, data));
     }
 
     /**
-     * @param {int}    data.pid
-     * @param {String} data.event
-     * @param {long}   data.uid
-     * @param {int}    data.time
-     * @param {String} data.endpoint
-     * @param {String} data.data
+     *  
+     * ServerGate (4)
+     *
+     * @param {String}      data.event
+     * @param {long}        data.uid
+     * @param {int}         data.time
+     * @param {String}      data.endpoint
+     * @param {String}      data.data
      */
     private void pushevent(Map data) {
 
@@ -280,7 +254,10 @@ public class RTMProcessor implements FPProcessor.IProcessor {
     }
 
     /**
-     * @param {Map} data
+     *  
+     * ServerGate (5)
+     *
+     * @param {Map}         data
      */
     private void ping(Map data) {
 

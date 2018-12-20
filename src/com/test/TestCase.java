@@ -75,6 +75,8 @@ public class TestCase {
         long from = 778877;
         long to = 778899;
         long fuid = 778898;
+        long mid = 0;
+        byte[] fileBytes = this._client.loadFile("key/java.jpeg");
 
         List<Long> tos = new ArrayList();
         tos.add(from);
@@ -106,118 +108,10 @@ public class TestCase {
 
 
         System.out.println("\ntest start!");
-
-        //---------------------------------setEvtListener--------------------------------------
         this.threadSleep(sleep);
-        this._client.setEvtListener(true, timeout, new FPCallback.ICallback() {
 
-            @Override
-            public void callback(CallbackData cbd) {
-
-                Object obj = cbd.getPayload();
-
-                if (obj != null) {
-
-                    Map payload = (Map) obj;
-                    System.out.println("\n[DATA] setEvtListener:");
-                    System.out.println(payload);
-                } else {
-
-                    System.err.println("\n[ERR] setEvtListener:");
-                    System.err.println(cbd.getException().getMessage());
-                }
-            }
-        });
-
-        //---------------------------------setEvtListener--------------------------------------
-        this.threadSleep(sleep);
-        this._client.setEvtListener(false, timeout, new FPCallback.ICallback() {
-
-            @Override
-            public void callback(CallbackData cbd) {
-
-                Object obj = cbd.getPayload();
-
-                if (obj != null) {
-
-                    Map payload = (Map) obj;
-                    System.out.println("\n[DATA] setEvtListener:");
-                    System.out.println(payload);
-                } else {
-
-                    System.err.println("\n[ERR] setEvtListener:");
-                    System.err.println(cbd.getException().getMessage());
-                }
-            }
-        });
-
-        //---------------------------------setEvtListener--------------------------------------
-        this.threadSleep(sleep);
-        this._client.setEvtListener(gids, rids, true, evets, timeout, new FPCallback.ICallback() {
-
-            @Override
-            public void callback(CallbackData cbd) {
-
-                Object obj = cbd.getPayload();
-
-                if (obj != null) {
-
-                    Map payload = (Map) obj;
-                    System.out.println("\n[DATA] setEvtListener:");
-                    System.out.println(payload);
-                } else {
-
-                    System.err.println("\n[ERR] setEvtListener:");
-                    System.err.println(cbd.getException().getMessage());
-                }
-            }
-        });
-
-        //---------------------------------addEvtListener--------------------------------------
-        this.threadSleep(sleep);
-        this._client.addEvtListener(null, rids, true, evets, timeout, new FPCallback.ICallback() {
-
-            @Override
-            public void callback(CallbackData cbd) {
-
-                Object obj = cbd.getPayload();
-
-                if (obj != null) {
-
-                    Map payload = (Map) obj;
-                    System.out.println("\n[DATA] addEvtListener:");
-                    System.out.println(payload);
-                } else {
-
-                    System.err.println("\n[ERR] addEvtListener:");
-                    System.err.println(cbd.getException().getMessage());
-                }
-            }
-        });
-
-        //---------------------------------removeEvtListener--------------------------------------
-        this._client.removeEvtListener(gids, null, false, evets, timeout, new FPCallback.ICallback() {
-
-            @Override
-            public void callback(CallbackData cbd) {
-
-                Object obj = cbd.getPayload();
-
-                if (obj != null) {
-
-                    Map payload = (Map) obj;
-                    System.out.println("\n[DATA] removeEvtListener:");
-                    System.out.println(payload);
-                } else {
-
-                    System.err.println("\n[ERR] removeEvtListener:");
-                    System.err.println(cbd.getException().getMessage());
-                }
-            }
-        });
-
+        //ServerGate (1)
         //---------------------------------sendMessage--------------------------------------
-        this.threadSleep(sleep);
         this._client.sendMessage(from, to, (byte) 8, "hello !", "", 0, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -238,8 +132,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------sendMessages--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (2)
+        //---------------------------------sendMessages--------------------------------------
         this._client.sendMessages(from, tos, (byte) 8, "hello !", "", 0, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -260,8 +156,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------sendGroupMessage--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (3)
+        //---------------------------------sendGroupMessage--------------------------------------
         this._client.sendGroupMessage(from, gid, (byte) 8, "hello !", "", 0, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -282,8 +180,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------sendRoomMessage--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (4)
+        //---------------------------------sendRoomMessage--------------------------------------
         this._client.sendRoomMessage(from, rid, (byte) 8, "hello !", "", 0, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -304,8 +204,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------broadcastMessage--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (5)
+        //---------------------------------broadcastMessage--------------------------------------
         this._client.broadcastMessage(from, (byte) 8, "hello !", "", 0, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -326,8 +228,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------addFriends--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (6)
+        //---------------------------------addFriends--------------------------------------
         this._client.addFriends(from, friends, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -348,8 +252,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------deleteFriends--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (7)
+        //---------------------------------deleteFriends--------------------------------------
         this._client.deleteFriends(to, friends, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -370,8 +276,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------getFriends--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (8)
+        //---------------------------------getFriends--------------------------------------
         this._client.getFriends(from, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -392,8 +300,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------isFriend--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (9)
+        //---------------------------------isFriend--------------------------------------
         this._client.isFriend(from, fuid, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -414,8 +324,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------isFriends--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (10)
+        //---------------------------------isFriends--------------------------------------
         this._client.isFriends(from, friends, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -436,8 +348,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------addGroupMembers--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (11)
+        //---------------------------------addGroupMembers--------------------------------------
         this._client.addGroupMembers(gid, tos, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -458,9 +372,11 @@ public class TestCase {
             }
         });
 
-        //---------------------------------deleteGroupMembers--------------------------------------
         this.threadSleep(sleep);
-        this._client.deleteGroupMembers(rid, tos, timeout, new FPCallback.ICallback() {
+
+        //ServerGate (12)
+        //---------------------------------deleteGroupMembers--------------------------------------
+        this._client.deleteGroupMembers(gid, tos, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -480,9 +396,11 @@ public class TestCase {
             }
         });
 
-        //---------------------------------deleteGroup--------------------------------------
         this.threadSleep(sleep);
-        this._client.deleteGroup(rid, timeout, new FPCallback.ICallback() {
+
+        //ServerGate (13)
+        //---------------------------------deleteGroup--------------------------------------
+        this._client.deleteGroup(gid, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -502,8 +420,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------getGroupMembers--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (14)
+        //---------------------------------getGroupMembers--------------------------------------
         this._client.getGroupMembers(gid, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -524,8 +444,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------isGroupMember--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (15)
+        //---------------------------------isGroupMember--------------------------------------
         this._client.isGroupMember(gid, fuid, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -546,8 +468,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------getUserGroups--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (16)
+        //---------------------------------getUserGroups--------------------------------------
         this._client.getUserGroups(fuid, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -559,7 +483,7 @@ public class TestCase {
 
                     List<Long> payload = (List<Long>) obj;
                     System.out.println("\n[DATA] getUserGroups:");
-                    System.out.println(payload);
+                    System.out.println(payload.toString());
                 } else {
 
                     System.err.println("\n[ERR] getUserGroups:");
@@ -568,8 +492,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------getToken--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (17)
+        //---------------------------------getToken--------------------------------------
         this._client.getToken(from, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -590,8 +516,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------getOnlineUsers--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (18)
+        //---------------------------------getOnlineUsers--------------------------------------
         this._client.getOnlineUsers(tos, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -603,7 +531,7 @@ public class TestCase {
 
                     List<Long> payload = (List<Long>) obj;
                     System.out.println("\n[DATA] getOnlineUsers:");
-                    System.out.println(payload);
+                    System.out.println(payload.toString());
                 } else {
 
                     System.err.println("\n[ERR] getOnlineUsers:");
@@ -612,8 +540,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------addGroupBan--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (19)
+        //---------------------------------addGroupBan--------------------------------------
         this._client.addGroupBan(gid, to, 60, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -625,7 +555,7 @@ public class TestCase {
 
                     Map payload = (Map) obj;
                     System.out.println("\n[DATA] addGroupBan:");
-                    System.out.println(payload);
+                    System.out.println(payload.toString());
                 } else {
 
                     System.err.println("\n[ERR] addGroupBan:");
@@ -634,8 +564,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------removeGroupBan--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (20)
+        //---------------------------------removeGroupBan--------------------------------------
         this._client.removeGroupBan(gid, to, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -647,7 +579,7 @@ public class TestCase {
 
                     Map payload = (Map) obj;
                     System.out.println("\n[DATA] removeGroupBan:");
-                    System.out.println(payload);
+                    System.out.println(payload.toString());
                 } else {
 
                     System.err.println("\n[ERR] removeGroupBan:");
@@ -656,8 +588,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------addRoomBan--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (21)
+        //---------------------------------addRoomBan--------------------------------------
         this._client.addRoomBan(rid, to, 60, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -669,7 +603,7 @@ public class TestCase {
 
                     Map payload = (Map) obj;
                     System.out.println("\n[DATA] addRoomBan:");
-                    System.out.println(payload);
+                    System.out.println(payload.toString());
                 } else {
 
                     System.err.println("\n[ERR] addRoomBan:");
@@ -678,8 +612,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------removeRoomBan--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (22)
+        //---------------------------------removeRoomBan--------------------------------------
         this._client.removeRoomBan(rid, to, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -691,7 +627,7 @@ public class TestCase {
 
                     Map payload = (Map) obj;
                     System.out.println("\n[DATA] removeRoomBan:");
-                    System.out.println(payload);
+                    System.out.println(payload.toString());
                 } else {
 
                     System.err.println("\n[ERR] removeRoomBan:");
@@ -700,8 +636,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------addProjectBlack--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (23)
+        //---------------------------------addProjectBlack--------------------------------------
         this._client.addProjectBlack(to, 60, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -713,7 +651,7 @@ public class TestCase {
 
                     Map payload = (Map) obj;
                     System.out.println("\n[DATA] addProjectBlack:");
-                    System.out.println(payload);
+                    System.out.println(payload.toString());
                 } else {
 
                     System.err.println("\n[ERR] addProjectBlack:");
@@ -722,8 +660,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------removeProjectBlack--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (24)
+        //---------------------------------removeProjectBlack--------------------------------------
         this._client.removeProjectBlack(to, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -735,7 +675,7 @@ public class TestCase {
 
                     Map payload = (Map) obj;
                     System.out.println("\n[DATA] removeProjectBlack:");
-                    System.out.println(payload);
+                    System.out.println(payload.toString());
                 } else {
 
                     System.err.println("\n[ERR] removeProjectBlack:");
@@ -744,8 +684,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------isBanOfGroup--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (25)
+        //---------------------------------isBanOfGroup--------------------------------------
         this._client.isBanOfGroup(gid, to, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -766,8 +708,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------isBanOfRoom--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (26)
+        //---------------------------------isBanOfRoom--------------------------------------
         this._client.isBanOfRoom(rid, to, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -788,8 +732,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------isProjectBlack--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (27)
+        //---------------------------------isProjectBlack--------------------------------------
         this._client.isProjectBlack(to, timeout, new FPCallback.ICallback() {
 
             @Override
@@ -809,10 +755,12 @@ public class TestCase {
                 }
             }
         });
-
-        //---------------------------------setGeo--------------------------------------
+        
         this.threadSleep(sleep);
-        this._client.setGeo(from, lat, lng, timeout, new FPCallback.ICallback() {
+
+        //ServerGate (28)
+        //---------------------------------fileToken--------------------------------------
+        this._client.fileToken(from, "sendfile", null, to, 0, 0, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -822,19 +770,21 @@ public class TestCase {
                 if (obj != null) {
 
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] setGeo:");
-                    System.out.println(payload);
+                    System.out.println("\n[DATA] fileToken:");
+                    System.out.println(payload.toString());
                 } else {
 
-                    System.err.println("\n[ERR] setGeo:");
+                    System.err.println("\n[ERR] fileToken:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
         });
-
-        //---------------------------------getGeo--------------------------------------
+        
         this.threadSleep(sleep);
-        this._client.getGeo(from, timeout, new FPCallback.ICallback() {
+
+        //ServerGate (29)
+        //---------------------------------getGroupMessage--------------------------------------
+        this._client.getGroupMessage(gid, false, 10, 0, 0, 0, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -844,19 +794,21 @@ public class TestCase {
                 if (obj != null) {
 
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getGeo:");
-                    System.out.println(payload);
+                    System.out.println("\n[DATA] getGroupMessage:");
+                    System.out.println(payload.toString());
                 } else {
 
-                    System.err.println("\n[ERR] getGeo:");
+                    System.err.println("\n[ERR] getGroupMessage:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
         });
-
-        //---------------------------------getGeos--------------------------------------
+        
         this.threadSleep(sleep);
-        this._client.getGeos(tos, timeout, new FPCallback.ICallback() {
+
+        //ServerGate (30)
+        //---------------------------------getRoomMessage--------------------------------------
+        this._client.getRoomMessage(rid, false, 10, 0, 0, 0, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -865,19 +817,209 @@ public class TestCase {
 
                 if (obj != null) {
 
-                    List<ArrayList> payload = (List<ArrayList>) obj;
-                    System.out.println("\n[DATA] getGeos:");
-                    System.out.println(payload);
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] getRoomMessage:");
+                    System.out.println(payload.toString());
                 } else {
 
-                    System.err.println("\n[ERR] getGeos:");
+                    System.err.println("\n[ERR] getRoomMessage:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        
+        this.threadSleep(sleep);
+
+        //ServerGate (31)
+        //---------------------------------getBroadcastMessage--------------------------------------
+        this._client.getBroadcastMessage(false, 10, 0, 0, 0, timeout, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] getBroadcastMessage:");
+                    System.out.println(payload.toString());
+                } else {
+
+                    System.err.println("\n[ERR] getBroadcastMessage:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        
+        this.threadSleep(sleep);
+
+        //ServerGate (32)
+        //---------------------------------getP2PMessage--------------------------------------
+        this._client.getP2PMessage(from, to, false, 10, 0, 0, 0, timeout, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] getP2PMessage:");
+                    System.out.println(payload.toString());
+                } else {
+
+                    System.err.println("\n[ERR] getP2PMessage:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        
+        this.threadSleep(sleep);
+
+        //ServerGate (33)
+        //---------------------------------addRoomMember--------------------------------------
+        this._client.addRoomMember(rid, to, timeout, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] addRoomMember:");
+                    System.out.println(payload.toString());
+                } else {
+
+                    System.err.println("\n[ERR] addRoomMember:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        
+        this.threadSleep(sleep);
+
+        //ServerGate (34)
+        //---------------------------------deleteRoomMember--------------------------------------
+        this._client.deleteRoomMember(rid, to, timeout, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] deleteRoomMember:");
+                    System.out.println(payload.toString());
+                } else {
+
+                    System.err.println("\n[ERR] deleteRoomMember:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        
+        this.threadSleep(sleep);
+
+        //ServerGate (35)
+        //---------------------------------addEvtListener--------------------------------------
+        this._client.addEvtListener(null, rids, true, evets, timeout, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] addEvtListener:");
+                    System.out.println(payload.toString());
+                } else {
+
+                    System.err.println("\n[ERR] addEvtListener:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
         });
 
+        this.threadSleep(sleep);
+
+        //ServerGate (36)
+        //---------------------------------removeEvtListener--------------------------------------
+        this._client.removeEvtListener(gids, null, false, evets, timeout, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] removeEvtListener:");
+                    System.out.println(payload.toString());
+                } else {
+
+                    System.err.println("\n[ERR] removeEvtListener:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+
+        this.threadSleep(sleep);
+
+        //ServerGate (37)
+        //---------------------------------setEvtListener--------------------------------------
+        this._client.setEvtListener(true, timeout, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] setEvtListener:");
+                    System.out.println(payload.toString());
+                } else {
+
+                    System.err.println("\n[ERR] setEvtListener:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+
+        // this._client.setEvtListener(gids, rids, true, evets, timeout, new FPCallback.ICallback() {
+
+        //     @Override
+        //     public void callback(CallbackData cbd) {
+
+        //         Object obj = cbd.getPayload();
+
+        //         if (obj != null) {
+
+        //             Map payload = (Map) obj;
+        //             System.out.println("\n[DATA] setEvtListener:");
+        //             System.out.println(payload);
+        //         } else {
+
+        //             System.err.println("\n[ERR] setEvtListener:");
+        //             System.err.println(cbd.getException().getMessage());
+        //         }
+        //     }
+        // });
+
+        this.threadSleep(sleep);
+
+        //ServerGate (38)
         //---------------------------------addDevice--------------------------------------
-        this.threadSleep(sleep);
         this._client.addDevice(from, "app-info", "device-token", timeout, new FPCallback.ICallback() {
 
             @Override
@@ -889,7 +1031,7 @@ public class TestCase {
 
                     Map payload = (Map) obj;
                     System.out.println("\n[DATA] addDevice:");
-                    System.out.println(payload);
+                    System.out.println(payload.toString());
                 } else {
 
                     System.err.println("\n[ERR] addDevice:");
@@ -898,8 +1040,10 @@ public class TestCase {
             }
         });
 
-        //---------------------------------removeDevice--------------------------------------
         this.threadSleep(sleep);
+
+        //ServerGate (39)
+        //---------------------------------removeDevice--------------------------------------
         this._client.removeDevice(from, "app-info", timeout, new FPCallback.ICallback() {
 
             @Override
@@ -911,7 +1055,7 @@ public class TestCase {
 
                     Map payload = (Map) obj;
                     System.out.println("\n[DATA] removeDevice:");
-                    System.out.println(payload);
+                    System.out.println(payload.toString());
                 } else {
 
                     System.err.println("\n[ERR] removeDevice:");
@@ -920,9 +1064,59 @@ public class TestCase {
             }
         });
 
-        //---------------------------------sendFile--------------------------------------
         this.threadSleep(sleep);
-        this._client.sendFile(from, to, (byte) 8, "key/java.jpeg", 0, 30 * 1000, new FPCallback.ICallback() {
+
+        //ServerGate (40)
+        //---------------------------------deleteMessage--------------------------------------
+        this._client.deleteMessage(mid, from, to, (byte) 1, timeout, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] deleteMessage:");
+                    System.out.println(payload.toString());
+                } else {
+
+                    System.err.println("\n[ERR] deleteMessage:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+
+        this.threadSleep(sleep);
+
+        //ServerGate (41)
+        //---------------------------------kickout--------------------------------------
+        this._client.kickout(to, "", timeout, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] kickout:");
+                    System.out.println(payload);
+                } else {
+
+                    System.err.println("\n[ERR] kickout:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+
+        this.threadSleep(sleep);
+
+        //fileGate (1)
+        //---------------------------------sendFile--------------------------------------
+        this._client.sendFile(from, to, (byte)50, fileBytes, 0, 30 * 1000, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -943,6 +1137,103 @@ public class TestCase {
         });
 
         this.threadSleep(sleep);
+
+        //fileGate (2)
+        //---------------------------------sendFiles--------------------------------------
+        this._client.sendFiles(from, tos, (byte)50, fileBytes, 0, 30 * 1000, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] sendFiles:");
+                    System.out.println(payload);
+                } else {
+
+                    System.err.println("\n[ERR] sendFiles:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+
+        this.threadSleep(sleep);
+
+        //fileGate (3)
+        //---------------------------------sendGroupFile--------------------------------------
+        this._client.sendGroupFile(from, gid, (byte)50, fileBytes, 0, 30 * 1000, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] sendGroupFile:");
+                    System.out.println(payload);
+                } else {
+
+                    System.err.println("\n[ERR] sendGroupFile:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+
+        this.threadSleep(sleep);
+
+        //fileGate (4)
+        //---------------------------------sendRoomFile--------------------------------------
+        this._client.sendRoomFile(from, rid, (byte)50, fileBytes, 0, 30 * 1000, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] sendRoomFile:");
+                    System.out.println(payload);
+                } else {
+
+                    System.err.println("\n[ERR] sendRoomFile:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+
+        this.threadSleep(sleep);
+
+        //fileGate (5)
+        //---------------------------------broadcastFile--------------------------------------
+        this._client.broadcastFile(from, (byte)50, fileBytes, 0, 30 * 1000, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] broadcastFile:");
+                    System.out.println(payload);
+                } else {
+
+                    System.err.println("\n[ERR] broadcastFile:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+
+        this.threadSleep(sleep);
+
         System.out.println("\ntest end! ".concat(String.valueOf(this._sleepCount - 1)));
     }
 

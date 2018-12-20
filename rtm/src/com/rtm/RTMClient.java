@@ -2,8 +2,6 @@ package com.rtm;
 
 import com.fpnn.FPClient;
 import com.fpnn.FPData;
-import com.fpnn.FPPackage;
-import com.fpnn.FPProcessor;
 import com.fpnn.callback.CallbackData;
 import com.fpnn.callback.FPCallback;
 import com.fpnn.encryptor.FPEncryptor;
@@ -95,19 +93,35 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 from
-     * @param {long}                 to
-     * @param {byte}                 mtype
-     * @param {String}               msg
-     * @param {String}               attrs
-     * @param {long}                 mid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *
+     * ServerGate (1)
+     *
+     * @param {long}                    from
+     * @param {long}                    to
+     * @param {byte}                    mtype
+     * @param {String}                  msg
+     * @param {String}                  attrs
+     * @param {long}                    mid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map(mtime:long)}         payload
+     * @param {Exception}               exception
+     * @param {long}                    mid
+     * </CallbackData>
      */
     public void sendMessage(long from, long to, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
 
         long salt = this.genMessageSlat();
+
+        if (mid == 0) {
+
+            mid = MidGenerator.gen();
+        }
 
         Map payload = new HashMap();
 
@@ -117,7 +131,7 @@ public class RTMClient extends BaseClient {
         payload.put("mtype", mtype);
         payload.put("from", from);
         payload.put("to", to);
-        payload.put("mid", mid != 0 ? mid : MidGenerator.gen());
+        payload.put("mid", mid);
         payload.put("msg", msg);
         payload.put("attrs", attrs);
 
@@ -159,19 +173,35 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 from
-     * @param {List<Long>}           tos
-     * @param {byte}                 mtype
-     * @param {String}               msg
-     * @param {String}               attrs
-     * @param {long}                 mid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *
+     * ServerGate (2)
+     *
+     * @param {long}                    from
+     * @param {List(Long)}              tos
+     * @param {byte}                    mtype
+     * @param {String}                  msg
+     * @param {String}                  attrs
+     * @param {long}                    mid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map(mtime:long)}         payload
+     * @param {Exception}               exception
+     * @param {long}                    mid
+     * </CallbackData>
      */
     public void sendMessages(long from, List<Long> tos, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
 
         long salt = this.genMessageSlat();
+
+        if (mid == 0) {
+
+            mid = MidGenerator.gen();
+        }
 
         Map payload = new HashMap();
 
@@ -181,7 +211,7 @@ public class RTMClient extends BaseClient {
         payload.put("mtype", mtype);
         payload.put("from", from);
         payload.put("tos", tos);
-        payload.put("mid", mid != 0 ? mid : MidGenerator.gen());
+        payload.put("mid", mid);
         payload.put("msg", msg);
         payload.put("attrs", attrs);
 
@@ -223,19 +253,35 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 from
-     * @param {long                  gid
-     * @param {byte}                 mtype
-     * @param {String}               msg
-     * @param {String}               attrs
-     * @param {long}                 mid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *
+     * ServerGate (3)
+     *
+     * @param {long}                    from
+     * @param {long                     gid
+     * @param {byte}                    mtype
+     * @param {String}                  msg
+     * @param {String}                  attrs
+     * @param {long}                    mid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map(mtime:long)}         payload
+     * @param {Exception}               exception
+     * @param {long}                    mid
+     * </CallbackData>
      */
     public void sendGroupMessage(long from, long gid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
 
         long salt = this.genMessageSlat();
+
+        if (mid == 0) {
+
+            mid = MidGenerator.gen();
+        }
 
         Map payload = new HashMap();
 
@@ -245,7 +291,7 @@ public class RTMClient extends BaseClient {
         payload.put("mtype", mtype);
         payload.put("from", from);
         payload.put("gid", gid);
-        payload.put("mid", mid != 0 ? mid : MidGenerator.gen());
+        payload.put("mid", mid);
         payload.put("msg", msg);
         payload.put("attrs", attrs);
 
@@ -287,19 +333,35 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 from
-     * @param {long                  rid
-     * @param {byte}                 mtype
-     * @param {String}               msg
-     * @param {String}               attrs
-     * @param {long}                 mid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *
+     * ServerGate (4)
+     *
+     * @param {long}                    from
+     * @param {long                     rid
+     * @param {byte}                    mtype
+     * @param {String}                  msg
+     * @param {String}                  attrs
+     * @param {long}                    mid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map(mtime:long)}         payload
+     * @param {Exception}               exception
+     * @param {long}                    mid
+     * </CallbackData>
      */
     public void sendRoomMessage(long from, long rid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
 
         long salt = this.genMessageSlat();
+
+        if (mid == 0) {
+
+            mid = MidGenerator.gen();
+        }
 
         Map payload = new HashMap();
 
@@ -309,7 +371,7 @@ public class RTMClient extends BaseClient {
         payload.put("mtype", mtype);
         payload.put("from", from);
         payload.put("rid", rid);
-        payload.put("mid", mid != 0 ? mid : MidGenerator.gen());
+        payload.put("mid", mid);
         payload.put("msg", msg);
         payload.put("attrs", attrs);
 
@@ -351,18 +413,34 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 from
-     * @param {byte}                 mtype
-     * @param {String}               msg
-     * @param {String}               attrs
-     * @param {long}                 mid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *
+     * ServerGate (5)
+     * 
+     * @param {long}                    from
+     * @param {byte}                    mtype
+     * @param {String}                  msg
+     * @param {String}                  attrs
+     * @param {long}                    mid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map(mtime:long)}         payload
+     * @param {Exception}               exception
+     * @param {long}                    mid
+     * </CallbackData>
      */
     public void broadcastMessage(long from, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
 
         long salt = this.genMessageSlat();
+
+        if (mid == 0) {
+
+            mid = MidGenerator.gen();
+        }
 
         Map payload = new HashMap();
 
@@ -371,7 +449,7 @@ public class RTMClient extends BaseClient {
         payload.put("salt", salt);
         payload.put("mtype", mtype);
         payload.put("from", from);
-        payload.put("mid", mid != 0 ? mid : MidGenerator.gen());
+        payload.put("mid", mid);
         payload.put("msg", msg);
         payload.put("attrs", attrs);
 
@@ -413,11 +491,21 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {List<Long>}           friends
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (6)
+     * 
+     * @param {long}                    uid
+     * @param {List(Long)}              friends
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map}                     payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void addFriends(long uid, List<Long> friends, int timeout, FPCallback.ICallback callback) {
 
@@ -453,11 +541,21 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {List<Long>}           friends
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (7)
+     *
+     * @param {long}                    uid
+     * @param {List(Long)}              friends
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map}                     payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void deleteFriends(long uid, List<Long> friends, int timeout, FPCallback.ICallback callback) {
 
@@ -493,10 +591,20 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {List<Long>}        payload
+     *  
+     * ServerGate (8)
+     *
+     * @param {long}                    uid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {List(Long)}              payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void getFriends(long uid, int timeout, FPCallback.ICallback callback) {
 
@@ -551,11 +659,21 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {long}                 fuid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {boolean}           payload
+     *  
+     * ServerGate (9)
+     *
+     * @param {long}                    uid
+     * @param {long}                    fuid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {boolean}                 payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void isFriend(long uid, long fuid, int timeout, FPCallback.ICallback callback) {
 
@@ -611,11 +729,21 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {List<Long>}           fuids
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {List<Long>}        payload
+     *  
+     * ServerGate (10)
+     *
+     * @param {long}                    uid
+     * @param {List(Long)}              fuids
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {List(Long)}              payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void isFriends(long uid, List<Long> fuids, int timeout, FPCallback.ICallback callback) {
 
@@ -671,11 +799,21 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 gid
-     * @param {List<Long>}           uids
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (11)
+     *
+     * @param {long}                    gid
+     * @param {List(Long)}              uids
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map}                     payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void addGroupMembers(long gid, List<Long> uids, int timeout, FPCallback.ICallback callback) {
 
@@ -710,6 +848,23 @@ public class RTMClient extends BaseClient {
         this.sendQuest(data, this.questCallback(callback), timeout);
     }
 
+    /**
+     *  
+     * ServerGate (12)
+     *
+     * @param {long}                    gid
+     * @param {List(Long)}              uids
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map}                     payload
+     * @param {Exception}               exception
+     * </CallbackData>
+     */
     public void deleteGroupMembers(long gid, List<Long> uids, int timeout, FPCallback.ICallback callback) {
 
         long salt = this.genMessageSlat();
@@ -744,10 +899,20 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 gid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (13)
+     *
+     * @param {long}                    gid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map}                     payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void deleteGroup(long gid, int timeout, FPCallback.ICallback callback) {
 
@@ -782,10 +947,20 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 gid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {List<Long>}        payload
+     *  
+     * ServerGate (14)
+     *
+     * @param {long}                    gid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {List(Long)}              payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void getGroupMembers(long gid, int timeout, FPCallback.ICallback callback) {
 
@@ -840,11 +1015,21 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 gid
-     * @param {long}                 uid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {boolean}           payload
+     *  
+     * ServerGate (15)
+     *
+     * @param {long}                    gid
+     * @param {long}                    uid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {boolean}                 payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void isGroupMember(long gid, long uid, int timeout, FPCallback.ICallback callback) {
 
@@ -900,10 +1085,20 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {List<Long>}        payload
+     *  
+     * ServerGate (16)
+     *
+     * @param {long}                    uid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {List(Long)}              payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void getUserGroups(long uid, int timeout, FPCallback.ICallback callback) {
 
@@ -958,10 +1153,20 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {String}            payload
+     *  
+     * ServerGate (17)
+     *
+     * @param {long}                    uid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {String}                  payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void getToken(long uid, int timeout, FPCallback.ICallback callback) {
 
@@ -1016,10 +1221,20 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {List<Long>}           uids
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {List<Long>}        payload
+     *  
+     * ServerGate (18)
+     *
+     * @param {List(Long)}              uids
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {List(Long)}              payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void getOnlineUsers(List<Long> uids, int timeout, FPCallback.ICallback callback) {
 
@@ -1074,12 +1289,22 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 gid
-     * @param {long}                 uid
-     * @param {int}                  btime
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (19)
+     *
+     * @param {long}                    gid
+     * @param {long}                    uid
+     * @param {int}                     btime
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map}                     payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void addGroupBan(long gid, long uid, int btime, int timeout, FPCallback.ICallback callback) {
 
@@ -1116,11 +1341,21 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 gid
-     * @param {long}                 uid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (20)
+     *
+     * @param {long}                    gid
+     * @param {long}                    uid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map}                     payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void removeGroupBan(long gid, long uid, int timeout, FPCallback.ICallback callback) {
 
@@ -1156,12 +1391,22 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 rid
-     * @param {long}                 uid
-     * @param {int}                  btime
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (21)
+     *
+     * @param {long}                    rid
+     * @param {long}                    uid
+     * @param {int}                     btime
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map}                     payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void addRoomBan(long rid, long uid, int btime, int timeout, FPCallback.ICallback callback) {
 
@@ -1198,11 +1443,21 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 rid
-     * @param {long}                 uid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (22)
+     *
+     * @param {long}                    rid
+     * @param {long}                    uid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map}                     payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void removeRoomBan(long rid, long uid, int timeout, FPCallback.ICallback callback) {
 
@@ -1238,11 +1493,21 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {int}                  btime
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (23)
+     *
+     * @param {long}                    uid
+     * @param {int}                     btime
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map}                     payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void addProjectBlack(long uid, int btime, int timeout, FPCallback.ICallback callback) {
 
@@ -1278,10 +1543,20 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (24)
+     *
+     * @param {long}                    uid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map}                     payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void removeProjectBlack(long uid, int timeout, FPCallback.ICallback callback) {
 
@@ -1316,11 +1591,21 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 gid
-     * @param {long}                 uid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {boolean}           payload
+     *  
+     * ServerGate (25)
+     *
+     * @param {long}                    gid
+     * @param {long}                    uid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {boolean}                 payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void isBanOfGroup(long gid, long uid, int timeout, FPCallback.ICallback callback) {
 
@@ -1376,11 +1661,21 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 rid
-     * @param {long}                 uid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {bool}              payload
+     *  
+     * ServerGate (26)
+     *
+     * @param {long}                    rid
+     * @param {long}                    uid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {boolean}                 payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void isBanOfRoom(long rid, long uid, int timeout, FPCallback.ICallback callback) {
 
@@ -1436,10 +1731,20 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {boolean}           payload
+     *  
+     * ServerGate (27)
+     *
+     * @param {long}                    uid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {boolean}                 payload
+     * @param {Exception}               exception
+     * </CallbackData>
      */
     public void isProjectBlack(long uid, int timeout, FPCallback.ICallback callback) {
 
@@ -1494,54 +1799,89 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {double}               lat
-     * @param {double}               lng
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (28)
+     *
+     * @param {long}                    from
+     * @param {String}                  cmd
+     * @param {List(Long)}              tos 
+     * @param {long}                    to 
+     * @param {long}                    rid
+     * @param {long}                    gid 
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}                           exception
+     * @param {Map(token:string,endpoint:string)}   payload
+     * </CallbackData>
      */
-    public void setGeo(long uid, double lat, double lng, int timeout, FPCallback.ICallback callback) {
-
-        long salt = this.genMessageSlat();
+    public void fileToken(long from, String cmd, List<Long> tos, long to, long rid, long gid, int timeout, FPCallback.ICallback callback) {
 
         Map payload = new HashMap();
 
-        payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
-        payload.put("salt", salt);
-        payload.put("uid", uid);
-        payload.put("lat", lat);
-        payload.put("lng", lng);
+        payload.put("from", from);
+        payload.put("cmd", cmd);
 
-        FPData data = new FPData();
-        data.setFlag(0x1);
-        data.setMtype(0x1);
-        data.setMethod("setgeo");
+        if (tos != null && tos.size() > 0) {
 
-        byte[] bytes = new byte[0];
-        PayloadPacker packer = new PayloadPacker();
-
-        try {
-
-            packer.pack(payload);
-            bytes = packer.toByteArray();
-        } catch (IOException ex) {
-
-            ex.printStackTrace();
+            payload.put("tos", tos);
         }
 
-        data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        if (to > 0) {
+
+            payload.put("to", to);
+        }
+
+        if (rid > 0) {
+
+            payload.put("rid", rid);
+        }
+
+        if (gid > 0) {
+
+            payload.put("gid", gid);
+        }
+
+        this.filetoken(payload, callback, timeout);
     }
 
     /**
-     * @param {long}                 uid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map<lat:double, lng:double>} payload
+     *  
+     * ServerGate (29)
+     *
+     * @param {long}                    gid
+     * @param {boolean}                 desc
+     * @param {int}                     num
+     * @param {long}                    begin
+     * @param {long}                    end
+     * @param {long}                    lastid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map(num:int,lastid:long,begin:long,end:long,msgs:List(GroupMsg))} payload
+     * </CallbackData>
+     * 
+     * <GroupMsg>
+     * @param {long}                    id
+     * @param {long}                    from
+     * @param {byte}                    mtype
+     * @param {long}                    mid
+     * @param {boolean}                 deleted
+     * @param {String}                  msg
+     * @param {String}                  attrs
+     * @param {long}                    mtime
+     * </GroupMsg>
      */
-    public void getGeo(long uid, int timeout, FPCallback.ICallback callback) {
+    public void getGroupMessage(long gid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback) {
 
         long salt = this.genMessageSlat();
 
@@ -1550,50 +1890,29 @@ public class RTMClient extends BaseClient {
         payload.put("pid", this._pid);
         payload.put("sign", this.genMessageSign(salt));
         payload.put("salt", salt);
-        payload.put("uid", uid);
+        payload.put("gid", gid);
+        payload.put("desc", desc);
+        payload.put("num", num);
 
-        FPData data = new FPData();
-        data.setFlag(0x1);
-        data.setMtype(0x1);
-        data.setMethod("getgeo");
+        if (begin > 0) {
 
-        byte[] bytes = new byte[0];
-        PayloadPacker packer = new PayloadPacker();
-
-        try {
-
-            packer.pack(payload);
-            bytes = packer.toByteArray();
-        } catch (IOException ex) {
-
-            ex.printStackTrace();
+            payload.put("begin", begin);
         }
 
-        data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
-    }
+        if (end > 0) {
+            
+            payload.put("end", end);
+        }
 
-    /**
-     * @param {List<Long>}           uids
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {List<ArrayList<long, double, double>>} payload
-     */
-    public void getGeos(List<Long> uids, int timeout, FPCallback.ICallback callback) {
-
-        long salt = this.genMessageSlat();
-
-        Map payload = new HashMap();
-
-        payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
-        payload.put("salt", salt);
-        payload.put("uids", uids);
+        if (lastid > 0) {
+            
+            payload.put("lastid", lastid);
+        }
 
         FPData data = new FPData();
         data.setFlag(0x1);
         data.setMtype(0x1);
-        data.setMethod("getgeos");
+        data.setMethod("getgroupmsg");
 
         byte[] bytes = new byte[0];
         PayloadPacker packer = new PayloadPacker();
@@ -1621,8 +1940,26 @@ public class RTMClient extends BaseClient {
 
                 if (payload != null) {
 
-                    List<ArrayList> geos = (List<ArrayList>) payload.get("geos");
-                    callback.callback(new CallbackData(geos));
+                    List list = (ArrayList) payload.get("msgs");
+
+                    for (int i = 0; i < list.size(); i++) {
+
+                        Map map = new HashMap();
+                        List items = (ArrayList) list.get(i);
+
+                        map.put("id", items.get(0));
+                        map.put("from", items.get(1));
+                        map.put("mtype", items.get(2));
+                        map.put("mid", items.get(3));
+                        map.put("deleted", items.get(4));
+                        map.put("msg", items.get(5));
+                        map.put("attrs", items.get(6));
+                        map.put("mtime", items.get(7));
+
+                        list.set(i, map);
+                    }
+
+                    callback.callback(new CallbackData(payload));
                     return;
                 }
 
@@ -1632,13 +1969,480 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {List<Long>}           gids
-     * @param {List<Long>}           rids
-     * @param {boolean}              p2p
-     * @param {List<String>}         events
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (30)
+     *
+     * @param {long}                    rid
+     * @param {boolean}                 desc
+     * @param {int}                     num
+     * @param {long}                    begin
+     * @param {long}                    end
+     * @param {long}                    lastid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map(num:int,lastid:long,begin:long,end:long,msgs:List(RoomMsg))} payload
+     * </CallbackData>
+     * 
+     * <RoomMsg>
+     * @param {long}                    id
+     * @param {long}                    from
+     * @param {byte}                    mtype
+     * @param {long}                    mid
+     * @param {boolean}                 deleted
+     * @param {String}                  msg
+     * @param {String}                  attrs
+     * @param {long}                    mtime
+     * </RoomMsg>
+     */
+    public void getRoomMessage(long rid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback) {
+
+        long salt = this.genMessageSlat();
+
+        Map payload = new HashMap();
+
+        payload.put("pid", this._pid);
+        payload.put("sign", this.genMessageSign(salt));
+        payload.put("salt", salt);
+        payload.put("rid", rid);
+        payload.put("desc", desc);
+        payload.put("num", num);
+
+        if (begin > 0) {
+
+            payload.put("begin", begin);
+        }
+
+        if (end > 0) {
+            
+            payload.put("end", end);
+        }
+
+        if (lastid > 0) {
+            
+            payload.put("lastid", lastid);
+        }
+
+        FPData data = new FPData();
+        data.setFlag(0x1);
+        data.setMtype(0x1);
+        data.setMethod("getroommsg");
+
+        byte[] bytes = new byte[0];
+        PayloadPacker packer = new PayloadPacker();
+
+        try {
+
+            packer.pack(payload);
+            bytes = packer.toByteArray();
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        data.setPayload(bytes);
+        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+                if (callback == null) {
+
+                    return;
+                }
+
+                Map payload = (Map) cbd.getPayload();
+
+                if (payload != null) {
+
+                    List list = (ArrayList) payload.get("msgs");
+
+                    for (int i = 0; i < list.size(); i++) {
+
+                        Map map = new HashMap();
+                        List items = (ArrayList) list.get(i);
+
+                        map.put("id", items.get(0));
+                        map.put("from", items.get(1));
+                        map.put("mtype", items.get(2));
+                        map.put("mid", items.get(3));
+                        map.put("deleted", items.get(4));
+                        map.put("msg", items.get(5));
+                        map.put("attrs", items.get(6));
+                        map.put("mtime", items.get(7));
+
+                        list.set(i, map);
+                    }
+
+                    callback.callback(new CallbackData(payload));
+                    return;
+                }
+
+                callback.callback(cbd);
+            }
+        }), timeout);
+    }
+
+    /**
+     *  
+     * ServerGate (31)
+     *
+     * @param {boolean}                 desc
+     * @param {int}                     num
+     * @param {long}                    begin
+     * @param {long}                    end
+     * @param {long}                    lastid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map(num:int,lastid:long,begin:long,end:long,msgs:List(BroadcastMsg))} payload
+     * </CallbackData>
+     * 
+     * <BroadcastMsg>
+     * @param {long}                    id
+     * @param {long}                    from
+     * @param {byte}                    mtype
+     * @param {long}                    mid
+     * @param {boolean}                 deleted
+     * @param {String}                  msg
+     * @param {String}                  attrs
+     * @param {long}                    mtime
+     * </BroadcastMsg>
+     */
+    public void getBroadcastMessage(boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback) {
+
+        long salt = this.genMessageSlat();
+
+        Map payload = new HashMap();
+
+        payload.put("pid", this._pid);
+        payload.put("sign", this.genMessageSign(salt));
+        payload.put("salt", salt);
+        payload.put("desc", desc);
+        payload.put("num", num);
+
+        if (begin > 0) {
+
+            payload.put("begin", begin);
+        }
+
+        if (end > 0) {
+            
+            payload.put("end", end);
+        }
+
+        if (lastid > 0) {
+            
+            payload.put("lastid", lastid);
+        }
+
+        FPData data = new FPData();
+        data.setFlag(0x1);
+        data.setMtype(0x1);
+        data.setMethod("getbroadcastmsg");
+
+        byte[] bytes = new byte[0];
+        PayloadPacker packer = new PayloadPacker();
+
+        try {
+
+            packer.pack(payload);
+            bytes = packer.toByteArray();
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        data.setPayload(bytes);
+        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+                if (callback == null) {
+
+                    return;
+                }
+
+                Map payload = (Map) cbd.getPayload();
+
+                if (payload != null) {
+
+                    List list = (ArrayList) payload.get("msgs");
+
+                    for (int i = 0; i < list.size(); i++) {
+
+                        Map map = new HashMap();
+                        List items = (ArrayList) list.get(i);
+
+                        map.put("id", items.get(0));
+                        map.put("from", items.get(1));
+                        map.put("mtype", items.get(2));
+                        map.put("mid", items.get(3));
+                        map.put("deleted", items.get(4));
+                        map.put("msg", items.get(5));
+                        map.put("attrs", items.get(6));
+                        map.put("mtime", items.get(7));
+
+                        list.set(i, map);
+                    }
+
+                    callback.callback(new CallbackData(payload));
+                    return;
+                }
+
+                callback.callback(cbd);
+            }
+        }), timeout);
+    }
+
+    /**
+     *  
+     * ServerGate (32)
+     *
+     * @param {long}                    uid 
+     * @param {long}                    ouid 
+     * @param {boolean}                 desc
+     * @param {int}                     num
+     * @param {long}                    begin
+     * @param {long}                    end
+     * @param {long}                    lastid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map(num:int,lastid:long,begin:long,end:long,msgs:List(P2PMsg))} payload
+     * </CallbackData>
+     * 
+     * <P2PMsg>
+     * @param {long}                    id
+     * @param {byte}                    direction
+     * @param {byte}                    mtype
+     * @param {long}                    mid
+     * @param {boolean}                 deleted
+     * @param {String}                  msg
+     * @param {String}                  attrs
+     * @param {long}                    mtime
+     * </P2PMsg>
+     */
+    public void getP2PMessage(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback) {
+
+        long salt = this.genMessageSlat();
+
+        Map payload = new HashMap();
+
+        payload.put("pid", this._pid);
+        payload.put("sign", this.genMessageSign(salt));
+        payload.put("salt", salt);
+        payload.put("uid", uid);
+        payload.put("ouid", ouid);
+        payload.put("desc", desc);
+        payload.put("num", num);
+
+        if (begin > 0) {
+
+            payload.put("begin", begin);
+        }
+
+        if (end > 0) {
+            
+            payload.put("end", end);
+        }
+
+        if (lastid > 0) {
+            
+            payload.put("lastid", lastid);
+        }
+
+        FPData data = new FPData();
+        data.setFlag(0x1);
+        data.setMtype(0x1);
+        data.setMethod("getp2pmsg");
+
+        byte[] bytes = new byte[0];
+        PayloadPacker packer = new PayloadPacker();
+
+        try {
+
+            packer.pack(payload);
+            bytes = packer.toByteArray();
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        data.setPayload(bytes);
+        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+
+            @Override
+            public void callback(CallbackData cbd) {
+                if (callback == null) {
+
+                    return;
+                }
+
+                Map payload = (Map) cbd.getPayload();
+
+                if (payload != null) {
+
+                    List list = (ArrayList) payload.get("msgs");
+
+                    for (int i = 0; i < list.size(); i++) {
+
+                        Map map = new HashMap();
+                        List items = (ArrayList) list.get(i);
+
+                        map.put("id", items.get(0));
+                        map.put("direction", items.get(1));
+                        map.put("mtype", items.get(2));
+                        map.put("mid", items.get(3));
+                        map.put("deleted", items.get(4));
+                        map.put("msg", items.get(5));
+                        map.put("attrs", items.get(6));
+                        map.put("mtime", items.get(7));
+
+                        list.set(i, map);
+                    }
+
+                    callback.callback(new CallbackData(payload));
+                    return;
+                }
+
+                callback.callback(cbd);
+            }
+        }), timeout);
+    }
+
+    /**
+     *  
+     * ServerGate (33)
+     *
+     * @param {long}                    rid 
+     * @param {long}                    uid 
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map}                     payload
+     * </CallbackData>
+     */
+    public void addRoomMember(long rid, long uid, int timeout, FPCallback.ICallback callback) {
+
+        long salt = this.genMessageSlat();
+
+        Map payload = new HashMap();
+
+        payload.put("pid", this._pid);
+        payload.put("sign", this.genMessageSign(salt));
+        payload.put("salt", salt);
+        payload.put("rid", rid);
+        payload.put("uid", uid);
+
+        FPData data = new FPData();
+        data.setFlag(0x1);
+        data.setMtype(0x1);
+        data.setMethod("addroommember");
+
+        byte[] bytes = new byte[0];
+        PayloadPacker packer = new PayloadPacker();
+
+        try {
+
+            packer.pack(payload);
+            bytes = packer.toByteArray();
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        data.setPayload(bytes);
+        this.sendQuest(data, this.questCallback(callback), timeout);
+    }
+
+    /**
+     *  
+     * ServerGate (34)
+     *
+     * @param {long}                    rid 
+     * @param {long}                    uid 
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map}                     payload
+     * </CallbackData>
+     */
+    public void deleteRoomMember(long rid, long uid, int timeout, FPCallback.ICallback callback) {
+
+        long salt = this.genMessageSlat();
+
+        Map payload = new HashMap();
+
+        payload.put("pid", this._pid);
+        payload.put("sign", this.genMessageSign(salt));
+        payload.put("salt", salt);
+        payload.put("rid", rid);
+        payload.put("uid", uid);
+
+        FPData data = new FPData();
+        data.setFlag(0x1);
+        data.setMtype(0x1);
+        data.setMethod("delroommember");
+
+        byte[] bytes = new byte[0];
+        PayloadPacker packer = new PayloadPacker();
+
+        try {
+
+            packer.pack(payload);
+            bytes = packer.toByteArray();
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        data.setPayload(bytes);
+        this.sendQuest(data, this.questCallback(callback), timeout);
+    }
+
+    /**
+     *  
+     * ServerGate (35)
+     *
+     * @param {List(Long)}              gids
+     * @param {List(Long)}              rids
+     * @param {boolean}                 p2p
+     * @param {List(String)}            events
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map}                     payload
+     * </CallbackData>
      */
     public void addEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback) {
 
@@ -1692,13 +2496,23 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {List<Long>}           gids
-     * @param {List<Long>}           rids
-     * @param {boolean}              p2p
-     * @param {List<String>}         events
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (36)
+     *
+     * @param {List(Long)}              gids
+     * @param {List(Long)}              rids
+     * @param {boolean}                 p2p
+     * @param {List(String)}            events
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map}                     payload
+     * </CallbackData>
      */
     public void removeEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback) {
 
@@ -1752,10 +2566,20 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {boolean}              all
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (37)
+     *
+     * @param {boolean}                 all
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map}                     payload
+     * </CallbackData>
      */
     public void setEvtListener(boolean all, int timeout, FPCallback.ICallback callback) {
 
@@ -1790,13 +2614,23 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {List<Long>}           gids
-     * @param {List<Long>}           rids
-     * @param {boolean}              p2p
-     * @param {List<String>}         events
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (37)
+     *
+     * @param {List(Long)}              gids
+     * @param {List(Long)}              rids
+     * @param {boolean}                 p2p
+     * @param {List(String)}            events
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map}                     payload
+     * </CallbackData>
      */
     public void setEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback) {
 
@@ -1834,12 +2668,22 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {String}               apptype
-     * @param {String}               devicetoken
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (38)
+     *
+     * @param {long}                    uid
+     * @param {String}                  apptype
+     * @param {String}                  devicetoken
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map}                     payload
+     * </CallbackData>
      */
     public void addDevice(long uid, String apptype, String devicetoken, int timeout, FPCallback.ICallback callback) {
 
@@ -1876,11 +2720,21 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 uid
-     * @param {String}               devicetoken
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (39)
+     *
+     * @param {long}                    uid
+     * @param {String}                  devicetoken
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map}                     payload
+     * </CallbackData>
      */
     public void removeDevice(long uid, String devicetoken, int timeout, FPCallback.ICallback callback) {
 
@@ -1916,30 +2770,141 @@ public class RTMClient extends BaseClient {
     }
 
     /**
-     * @param {long}                 from
-     * @param {long}                 to
-     * @param {byte}                 mtype
-     * @param {String}               filePath
-     * @param {long}                 mid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (40)
+     *
+     * @param {long}                    mid
+     * @param {long}                    from
+     * @param {long}                    xid
+     * @param {byte}                    type
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map}                     payload
+     * </CallbackData>
      */
-    public void sendFile(long from, long to, byte mtype, String filePath, long mid, int timeout, FPCallback.ICallback callback) {
+    public void deleteMessage(long mid, long from, long xid, byte type, int timeout, FPCallback.ICallback callback) {
 
-        byte[] bytes = new LoadFile().read(filePath);
-        this.sendFile(from, to, mtype, bytes, mid, timeout, callback);
+        long salt = this.genMessageSlat();
+
+        Map payload = new HashMap();
+
+        payload.put("pid", this._pid);
+        payload.put("sign", this.genMessageSign(salt));
+        payload.put("salt", salt);
+        payload.put("mid", mid);
+        payload.put("from", from);
+        payload.put("xid", xid);
+        payload.put("type", type);
+
+        FPData data = new FPData();
+        data.setFlag(0x1);
+        data.setMtype(0x1);
+        data.setMethod("delmsg");
+
+        byte[] bytes = new byte[0];
+        PayloadPacker packer = new PayloadPacker();
+
+        try {
+
+            packer.pack(payload);
+            bytes = packer.toByteArray();
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        data.setPayload(bytes);
+        this.sendQuest(data, this.questCallback(callback), timeout);
     }
 
     /**
-     * @param {long}                 from
-     * @param {long}                 to
-     * @param {byte}                 mtype
-     * @param {byte[]}               fileBytes
-     * @param {long}                 mid
-     * @param {int}                  timeout
-     * @param {FPCallback.ICallback} callback
-     * @callback {Map}               payload
+     *  
+     * ServerGate (41)
+     *
+     * @param {long}                    uid 
+     * @param {String}                  ce 
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Exception}               exception
+     * @param {Map}                     payload
+     * </CallbackData>
+     */
+    public void kickout(long uid, String ce, int timeout, FPCallback.ICallback callback) {
+
+        long salt = this.genMessageSlat();
+
+        Map payload = new HashMap();
+
+        payload.put("pid", this._pid);
+        payload.put("sign", this.genMessageSign(salt));
+        payload.put("salt", salt);
+        payload.put("uid", uid);
+
+        if (ce != null && !ce.isEmpty()) {
+
+            payload.put("ce", ce);
+        }
+
+        FPData data = new FPData();
+        data.setFlag(0x1);
+        data.setMtype(0x1);
+        data.setMethod("kickout");
+
+        byte[] bytes = new byte[0];
+        PayloadPacker packer = new PayloadPacker();
+
+        try {
+
+            packer.pack(payload);
+            bytes = packer.toByteArray();
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        data.setPayload(bytes);
+        this.sendQuest(data, this.questCallback(callback), timeout);
+    }
+
+    /**
+     *
+     * @param {String}      filePath
+     */
+    public byte[] loadFile(String filePath) {
+
+        return new LoadFile().read(filePath);
+    }
+
+    /**
+     *  
+     * fileGate (1)
+     *
+     * @param {long}                    from
+     * @param {long}                    to
+     * @param {byte}                    mtype
+     * @param {byte[]}                  fileBytes
+     * @param {long}                    mid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map(mtime:long)}         payload
+     * @param {Exception}               exception
+     * @param {long}                    mid
      */
     public void sendFile(long from, long to, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback) {
 
@@ -1960,9 +2925,168 @@ public class RTMClient extends BaseClient {
         this.fileSendProcess(ops, mid, timeout, callback);
     }
 
+    /**
+     *  
+     * filegate (2)
+     *
+     * @param {long}                    from
+     * @param {List(Long)}              tos
+     * @param {byte}                    mtype
+     * @param {byte[]}                  fileBytes
+     * @param {long}                    mid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map(mtime:long)}         payload
+     * @param {Exception}               exception
+     * @param {long}                    mid
+     */
+    public void sendFiles(long from, List<Long> tos, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback) {
+
+        if (fileBytes == null || fileBytes.length <= 0) {
+
+            this.getEvent().fireEvent(new EventData(this, "error", new Exception("empty file bytes!")));
+            return;
+        }
+
+        Map ops = new HashMap();
+
+        ops.put("cmd", "sendfiles");
+        ops.put("from", from);
+        ops.put("tos", tos);
+        ops.put("mtype", mtype);
+        ops.put("file", fileBytes);
+
+        this.fileSendProcess(ops, mid, timeout, callback);
+    }
+
+    /**
+     *  
+     * filegate (3)
+     *
+     * @param {long}                    from
+     * @param {long}                    gid
+     * @param {byte}                    mtype
+     * @param {byte[]}                  fileBytes
+     * @param {long}                    mid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map(mtime:long)}         payload
+     * @param {Exception}               exception
+     * @param {long}                    mid
+     */
+    public void sendGroupFile(long from, long gid, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback) {
+
+        if (fileBytes == null || fileBytes.length <= 0) {
+
+            this.getEvent().fireEvent(new EventData(this, "error", new Exception("empty file bytes!")));
+            return;
+        }
+
+        Map ops = new HashMap();
+
+        ops.put("cmd", "sendgroupfile");
+        ops.put("from", from);
+        ops.put("gid", gid);
+        ops.put("mtype", mtype);
+        ops.put("file", fileBytes);
+
+        this.fileSendProcess(ops, mid, timeout, callback);
+    }
+
+    /**
+     *  
+     * filegate (4)
+     *
+     * @param {long}                    from
+     * @param {long}                    rid
+     * @param {byte}                    mtype
+     * @param {byte[]}                  fileBytes
+     * @param {long}                    mid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map(mtime:long)}         payload
+     * @param {Exception}               exception
+     * @param {long}                    mid
+     */
+    public void sendRoomFile(long from, long rid, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback) {
+
+        if (fileBytes == null || fileBytes.length <= 0) {
+
+            this.getEvent().fireEvent(new EventData(this, "error", new Exception("empty file bytes!")));
+            return;
+        }
+
+        Map ops = new HashMap();
+
+        ops.put("cmd", "sendroomfile");
+        ops.put("from", from);
+        ops.put("rid", rid);
+        ops.put("mtype", mtype);
+        ops.put("file", fileBytes);
+
+        this.fileSendProcess(ops, mid, timeout, callback);
+    }
+
+    /**
+     *  
+     * filegate (5)
+     *
+     * @param {long}                    from
+     * @param {byte}                    mtype
+     * @param {byte[]}                  fileBytes
+     * @param {long}                    mid
+     * @param {int}                     timeout
+     * @param {FPCallback.ICallback}    callback
+     *
+     * @callback
+     * @param {CallbackData}            cbdata
+     *
+     * <CallbackData>
+     * @param {Map(mtime:long)}         payload
+     * @param {Exception}               exception
+     * @param {long}                    mid
+     */
+    public void broadcastFile(long from, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback) {
+
+        if (fileBytes == null || fileBytes.length <= 0) {
+
+            this.getEvent().fireEvent(new EventData(this, "error", new Exception("empty file bytes!")));
+            return;
+        }
+
+        Map ops = new HashMap();
+
+        ops.put("cmd", "broadcastfile");
+        ops.put("from", from);
+        ops.put("mtype", mtype);
+        ops.put("file", fileBytes);
+
+        this.fileSendProcess(ops, mid, timeout, callback);
+    }
+
     private void fileSendProcess(Map ops, long mid, int timeout, FPCallback.ICallback callback) {
 
         Map payload = new HashMap();
+
+        if (mid == 0) {
+
+            mid = MidGenerator.gen();
+        }
 
         payload.put("cmd", ops.get("cmd"));
 
@@ -2030,7 +3154,7 @@ public class RTMClient extends BaseClient {
 
                     payload.put("pid", self._pid);
                     payload.put("mtype", fops.get("mtype"));
-                    payload.put("mid", fmid != 0 ? fmid : MidGenerator.gen());
+                    payload.put("mid", fmid);
                     payload.put("from", fops.get("from"));
 
                     if (fops.containsKey("tos")) {

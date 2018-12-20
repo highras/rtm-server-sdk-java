@@ -130,83 +130,60 @@ baseTest();
     * `data`: **(Map)**
 
 * `pushmsg`: RTMGate主动推送P2P消息
-    * `data.pid`: **(int)** 应用编号
     * `data.from`: **(long)** 发送者 id
     * `data.to`: **(long)** 接收者 id
     * `data.mtype`: **(byte)** 消息类型
     * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
     * `data.msg`: **(String)** 消息内容
     * `data.attrs`: **(String)** 发送时附加的自定义内容
-
-* `pushmsgs`: RTMGate主动推送多个接收者P2P消息
-    * `data.pid`: **(int)** 应用编号
-    * `data.from`: **(long)** 发送者 id
-    * `data.tos`: **(List<Long>)** 多个接收者 id
-    * `data.mtype`: **(byte)** 消息类型
-    * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-    * `data.msg`: **(String)** 消息内容
-    * `data.attrs`: **(String)** 发送时附加的自定义内容
+    * `data.mtime`: **(long)** 
 
 * `pushgroupmsg`: RTMGate主动推送Group消息
-    * `data.pid`: **(int)** 应用编号
     * `data.from`: **(long)** 发送者 id
     * `data.gid`: **(long)** Group id
     * `data.mtype`: **(byte)** 消息类型
     * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
     * `data.msg`: **(String)** 消息内容
     * `data.attrs`: **(String)** 发送时附加的自定义内容
+    * `data.mtime`: **(long)** 
 
 * `pushroommsg`: RTMGate主动推送Room消息
-    * `data.pid`: **(int)** 应用编号
     * `data.from`: **(long)** 发送者 id
     * `data.rid`: **(long)** Room id
     * `data.mtype`: **(byte)** 消息类型
     * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
     * `data.msg`: **(String)** 消息内容
     * `data.attrs`: **(String)** 发送时附加的自定义内容
+    * `data.mtime`: **(long)** 
 
 * `pushfile`: RTMGate主动推送P2P文件
-    * `data.pid`: **(int)** 应用编号
     * `data.from`: **(long)** 发送者 id
     * `data.to`: **(long)** 接收者 id
-    * `data.mtype`: **(byte)** 消息类型
-    * `data.ftype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
+    * `data.mtype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
     * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
     * `data.msg`: **(String)** 文件获取地址(url)
     * `data.attrs`: **(String)** 发送时附加的自定义内容
-
-* `pushfiles`: RTMGate主动推送多个接收者P2P文件
-    * `data.pid`: **(int)** 应用编号
-    * `data.from`: **(long)** 发送者 id
-    * `data.tos`: **(List<Long>)** 多个接收者 id
-    * `data.mtype`: **(byte)** 消息类型
-    * `data.ftype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
-    * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-    * `data.msg`: **(String)** 消息内容
-    * `data.attrs`: **(String)** 发送时附加的自定义内容
+    * `data.mtime`: **(long)** 
 
 * `pushgroupfile`: RTMGate主动推送Group文件
-    * `data.pid`: **(int)** 应用编号
     * `data.from`: **(long)** 发送者 id
     * `data.gid`: **(long)** Group id
-    * `data.mtype`: **(byte)** 消息类型
-    * `data.ftype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
+    * `data.mtype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
     * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
     * `data.msg`: **(String)** 文件获取地址(url)
     * `data.attrs`: **(String)** 发送时附加的自定义内容
+    * `data.mtime`: **(long)** 
 
 * `pushroomfile`: RTMGate主动推送Room文件
-    * `data.pid`: **(int)** 应用编号
     * `data.from`: **(long)** 发送者 id
     * `data.rid`: **(long)** Room id
-    * `data.mtype`: **(byte)** 消息类型
-    * `data.ftype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
+    * `data.mtype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
     * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
     * `data.msg`: **(String)** 文件获取地址(url)
     * `data.attrs`: **(String)** 发送时附加的自定义内容
+    * `data.mtime`: **(long)** 
 
 * `pushevent`: RTMGate主动推送事件 
-    * `data.pid`: **(int)** 应用编号
     * `data.event`: **(String)** 事件名称, 请参考 `RTMConfig.SERVER_EVENT` 成员
     * `data.uid`: **(long)** 触发者 id
     * `data.time`: **(int)** 触发时间(s)
@@ -250,7 +227,7 @@ baseTest();
     * `streamMode`: **(boolean)** 是否开启流加密, `目前Java API不支持流加密`
     * `reinforce`: **(boolean)** 是否开启加强 ` 128 : 256 `
 
-* `sendMessage(long from, long to, byte mtype, String msg, String attrs, long mid, int timeout, CallbackData.ICallback callback)`: 发送消息
+* `sendMessage(long from, long to, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送消息
     * `from`: **(long)** 发送方 id
     * `to`: **(long)** 接收方uid
     * `mtype`: **(byte)** 消息类型
@@ -258,23 +235,27 @@ baseTest();
     * `attrs`: **(String)** 消息附加信息, 没有可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map(mtime:long))**
+            * `exception`: **(Exception)**
+            * `mid`: **(long)**
 
-* `sendMessages(long from, List<Long> tos, byte mtype, String msg, String attrs, long mid, int timeout, CallbackData.ICallback callback)`: 发送多人消息
+* `sendMessages(long from, List<Long> tos, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送多人消息
     * `from`: **(long)** 发送方 id
-    * `tos`: **(List<Long>)** 接收方uids
+    * `tos`: **(List(Long))** 接收方uids
     * `mtype`: **(byte)** 消息类型
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 没有可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map(mtime:long))**
+            * `exception`: **(Exception)**
+            * `mid`: **(long)**
 
-* `sendGroupMessage(long from, long gid, byte mtype, String msg, String attrs, long mid, int timeout, CallbackData.ICallback callback)`: 发送group消息
+* `sendGroupMessage(long from, long gid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送group消息
     * `from`: **(long)** 发送方 id
     * `gid`: **(long)** group id
     * `mtype`: **(byte)** 消息类型
@@ -282,11 +263,13 @@ baseTest();
     * `attrs`: **(String)** 消息附加信息, 可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map(mtime:long))**
+            * `exception`: **(Exception)**
+            * `mid`: **(long)**
 
-* `sendRoomMessage(long from, long rid, byte mtype, String msg, String attrs, long mid, int timeout, CallbackData.ICallback callback)`: 发送room消息
+* `sendRoomMessage(long from, long rid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送room消息
     * `from`: **(long)** 发送方 id
     * `rid`: **(long)** room id
     * `mtype`: **(byte)** 消息类型
@@ -294,286 +277,472 @@ baseTest();
     * `attrs`: **(String)** 消息附加信息, 可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map(mtime:long))**
+            * `exception`: **(Exception)**
+            * `mid`: **(long)**
 
-* `broadcastMessage(long from, byte mtype, String msg, String attrs, long mid, int timeout, CallbackData.ICallback callback)`: 广播消息(andmin id)
+* `broadcastMessage(long from, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 广播消息(andmin id)
     * `from`: **(long)** admin id
     * `mtype`: **(byte)** 消息类型
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map(mtime:long))**
+            * `exception`: **(Exception)**
+            * `mid`: **(long)**
 
-* `addFriends(long uid, List<Long> friends, int timeout, CallbackData.ICallback callback)`: 添加好友
+* `addFriends(long uid, List<Long> friends, int timeout, FPCallback.ICallback callback)`: 添加好友，每次最多添加100人
     * `uid`: **(long)** 用户 id
-    * `friends`: **(List<Long>)** 多个好友 id
+    * `friends`: **(List(Long))** 多个好友 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `deleteFriends(long uid, List<Long> friends, int timeout, CallbackData.ICallback callback)`: 删除好友
+* `deleteFriends(long uid, List<Long> friends, int timeout, FPCallback.ICallback callback)`: 删除好友, 每次最多删除100人
     * `uid`: **(long)** 用户 id
-    * `friends`: **(List<Long>)** 多个好友 id
+    * `friends`: **(List(Long))** 多个好友 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `getFriends(long uid, int timeout, CallbackData.ICallback callback)`: 获取好友
+* `getFriends(long uid, int timeout, FPCallback.ICallback callback)`: 获取好友
     * `uid`: **(long)** 用户 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(List<Long>)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(List(Long))**
+            * `exception`: **(Exception)**
 
-* `isFriend(long uid, long fuid, int timeout, CallbackData.ICallback callback)`: 是否好友
+* `isFriend(long uid, long fuid, int timeout, FPCallback.ICallback callback)`: 判断好友关系
     * `uid`: **(long)** 用户 id
     * `fuid`: **(long)** 好友 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(boolean)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(boolean)**
+            * `exception`: **(Exception)**
 
-* `isFriends(long uid, List<Long> fuids, int timeout, CallbackData.ICallback callback)`: 是否好友
+* `isFriends(long uid, List<Long> fuids, int timeout, FPCallback.ICallback callback)`: 过滤好友关系, 每次最多过滤100人
     * `uid`: **(long)** 用户 id
-    * `fuids`: **(List<Long>)** 多个好友 id
+    * `fuids`: **(List(Long))** 多个好友 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(List<Long>)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(List(Long))**
+            * `exception`: **(Exception)**
 
-* `addGroupMembers(long gid, List<Long> uids, int timeout, CallbackData.ICallback callback)`: 添加group成员
+* `addGroupMembers(long gid, List<Long> uids, int timeout, FPCallback.ICallback callback)`: 添加group成员, 每次最多添加100人
     * `gid`: **(long)** group id
-    * `uids`: **(List<Long>)** 多个用户 id
+    * `uids`: **(List(Long))** 多个用户 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `deleteGroupMembers(long gid, List<Long> uids, int timeout, CallbackData.ICallback callback)`:  删除group成员
+* `deleteGroupMembers(long gid, List<Long> uids, int timeout, FPCallback.ICallback callback)`:  删除group成员, 每次最多删除100人
     * `gid`: **(long)** group id
-    * `uids`: **(List<Long>)** 多个用户 id
+    * `uids`: **(List(Long))** 多个用户 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `deleteGroup(long gid, int timeout, CallbackData.ICallback callback)`: 删除group
-    * `gid`: **(long)** group id
-    * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
-
-* `getGroupMembers(long gid, int timeout, CallbackData.ICallback callback)`: 获取group成员
+* `deleteGroup(long gid, int timeout, FPCallback.ICallback callback)`: 删除group
     * `gid`: **(long)** group id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(List<Long>)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `isGroupMember(long gid, long uid, int timeout, CallbackData.ICallback callback)`: 是否group成员
+* `getGroupMembers(long gid, int timeout, FPCallback.ICallback callback)`: 获取group成员
     * `gid`: **(long)** group id
-    * `uid`: **(long)** 用户 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(boolean)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(List(Long))**
+            * `exception`: **(Exception)**
 
-* `getUserGroups(long uid, int timeout, CallbackData.ICallback callback)`: 获取用户的group
-    * `uid`: **(long)** 用户 id
-    * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(List<Long>)** 
-
-* `getToken(long uid, int timeout, CallbackData.ICallback callback)`: 获取token
+* `isGroupMember(long gid, long uid, int timeout, FPCallback.ICallback callback)`: 是否group成员
+    * `gid`: **(long)** group id
     * `uid`: **(long)** 用户 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(String)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(boolean)**
+            * `exception`: **(Exception)**
 
-* `getOnlineUsers(List<Long> uids, int timeout, CallbackData.ICallback callback)`: 获取在线用户
-    * `uids`: **(List<Long>)** 多个用户 id
+* `getUserGroups(long uid, int timeout, FPCallback.ICallback callback)`: 获取用户的group
+    * `uid`: **(long)** 用户 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(List<Long>)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(List(Long))**
+            * `exception`: **(Exception)**
 
-* `addGroupBan(long gid, long uid, int btime, int timeout, CallbackData.ICallback callback)`: 阻止用户消息(group)
+* `getToken(long uid, int timeout, FPCallback.ICallback callback)`: 获取auth token
+    * `uid`: **(long)** 用户 id
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(String)**
+            * `exception`: **(Exception)**
+
+* `getOnlineUsers(List<Long> uids, int timeout, FPCallback.ICallback callback)`: 获取在线用户, 每次最多获取200个
+    * `uids`: **(List(Long))** 多个用户 id
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(List(Long))**
+            * `exception`: **(Exception)**
+
+* `addGroupBan(long gid, long uid, int btime, int timeout, FPCallback.ICallback callback)`: 阻止用户消息(group)
     * `gid`: **(long)** group id
     * `uid`: **(long)** 用户 id
     * `btime`: **(int)** 阻止时间(s)
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `removeGroupBan(long gid, long uid, int timeout, CallbackData.ICallback callback)`: 取消阻止(group)
+* `removeGroupBan(long gid, long uid, int timeout, FPCallback.ICallback callback)`: 取消阻止(group)
     * `gid`: **(long)** group id
     * `uid`: **(long)** 用户 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `addRoomBan(long rid, long uid, int btime, int timeout, CallbackData.ICallback callback)`: 阻止用户消息(room)
+* `addRoomBan(long rid, long uid, int btime, int timeout, FPCallback.ICallback callback)`: 阻止用户消息(room)
     * `rid`: **(long)** room id
     * `uid`: **(long)** 用户 id
     * `btime`: **(int)** 阻止时间(s)
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `removeRoomBan(long rid, long uid, int timeout, CallbackData.ICallback callback)`: 取消阻止(room)
+* `removeRoomBan(long rid, long uid, int timeout, FPCallback.ICallback callback)`: 取消阻止(room)
     * `rid`: **(long)** room id
     * `uid`: **(long)** 用户 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `addProjectBlack(long uid, int btime, int timeout, CallbackData.ICallback callback)`: 阻止用户消息(project)
+* `addProjectBlack(long uid, int btime, int timeout, FPCallback.ICallback callback)`: 阻止用户消息(project)
     * `uid`: **(long)** 用户 id
     * `btime`: **(int)** 阻止时间(s)
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `removeProjectBlack(int uid, int timeout, CallbackData.ICallback callback)`: 取消阻止(project)
+* `removeProjectBlack(int uid, int timeout, FPCallback.ICallback callback)`: 取消阻止(project)
     * `uid`: **(long)** 用户 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `isBanOfGroup(long gid, long uid, int timeout, CallbackData.ICallback callback)`: 检查阻止(group)
+* `isBanOfGroup(long gid, long uid, int timeout, FPCallback.ICallback callback)`: 检查阻止(group)
     * `gid`: **(long)** group id
     * `uid`: **(long)** 用户 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(boolean)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(boolean)**
+            * `exception`: **(Exception)**
 
-* `isBanOfRoom(long rid, long uid, int timeout, CallbackData.ICallback callback)`: 检查阻止(room)
+* `isBanOfRoom(long rid, long uid, int timeout, FPCallback.ICallback callback)`: 检查阻止(room)
     * `rid`: **(long)** room id
     * `uid`: **(long)** 用户 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(boolean)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(boolean)**
+            * `exception`: **(Exception)**
 
-* `isProjectBlack(long uid, int timeout, CallbackData.ICallback callback)`: 检查阻止(project)
+* `isProjectBlack(long uid, int timeout, FPCallback.ICallback callback)`: 检查阻止(project)
     * `uid`: **(long)** 用户 id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(boolean)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(boolean)**
+            * `exception`: **(Exception)**
 
-* `setGeo(long uid, double lat, double lng, int timeout, CallbackData.ICallback callback)`: 设置位置
-    * `uid`: **(long)** 用户 id
-    * `lat`: **(double)** 纬度
-    * `lng`: **(double)** 经度
-    * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
-
-* `getGeo(long uid, int timeout, CallbackData.ICallback callback)`: 获取位置
-    * `uid`: **(long)** 用户 id
-    * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
-
-* `getGeos(List<Long> uids, int timeout, CallbackData.ICallback callback)`: 获取位置
-    * `uids`: **(List<Long>)** 多个用户 id
-    * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(List<ArrayList>)** 
-
-* `sendFile(long from, long to, byte mtype, String filePath, long mid, int timeout, CallbackData.ICallback callback)`: 发送文件
+* `fileToken(long from, String cmd, List<Long> tos, long to, long rid, long gid, int timeout, FPCallback.ICallback callback)`: 获取发送文件的token
     * `from`: **(long)** 发送方 id
-    * `to`: **(long)** 接收方uid
-    * `mtype`: **(byte)** 消息类型
-    * `filePath`: **(String)** 文件路径
-    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `cmd`: **(string)** 文件发送方式`sendfile | sendfiles | sendroomfile | sendgroupfile | broadcastfile`
+    * `tos`: **(List(Long))** 接收方 uids
+    * `to`: **(long)** 接收方 uid
+    * `rid`: **(long)** Room id
+    * `gid`: **(long)** Group id
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
-        
-* `sendFile(long from, long to, byte mtype, byte[] fileBytes, long mid, int timeout, CallbackData.ICallback callback)`: 发送文件
-    * `from`: **(long)** 发送方 id
-    * `to`: **(long)** 接收方uid
-    * `mtype`: **(byte)** 消息类型
-    * `fileBytes`: **(byte[])** 文件内容
-    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
-    * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `exception`: **(Exception)**
+            * `payload`: **(Map(token:string, endpoint:string))**
 
-* `addEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, CallbackData.ICallback callback)`: 添加 `事件` / `消息` 监听
-    * `gids`: **(List<Long>)** 多个Group id
-    * `rids`: **(List<Long>)** 多个Room id
+* `getGroupMessage(long gid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取Group历史消息
+    * `gid`: **(long)** Group id
+    * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
+    * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
+    * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
+    * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
+    * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `exception`: **(Exception)**
+            * `payload`: **(Map(num:int,lastid:long,begin:long,end:long,msgs:List(GroupMsg)))**
+                * `GroupMsg.id` **(long)**
+                * `GroupMsg.from` **(long)**
+                * `GroupMsg.mtype` **(byte)**
+                * `GroupMsg.mid` **(long)**
+                * `GroupMsg.deleted` **(boolean)**
+                * `GroupMsg.msg` **(String)**
+                * `GroupMsg.attrs` **(String)**
+                * `GroupMsg.mtime` **(long)**
+
+* `getRoomMessage(long rid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取Room历史消息
+    * `rid`: **(long)** Room id
+    * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
+    * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
+    * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
+    * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
+    * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `exception`: **(Exception)**
+            * `payload`: **(Map(num:int,lastid:long,begin:long,end:long,msgs:List(RoomMsg)))**
+                * `RoomMsg.id` **(long)**
+                * `RoomMsg.from` **(long)**
+                * `RoomMsg.mtype` **(byte)**
+                * `RoomMsg.mid` **(long)**
+                * `RoomMsg.deleted` **(boolean)**
+                * `RoomMsg.msg` **(String)**
+                * `RoomMsg.attrs` **(String)**
+                * `RoomMsg.mtime` **(long)**
+
+* `getBroadcastMessage(boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取广播历史消息
+    * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
+    * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
+    * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
+    * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
+    * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `exception`: **(Exception)**
+            * `payload`: **(Map(num:int,lastid:long,begin:long,end:long,msgs:List(BroadcastMsg)))**
+                * `BroadcastMsg.id` **(long)**
+                * `BroadcastMsg.from` **(long)**
+                * `BroadcastMsg.mtype` **(byte)**
+                * `BroadcastMsg.mid` **(long)**
+                * `BroadcastMsg.deleted` **(boolean)**
+                * `BroadcastMsg.msg` **(String)**
+                * `BroadcastMsg.attrs` **(String)**
+                * `BroadcastMsg.mtime` **(long)**
+
+* `getP2PMessage(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取P2P历史消息
+    * `uid`: **(long)** 获取和两个用户之间的历史消息
+    * `ouid`: **(long)** 获取和两个用户之间的历史消息
+    * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
+    * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
+    * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
+    * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
+    * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `exception`: **(Exception)**
+            * `payload`: **(Map(num:int,lastid:long,begin:long,end:long,msgs:List(P2PMsg)))**
+                * `P2PMsg.id` **(long)**
+                * `P2PMsg.direction` **(byte)**
+                * `P2PMsg.mtype` **(byte)**
+                * `P2PMsg.mid` **(long)**
+                * `P2PMsg.deleted` **(boolean)**
+                * `P2PMsg.msg` **(String)**
+                * `P2PMsg.attrs` **(String)**
+                * `P2PMsg.mtime` **(long)**
+
+* `addRoomMember(long rid, long uid, int timeout, FPCallback.ICallback callback)`: 添加Room成员
+    * `rid`: **(long)** Room id
+    * `uid`: **(long)** 用户 id
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
+
+* `deleteRoomMember(long rid, long uid, int timeout, FPCallback.ICallback callback)`: 删除Room成员
+    * `rid`: **(long)** Room id
+    * `uid`: **(long)** 用户 id
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
+
+* `addEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback)`: 添加 `事件` / `消息` 监听
+    * `gids`: **(List(Long))** 多个Group id
+    * `rids`: **(List(Long))** 多个Room id
     * `p2p`: **(boolean)** P2P消息
-    * `events`: **(List<String>)** 多个事件名称, 请参考 `RTMConfig.SERVER_EVENT` 成员
+    * `events`: **(List(String))** 多个事件名称, 请参考 `RTMConfig.SERVER_EVENT` 成员
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `removeEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, CallbackData.ICallback callback)`: 删除 `事件` / `消息` 监听
-    * `gids`: **(List<Long>)** 多个Group id
-    * `rids`: **(List<Long>)** 多个Room id
+* `removeEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback)`: 删除 `事件` / `消息` 监听
+    * `gids`: **(List(Long))** 多个Group id
+    * `rids`: **(List(Long))** 多个Room id
     * `p2p`: **(boolean)** P2P消息
-    * `events`: **(List<String>)** 多个事件名称, 请参考 `RTMConfig.SERVER_EVENT` 成员
+    * `events`: **(List(String))** 多个事件名称, 请参考 `RTMConfig.SERVER_EVENT` 成员
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `setEvtListener(boolean all, int timeout, CallbackData.ICallback callback)`: 更新 `事件` / `消息` 监听
+* `setEvtListener(boolean all, int timeout, FPCallback.ICallback callback)`: 更新 `事件` / `消息` 监听
     * `all`: **(boolean)** `true`: 监听所有 `事件` / `消息`, `false`: 取消所有 `事件` / `消息` 监听
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
         
-* `setEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, CallbackData.ICallback callback)`: 更新 `事件` / `消息` 监听
-    * `gids`: **(List<Long>)** 多个Group id
-    * `rids`: **(List<Long>)** 多个Room id
+* `setEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback)`: 更新 `事件` / `消息` 监听
+    * `gids`: **(List(Long))** 多个Group id
+    * `rids`: **(List(Long))** 多个Room id
     * `p2p`: **(boolean)** P2P消息, `true`: 监听, `false`: 取消监听
-    * `events`: **(List<String>)** 多个事件名称, 请参考 `RTMConfig.SERVER_EVENT` 成员
+    * `events`: **(List(String))** 多个事件名称, 请参考 `RTMConfig.SERVER_EVENT` 成员
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
 
-* `addDevice(long uid, String apptype, String devicetoken, int timeout, CallbackData.ICallback callback)`: 添加设备, 应用信息
-    * `uid`: **(long])** 用户 id
+* `addDevice(long uid, String apptype, String devicetoken, int timeout, FPCallback.ICallback callback)`: 添加设备, 应用信息
+    * `uid`: **(long)** 用户 id
     * `apptype`: **(String)** 应用信息
     * `devicetoken`: **(String)** 设备 token
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
         
-* `removeDevice(long uid, String devicetoken, int timeout, CallbackData.ICallback callback)`: 删除设备, 应用信息
+* `removeDevice(long uid, String devicetoken, int timeout, FPCallback.ICallback callback)`: 删除设备, 应用信息
     * `uid`: **(long)** 用户 id
     * `devicetoken`: **(String)** 设备 token
     * `timeout`: **(int)** 超时时间(ms)
-    * `callback`: **(CallbackData.ICallback)** 回调方法
-        * `exception`: **(Exception)** 
-        * `payload`: **(Map)** 
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
+
+* `deleteMessage(long mid, long from, long xid, byte type, int timeout, FPCallback.ICallback callback)`: 删除消息
+    * `mid`: **(long)** 消息 id
+    * `from`: **(long)** 发送方 id
+    * `xid`: **(long)** 接收放 id, `rid/gid/to`
+    * `type`: **(byte)** 消息发送分类 `1:P2P, 2:Group, 3:Room, 4:Broadcast`
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
+
+* `kickout(long uid, String ce, int timeout, FPCallback.ICallback callback)`: 踢掉一个用户或者一个链接
+    * `uid`: **(long)** 用户 id
+    * `ce`: **(String)** 踢掉`ce`对应链接, 多用户登录情况
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map)**
+            * `exception`: **(Exception)**
+        
+* `sendFile(long from, long to, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback)`: 发送文件
+    * `from`: **(long)** 发送方 id
+    * `to`: **(long)** 接收方 uid
+    * `mtype`: **(byte)** 文件类型
+    * `fileBytes`: **(byte[])** 文件内容
+    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map(mtime:long))**
+            * `exception`: **(Exception)**
+            * `mid`: **(long)**
+
+* `sendFiles(long from, List<Long>tos, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback)`: 给多人发送文件
+    * `from`: **(long)** 发送方 id
+    * `tos`: **(long)** 接收方 uids
+    * `mtype`: **(byte)** 文件类型
+    * `fileBytes`: **(byte[])** 文件内容
+    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map(mtime:long))**
+            * `exception`: **(Exception)**
+            * `mid`: **(long)**
+
+* `sendGroupFile(long from, long gid, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback)`: 给Group发送文件
+    * `from`: **(long)** 发送方 id
+    * `gid`: **(long)** Group id
+    * `mtype`: **(byte)** 文件类型
+    * `fileBytes`: **(byte[])** 文件内容
+    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map(mtime:long))**
+            * `exception`: **(Exception)**
+            * `mid`: **(long)**
+
+* `sendRoomFile(long from, long rid, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback)`: 给Room发送文件
+    * `from`: **(long)** 发送方 id
+    * `rid`: **(long)** Room id
+    * `mtype`: **(byte)** 文件类型
+    * `fileBytes`: **(byte[])** 文件内容
+    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map(mtime:long))**
+            * `exception`: **(Exception)**
+            * `mid`: **(long)**
+
+* `sendRoomFile(long from, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback)`: 给整个Project发送文件
+    * `from`: **(long)** 发送方 id
+    * `mtype`: **(byte)** 文件类型
+    * `fileBytes`: **(byte[])** 文件内容
+    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `timeout`: **(int)** 超时时间(ms)
+    * `callback`: **(FPCallback.ICallback)** 回调方法
+        * `cbdata`: **(CallbackData)**
+            * `payload`: **(Map(mtime:long))**
+            * `exception`: **(Exception)**
+            * `mid`: **(long)**
