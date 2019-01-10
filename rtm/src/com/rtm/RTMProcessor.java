@@ -136,7 +136,6 @@ public class RTMProcessor implements FPProcessor.IProcessor {
     public void destroy() {
 
         this._midMap.clear();
-        this._event.removeListener();
     }
 
     /**
