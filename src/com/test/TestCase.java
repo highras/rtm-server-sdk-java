@@ -50,7 +50,7 @@ public class TestCase {
         this._client.getEvent().addListener("close", listener);
         this._client.getEvent().addListener("error", listener);
 
-        this._client.enableEncryptorByFile(
+        this._client.connect(
                 "secp256k1",
                 "key/test-secp256k1-public.der-false",
                 false,

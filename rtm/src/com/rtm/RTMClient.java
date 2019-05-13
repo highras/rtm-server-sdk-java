@@ -24,12 +24,30 @@ public class RTMClient extends BaseClient {
 
         static public synchronized long gen() {
 
+            long c = 0;
+
             if (++count >= 999) {
 
                 count = 0;
             }
 
-            return Long.valueOf(String.valueOf(System.currentTimeMillis()).concat(String.valueOf(count)));
+            c = count;
+
+            StringBuffer sb = new StringBuffer(String.valueOf(System.currentTimeMillis()));
+
+            if (c < 100) {
+
+                sb.append("0");
+            }
+
+            if (c < 10) {
+
+                sb.append("0");
+            }
+
+            sb.append(String.valueOf(c));
+
+            return Long.valueOf(sb.toString());
         }
     }
 
@@ -107,7 +125,7 @@ public class RTMClient extends BaseClient {
      */
     public void sendMessage(long from, long to, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         if (mid == 0) {
 
@@ -117,7 +135,7 @@ public class RTMClient extends BaseClient {
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("mtype", mtype);
         payload.put("from", from);
@@ -148,7 +166,7 @@ public class RTMClient extends BaseClient {
         final long fmid = (long) payload.get("mid");
         final FPCallback.ICallback cb = callback;
 
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -160,7 +178,7 @@ public class RTMClient extends BaseClient {
                     cb.callback(cbd);
                 }
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -187,7 +205,7 @@ public class RTMClient extends BaseClient {
      */
     public void sendMessages(long from, List<Long> tos, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         if (mid == 0) {
 
@@ -197,7 +215,7 @@ public class RTMClient extends BaseClient {
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("mtype", mtype);
         payload.put("from", from);
@@ -228,7 +246,7 @@ public class RTMClient extends BaseClient {
         final long fmid = (long) payload.get("mid");
         final FPCallback.ICallback cb = callback;
 
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -240,7 +258,7 @@ public class RTMClient extends BaseClient {
                     cb.callback(cbd);
                 }
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -267,7 +285,7 @@ public class RTMClient extends BaseClient {
      */
     public void sendGroupMessage(long from, long gid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         if (mid == 0) {
 
@@ -277,7 +295,7 @@ public class RTMClient extends BaseClient {
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("mtype", mtype);
         payload.put("from", from);
@@ -308,7 +326,7 @@ public class RTMClient extends BaseClient {
         final long fmid = (long) payload.get("mid");
         final FPCallback.ICallback cb = callback;
 
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -320,7 +338,7 @@ public class RTMClient extends BaseClient {
                     cb.callback(cbd);
                 }
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -347,7 +365,7 @@ public class RTMClient extends BaseClient {
      */
     public void sendRoomMessage(long from, long rid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         if (mid == 0) {
 
@@ -357,7 +375,7 @@ public class RTMClient extends BaseClient {
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("mtype", mtype);
         payload.put("from", from);
@@ -388,7 +406,7 @@ public class RTMClient extends BaseClient {
         final long fmid = (long) payload.get("mid");
         final FPCallback.ICallback cb = callback;
 
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -400,7 +418,7 @@ public class RTMClient extends BaseClient {
                     cb.callback(cbd);
                 }
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -426,7 +444,7 @@ public class RTMClient extends BaseClient {
      */
     public void broadcastMessage(long from, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         if (mid == 0) {
 
@@ -436,7 +454,7 @@ public class RTMClient extends BaseClient {
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("mtype", mtype);
         payload.put("from", from);
@@ -466,7 +484,7 @@ public class RTMClient extends BaseClient {
         final long fmid = (long) payload.get("mid");
         final FPCallback.ICallback cb = callback;
 
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -478,7 +496,7 @@ public class RTMClient extends BaseClient {
                     cb.callback(cbd);
                 }
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -500,12 +518,12 @@ public class RTMClient extends BaseClient {
      */
     public void addFriends(long uid, List<Long> friends, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
         payload.put("friends", friends);
@@ -528,7 +546,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -550,12 +568,12 @@ public class RTMClient extends BaseClient {
      */
     public void deleteFriends(long uid, List<Long> friends, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
         payload.put("friends", friends);
@@ -578,7 +596,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -599,12 +617,12 @@ public class RTMClient extends BaseClient {
      */
     public void getFriends(long uid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
 
@@ -626,7 +644,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -646,7 +664,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -668,12 +686,12 @@ public class RTMClient extends BaseClient {
      */
     public void isFriend(long uid, long fuid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
         payload.put("fuid", fuid);
@@ -696,7 +714,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -716,7 +734,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -738,12 +756,12 @@ public class RTMClient extends BaseClient {
      */
     public void isFriends(long uid, List<Long> fuids, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
         payload.put("fuids", fuids);
@@ -766,7 +784,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -786,7 +804,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -808,12 +826,12 @@ public class RTMClient extends BaseClient {
      */
     public void addGroupMembers(long gid, List<Long> uids, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("gid", gid);
         payload.put("uids", uids);
@@ -836,7 +854,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -858,12 +876,12 @@ public class RTMClient extends BaseClient {
      */
     public void deleteGroupMembers(long gid, List<Long> uids, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("gid", gid);
         payload.put("uids", uids);
@@ -886,7 +904,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -907,12 +925,12 @@ public class RTMClient extends BaseClient {
      */
     public void deleteGroup(long gid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("gid", gid);
 
@@ -934,7 +952,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -955,12 +973,12 @@ public class RTMClient extends BaseClient {
      */
     public void getGroupMembers(long gid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("gid", gid);
 
@@ -982,7 +1000,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -1002,7 +1020,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -1024,12 +1042,12 @@ public class RTMClient extends BaseClient {
      */
     public void isGroupMember(long gid, long uid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("gid", gid);
         payload.put("uid", uid);
@@ -1052,7 +1070,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -1072,7 +1090,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -1093,12 +1111,12 @@ public class RTMClient extends BaseClient {
      */
     public void getUserGroups(long uid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
 
@@ -1120,7 +1138,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -1140,7 +1158,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -1161,12 +1179,12 @@ public class RTMClient extends BaseClient {
      */
     public void getToken(long uid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
 
@@ -1188,7 +1206,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -1208,7 +1226,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -1229,12 +1247,12 @@ public class RTMClient extends BaseClient {
      */
     public void getOnlineUsers(List<Long> uids, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uids", uids);
 
@@ -1256,7 +1274,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -1276,7 +1294,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -1299,12 +1317,12 @@ public class RTMClient extends BaseClient {
      */
     public void addGroupBan(long gid, long uid, int btime, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("gid", gid);
         payload.put("uid", uid);
@@ -1328,7 +1346,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -1350,12 +1368,12 @@ public class RTMClient extends BaseClient {
      */
     public void removeGroupBan(long gid, long uid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("gid", gid);
         payload.put("uid", uid);
@@ -1378,7 +1396,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -1401,12 +1419,12 @@ public class RTMClient extends BaseClient {
      */
     public void addRoomBan(long rid, long uid, int btime, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("rid", rid);
         payload.put("uid", uid);
@@ -1430,7 +1448,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -1452,12 +1470,12 @@ public class RTMClient extends BaseClient {
      */
     public void removeRoomBan(long rid, long uid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("rid", rid);
         payload.put("uid", uid);
@@ -1480,7 +1498,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -1502,12 +1520,12 @@ public class RTMClient extends BaseClient {
      */
     public void addProjectBlack(long uid, int btime, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
         payload.put("btime", btime);
@@ -1530,7 +1548,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -1551,12 +1569,12 @@ public class RTMClient extends BaseClient {
      */
     public void removeProjectBlack(long uid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
 
@@ -1578,7 +1596,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -1600,12 +1618,12 @@ public class RTMClient extends BaseClient {
      */
     public void isBanOfGroup(long gid, long uid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("gid", gid);
         payload.put("uid", uid);
@@ -1628,7 +1646,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -1648,7 +1666,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -1670,12 +1688,12 @@ public class RTMClient extends BaseClient {
      */
     public void isBanOfRoom(long rid, long uid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("rid", rid);
         payload.put("uid", uid);
@@ -1698,7 +1716,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -1718,7 +1736,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -1739,12 +1757,12 @@ public class RTMClient extends BaseClient {
      */
     public void isProjectBlack(long uid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
 
@@ -1766,7 +1784,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -1786,7 +1804,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -1874,12 +1892,12 @@ public class RTMClient extends BaseClient {
      */
     public void getGroupMessage(long gid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("gid", gid);
         payload.put("desc", desc);
@@ -1918,7 +1936,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -1956,7 +1974,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -1993,12 +2011,12 @@ public class RTMClient extends BaseClient {
      */
     public void getRoomMessage(long rid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("rid", rid);
         payload.put("desc", desc);
@@ -2037,7 +2055,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -2075,7 +2093,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -2111,12 +2129,12 @@ public class RTMClient extends BaseClient {
      */
     public void getBroadcastMessage(boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("desc", desc);
         payload.put("num", num);
@@ -2154,7 +2172,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -2192,7 +2210,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -2230,12 +2248,12 @@ public class RTMClient extends BaseClient {
      */
     public void getP2PMessage(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
         payload.put("ouid", ouid);
@@ -2275,7 +2293,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -2313,7 +2331,7 @@ public class RTMClient extends BaseClient {
 
                 callback.callback(cbd);
             }
-        }), timeout);
+        }, timeout);
     }
 
     /**
@@ -2335,12 +2353,12 @@ public class RTMClient extends BaseClient {
      */
     public void addRoomMember(long rid, long uid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("rid", rid);
         payload.put("uid", uid);
@@ -2363,7 +2381,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -2385,12 +2403,12 @@ public class RTMClient extends BaseClient {
      */
     public void deleteRoomMember(long rid, long uid, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("rid", rid);
         payload.put("uid", uid);
@@ -2413,7 +2431,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -2437,12 +2455,12 @@ public class RTMClient extends BaseClient {
      */
     public void addEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
 
         if (gids != null && gids.size() > 0) {
@@ -2483,7 +2501,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -2507,12 +2525,12 @@ public class RTMClient extends BaseClient {
      */
     public void removeEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
 
         if (gids != null && gids.size() > 0) {
@@ -2553,7 +2571,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -2574,12 +2592,12 @@ public class RTMClient extends BaseClient {
      */
     public void setEvtListener(boolean all, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("all", all);
 
@@ -2601,7 +2619,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -2625,12 +2643,12 @@ public class RTMClient extends BaseClient {
      */
     public void setEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("gids", gids);
         payload.put("rids", rids);
@@ -2655,7 +2673,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -2678,12 +2696,12 @@ public class RTMClient extends BaseClient {
      */
     public void addDevice(long uid, String apptype, String devicetoken, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
         payload.put("apptype", apptype);
@@ -2707,7 +2725,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -2729,12 +2747,12 @@ public class RTMClient extends BaseClient {
      */
     public void removeDevice(long uid, String devicetoken, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
         payload.put("devicetoken", devicetoken);
@@ -2757,7 +2775,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -2781,12 +2799,12 @@ public class RTMClient extends BaseClient {
      */
     public void deleteMessage(long mid, long from, long xid, byte type, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("mid", mid);
         payload.put("from", from);
@@ -2811,7 +2829,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -2833,12 +2851,12 @@ public class RTMClient extends BaseClient {
      */
     public void kickout(long uid, String ce, int timeout, FPCallback.ICallback callback) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         Map payload = new HashMap();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
         payload.put("uid", uid);
 
@@ -2865,7 +2883,7 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
     /**
@@ -3176,10 +3194,10 @@ public class RTMClient extends BaseClient {
 
     private void filetoken(Map payload, FPCallback.ICallback callback, int timeout) {
 
-        long salt = this.genMessageSlat();
+        long salt = MidGenerator.gen();
 
         payload.put("pid", this._pid);
-        payload.put("sign", this.genMessageSign(salt));
+        payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
 
         FPData data = new FPData();
@@ -3200,78 +3218,19 @@ public class RTMClient extends BaseClient {
         }
 
         data.setPayload(bytes);
-        this.sendQuest(data, this.questCallback(callback), timeout);
+        this.sendQuest(data, callback, timeout);
     }
 
-    private long genMessageSlat() {
+    private String genSign(long slat) {
 
-        long curr = System.currentTimeMillis();
-        long a = curr >> 32;
-        long b = (curr & 0xffff) << 32;
-        long c = a | b;
+        StringBuffer sb = new StringBuffer(Integer.toString(this._pid));
 
-        return (curr ^ c);
-    }
+        sb.append(":");
+        sb.append(this._secret);
+        sb.append(":");
+        sb.append(Long.toString(slat));
 
-    private String genMessageSign(long slat) {
-
-        String token = Integer.toString(this._pid)
-                .concat(":")
-                .concat(this._secret)
-                .concat(":")
-                .concat(Long.toString(slat));
-
-
-        return this.md5(token);
-    }
-}
-
-class LoadFile {
-
-    /**
-     * @param {String} derPath
-     */
-    public byte[] read(String derPath) {
-
-        File f = new File(derPath);
-
-        if (!f.exists()) {
-
-            System.out.println(new String("file not exists! path: ").concat(f.getAbsolutePath()));
-            return null;
-        }
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream((int) f.length());
-        BufferedInputStream in = null;
-
-        try {
-
-            in = new BufferedInputStream(new FileInputStream(f));
-            int buf_size = 1024;
-            byte[] buffer = new byte[buf_size];
-            int len = 0;
-
-            while (-1 != (len = in.read(buffer, 0, buf_size))) {
-
-                bos.write(buffer, 0, len);
-            }
-
-            return bos.toByteArray();
-        } catch (Exception ex) {
-
-            ex.printStackTrace();
-        } finally {
-            try {
-
-                in.close();
-                bos.close();
-            } catch (Exception ex) {
-
-                ex.printStackTrace();
-            }
-        }
-
-        return null;
+        return this.md5(sb.toString());
     }
 }
 
@@ -3373,7 +3332,7 @@ class FileClient extends BaseClient {
         final FPCallback.ICallback cb = callback;
         final FileClient self = this;
 
-        this.sendQuest(data, this.questCallback(new FPCallback.ICallback() {
+        this.sendQuest(data, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -3386,7 +3345,7 @@ class FileClient extends BaseClient {
                     cb.callback(cbd);
                 }
             }
-        }), timeout);
+        }, timeout);
     }
 
     private void onConnect() {
@@ -3434,9 +3393,10 @@ class BaseClient extends FPClient {
         super.init(host, port, reconnect, timeout);
     }
 
-    public void enableConnect() {
+    @Override
+    public void sendQuest(FPData data, FPCallback.ICallback callback, int timeout) {
 
-        this.connect();
+        super.sendQuest(data, this.questCallback(callback), timeout);
     }
 
     /**
@@ -3445,7 +3405,7 @@ class BaseClient extends FPClient {
      * @param {boolean} streamMode
      * @param {boolean} reinforce
      */
-    public void enableEncryptorByData(String curve, byte[] derKey, boolean streamMode, boolean reinforce) {
+    public void connect(String curve, byte[] derKey, boolean streamMode, boolean reinforce) {
 
         if (derKey != null && derKey.length > 0) {
 
@@ -3489,7 +3449,7 @@ class BaseClient extends FPClient {
             }
         }
 
-        this.enableConnect();
+        this.connect();
     }
 
     /**
@@ -3498,10 +3458,10 @@ class BaseClient extends FPClient {
      * @param {boolean} streamMode
      * @param {boolean} reinforce
      */
-    public void enableEncryptorByFile(String curve, String derPath, boolean streamMode, boolean reinforce) {
+    public void connect(String curve, String derPath, boolean streamMode, boolean reinforce) {
 
         byte[] bytes = new LoadFile().read(derPath);
-        this.enableEncryptorByData(curve, bytes, streamMode, reinforce);
+        this.connect(curve, bytes, streamMode, reinforce);
     }
 
     /**
@@ -3624,5 +3584,54 @@ class BaseClient extends FPClient {
         }
 
         cbd.checkException(isAnswerException, payload);
+    }
+}
+
+class LoadFile {
+
+    /**
+     * @param {String} derPath
+     */
+    public byte[] read(String derPath) {
+
+        File f = new File(derPath);
+
+        if (!f.exists()) {
+
+            System.out.println(new String("file not exists! path: ").concat(f.getAbsolutePath()));
+            return null;
+        }
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream((int) f.length());
+        BufferedInputStream in = null;
+
+        try {
+
+            in = new BufferedInputStream(new FileInputStream(f));
+            int buf_size = 1024;
+            byte[] buffer = new byte[buf_size];
+            int len = 0;
+
+            while (-1 != (len = in.read(buffer, 0, buf_size))) {
+
+                bos.write(buffer, 0, len);
+            }
+
+            return bos.toByteArray();
+        } catch (Exception ex) {
+
+            ex.printStackTrace();
+        } finally {
+            try {
+
+                in.close();
+                bos.close();
+            } catch (Exception ex) {
+
+                ex.printStackTrace();
+            }
+        }
+
+        return null;
     }
 }

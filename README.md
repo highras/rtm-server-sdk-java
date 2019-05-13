@@ -92,7 +92,7 @@ client.getProcessor().getEvent().addListener(RTMConfig.SERVER_PUSH.recvPing, new
 });
 
 // 开启连接
-client.enableConnect();
+client.connect();
 
 // destroy
 // client.destroy();
@@ -213,15 +213,15 @@ baseTest();
 
 * `destroy()`: 断开连接并销毁
 
-* `enableConnect()`: 开启连接(非加密模式) 
+* `connect()`: 开启连接(非加密模式)
 
-* `enableEncryptorByData(String curve, byte[] derKey, boolean streamMode, boolean reinforce)`: 开启加密连接
+* `connect(String curve, byte[] derKey, boolean streamMode, boolean reinforce)`: 开启加密连接
     * `curve`: **(String)** 加密协议
     * `derKey`: **(byte[])** 加密公钥, 秘钥文件RTM提供
     * `streamMode`: **(boolean)** 是否开启流加密, `目前Java API不支持流加密`
     * `reinforce`: **(boolean)** 是否开启加强 ` 128 : 256 `
 
-* `enableEncryptorByFile(String curve, String derPath, boolean streamMode, boolean reinforce)`: 开启加密连接
+* `connect(String curve, String derPath, boolean streamMode, boolean reinforce)`: 开启加密连接
     * `curve`: **(String)** 加密协议
     * `derPath`: **(String)** 加密公钥文件路径, 秘钥文件RTM提供
     * `streamMode`: **(boolean)** 是否开启流加密, `目前Java API不支持流加密`
