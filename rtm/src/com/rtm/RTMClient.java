@@ -3399,6 +3399,27 @@ class BaseClient extends FPClient {
         super.sendQuest(data, this.questCallback(callback), timeout);
     }
 
+    @Override
+    public CallbackData sendQuest(FPData data, int timeout) {
+
+        CallbackData cbd = null;
+
+        try {
+
+            cbd = super.sendQuest(data, timeout);
+        }catch(Exception ex){
+
+            this.getEvent().fireEvent(new EventData(this, "error", ex));
+        }
+
+        if (cbd != null) {
+
+            this.checkFPCallback(cbd);
+        }
+
+        return cbd;
+    }
+
     /**
      * @param {String}  curve
      * @param {byte[]}  derKey
