@@ -3252,28 +3252,33 @@ class FileClient extends BaseClient {
         super.init(host, port, reconnect, timeout);
 
         FileClient self = this;
-        FPEvent.IListener listener = new FPEvent.IListener() {
+
+        this.getEvent().addListener("connect", new FPEvent.IListener() {
 
             @Override
             public void fpEvent(EventData event) {
 
-                switch (event.getType()) {
-                    case "connect":
-                        self.onConnect();
-                        break;
-                    case "close":
-                        self.onClose();
-                        break;
-                    case "error":
-                        self.onException(event.getException());
-                        break;
-                }
+                self.onConnect();
             }
-        };
+        });
 
-        this.getEvent().addListener("connect", listener);
-        this.getEvent().addListener("close", listener);
-        this.getEvent().addListener("error", listener);
+        this.getEvent().addListener("close", new FPEvent.IListener() {
+
+            @Override
+            public void fpEvent(EventData event) {
+
+                self.onClose();
+            }
+        });
+
+        this.getEvent().addListener("error", new FPEvent.IListener() {
+
+            @Override
+            public void fpEvent(EventData event) {
+
+                self.onException(event.getException());
+            }
+        });
     }
 
     /**

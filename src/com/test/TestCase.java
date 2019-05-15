@@ -27,28 +27,33 @@ public class TestCase {
         );
 
         TestCase self = this;
-        FPEvent.IListener listener = new FPEvent.IListener() {
+
+        this._client.getEvent().addListener("connect", new FPEvent.IListener() {
 
             @Override
             public void fpEvent(EventData event) {
 
-                switch (event.getType()) {
-                    case "connect":
-                        self.onConnect();
-                        break;
-                    case "close":
-                        self.onClose();
-                        break;
-                    case "error":
-                        self.onError(event.getException());
-                        break;
-                }
+                self.onConnect();
             }
-        };
+        });
 
-        this._client.getEvent().addListener("connect", listener);
-        this._client.getEvent().addListener("close", listener);
-        this._client.getEvent().addListener("error", listener);
+        this._client.getEvent().addListener("close", new FPEvent.IListener() {
+
+            @Override
+            public void fpEvent(EventData event) {
+
+                self.onClose();
+            }
+        });
+
+        this._client.getEvent().addListener("error", new FPEvent.IListener() {
+
+            @Override
+            public void fpEvent(EventData event) {
+
+                self.onError(event.getException());
+            }
+        });
 
         this._client.connect(
                 "secp256k1",

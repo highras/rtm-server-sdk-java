@@ -42,43 +42,53 @@ RTMClient client = new RTMClient(
 );
 
 // 添加监听
-client.getEvent().addListener("connect", listener);
-client.getEvent().addListener("close", listener);
-client.getEvent().addListener("error", listener);
-
-FPEvent.IListener listener = new FPEvent.IListener() {
+client.getEvent().addListener("connect", new FPEvent.IListener() {
 
     @Override
     public void fpEvent(FPEvent event) {
 
-        switch (event.getType()) {
-            case "connect":
-                System.out.println("Connected!");
-                // 发送消息
-                client.sendMessage(778877, 778899, (byte) 8, "hello !", "", 0, 5 * 1000, new FPCallback.ICallback() {
-                    @Override
-                    public void callback(FPCallback cbd) {
-                        Object obj = cbd.getPayload();
-                        if (obj != null) {
-                            Map payload = (Map) obj;
-                            System.out.println("\n[DATA] sendMessage:");
-                            System.out.println(payload.toString());
-                        } else {
-                            System.err.println("\n[ERR] sendMessage:");
-                            System.err.println(cbd.getException().getMessage());
-                        }
-                    }
-                });
-                break;
-            case "close":
-                System.out.println("Closed!");
-                break;
-            case "error":
-                event.getException().printStackTrace();
-                break;
-        }
+        System.out.println("Connected!");
+
+        // 发送消息
+        client.sendMessage(778877, 778899, (byte) 8, "hello !", "", 0, 5 * 1000, new FPCallback.ICallback() {
+
+            @Override
+            public void callback(FPCallback cbd) {
+
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+
+                    Map payload = (Map) obj;
+                    System.out.println("\n[DATA] sendMessage:");
+                    System.out.println(payload.toString());
+                } else {
+
+                    System.err.println("\n[ERR] sendMessage:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
     }
-};
+});
+
+client.getEvent().addListener("close", new FPEvent.IListener() {
+
+    @Override
+    public void fpEvent(FPEvent event) {
+
+        System.out.println("Closed!");
+    }
+});
+
+client.getEvent().addListener("error", new FPEvent.IListener() {
+
+    @Override
+    public void fpEvent(FPEvent event) {
+
+        event.getException().printStackTrace();
+    }
+});
 
 // push service
 client.getProcessor().getEvent().addListener(RTMConfig.SERVER_PUSH.recvPing, new FPEvent.IListener() {

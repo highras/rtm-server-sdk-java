@@ -7,10 +7,7 @@ import com.rtm.RTMClient;
 import com.rtm.msgpack.PayloadPacker;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class TestHolder {
 
@@ -195,7 +192,7 @@ public class TestHolder {
                             break;
                         }
                     }
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
 
                     switch (act) {
 
@@ -207,20 +204,6 @@ public class TestHolder {
                             break;
                         case 2:
                             System.out.print('[');
-                            break;
-                    }
-                } catch (Exception e) {
-
-                    switch (act) {
-
-                        case 0:
-                            System.out.print(')');
-                            break;
-                        case 1:
-                            System.out.print('}');
-                            break;
-                        case 2:
-                            System.out.print(']');
                             break;
                     }
                 }
