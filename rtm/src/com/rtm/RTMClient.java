@@ -3256,7 +3256,7 @@ class FileClient extends BaseClient {
         this.getEvent().addListener("connect", new FPEvent.IListener() {
 
             @Override
-            public void fpEvent(EventData event) {
+            public void fpEvent(EventData evd) {
 
                 self.onConnect();
             }
@@ -3265,7 +3265,7 @@ class FileClient extends BaseClient {
         this.getEvent().addListener("close", new FPEvent.IListener() {
 
             @Override
-            public void fpEvent(EventData event) {
+            public void fpEvent(EventData evd) {
 
                 self.onClose();
             }
@@ -3274,9 +3274,9 @@ class FileClient extends BaseClient {
         this.getEvent().addListener("error", new FPEvent.IListener() {
 
             @Override
-            public void fpEvent(EventData event) {
+            public void fpEvent(EventData evd) {
 
-                self.onException(event.getException());
+                self.onException(evd.getException());
             }
         });
     }

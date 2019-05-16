@@ -31,7 +31,7 @@ public class TestCase {
         this._client.getEvent().addListener("connect", new FPEvent.IListener() {
 
             @Override
-            public void fpEvent(EventData event) {
+            public void fpEvent(EventData evd) {
 
                 self.onConnect();
             }
@@ -40,7 +40,7 @@ public class TestCase {
         this._client.getEvent().addListener("close", new FPEvent.IListener() {
 
             @Override
-            public void fpEvent(EventData event) {
+            public void fpEvent(EventData evd) {
 
                 self.onClose();
             }
@@ -49,9 +49,9 @@ public class TestCase {
         this._client.getEvent().addListener("error", new FPEvent.IListener() {
 
             @Override
-            public void fpEvent(EventData event) {
+            public void fpEvent(EventData evd) {
 
-                self.onError(event.getException());
+                self.onError(evd.getException());
             }
         });
 
@@ -65,10 +65,10 @@ public class TestCase {
         this._client.getProcessor().getEvent().addListener(RTMConfig.SERVER_PUSH.recvPing, new FPEvent.IListener() {
 
             @Override
-            public void fpEvent(EventData event) {
+            public void fpEvent(EventData evd) {
 
-                System.out.println("\n[PUSH] ".concat(event.getType()).concat(":"));
-                System.out.println(event.getPayload().toString());
+                System.out.println("\n[PUSH] ".concat(evd.getType()).concat(":"));
+                System.out.println(evd.getPayload().toString());
             }
         });
     }
