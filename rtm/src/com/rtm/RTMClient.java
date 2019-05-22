@@ -33,7 +33,9 @@ public class RTMClient extends BaseClient {
 
             c = count;
 
-            StringBuffer sb = new StringBuffer(String.valueOf(System.currentTimeMillis()));
+            StringBuffer sb = new StringBuffer();
+
+            sb.append(System.currentTimeMillis());
 
             if (c < 100) {
 
@@ -45,7 +47,7 @@ public class RTMClient extends BaseClient {
                 sb.append("0");
             }
 
-            sb.append(String.valueOf(c));
+            sb.append(c);
 
             return Long.valueOf(sb.toString());
         }
