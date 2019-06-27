@@ -21,6 +21,7 @@ public class RTMClient extends BaseClient {
     private static class MidGenerator {
 
         static private long count = 0;
+        static private StringBuffer sb = new StringBuffer(20);
 
         static public synchronized long gen() {
 
@@ -33,8 +34,7 @@ public class RTMClient extends BaseClient {
 
             c = count;
 
-            StringBuffer sb = new StringBuffer();
-
+            sb.setLength(0);
             sb.append(System.currentTimeMillis());
 
             if (c < 100) {
