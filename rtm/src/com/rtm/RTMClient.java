@@ -13,15 +13,16 @@ import com.rtm.msgpack.PayloadPacker;
 import com.rtm.msgpack.PayloadUnpacker;
 
 import java.io.*;
-import java.security.MessageDigest;
 import java.util.*;
+import java.lang.StringBuilder;
+import java.security.MessageDigest;
 
 public class RTMClient extends BaseClient {
 
     private static class MidGenerator {
 
         static private long count = 0;
-        static private StringBuffer sb = new StringBuffer(20);
+        static private StringBuilder sb = new StringBuilder(20);
 
         static public synchronized long gen() {
 
