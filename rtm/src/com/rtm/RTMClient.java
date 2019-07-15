@@ -1,5 +1,6 @@
 package com.rtm;
 
+import com.fpnn.ErrorRecorder;
 import com.fpnn.FPClient;
 import com.fpnn.FPConfig;
 import com.fpnn.FPData;
@@ -194,9 +195,9 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
-            ex.printStackTrace();
+            ErrorRecorder.getInstance().recordError(ex);
         }
 
         data.setPayload(bytes);
@@ -274,7 +275,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -354,7 +355,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -434,7 +435,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -512,7 +513,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -578,7 +579,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -628,7 +629,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -676,7 +677,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -746,7 +747,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -816,7 +817,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -886,7 +887,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -936,7 +937,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -984,7 +985,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1032,7 +1033,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1102,7 +1103,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1170,7 +1171,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1238,7 +1239,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1306,7 +1307,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1378,7 +1379,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1428,7 +1429,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1480,7 +1481,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1530,7 +1531,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1580,7 +1581,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1628,7 +1629,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1678,7 +1679,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1748,7 +1749,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1816,7 +1817,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -1968,7 +1969,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2087,7 +2088,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2204,7 +2205,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2325,7 +2326,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2413,7 +2414,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2463,7 +2464,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2533,7 +2534,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2603,7 +2604,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2651,7 +2652,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2705,7 +2706,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2757,7 +2758,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2807,7 +2808,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2861,7 +2862,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -2915,7 +2916,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -3250,7 +3251,7 @@ public class RTMClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -3364,7 +3365,7 @@ class FileClient extends BaseClient {
 
             packer.pack(payload);
             bytes = packer.toByteArray();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
 
             ex.printStackTrace();
         }
@@ -3493,7 +3494,7 @@ class BaseClient extends FPClient {
 
                             packer.pack(map);
                             bytes = packer.toByteArray();
-                        } catch (IOException ex) {
+                        } catch (Exception ex) {
 
                             ex.printStackTrace();
                         }
@@ -3635,7 +3636,7 @@ class BaseClient extends FPClient {
                 try {
 
                     payload = unpacker.unpack();
-                } catch (IOException ex) {
+                } catch (Exception ex) {
 
                     ex.printStackTrace();
                 }
