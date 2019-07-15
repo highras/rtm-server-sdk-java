@@ -11,20 +11,14 @@ public class TestMain {
 
         System.out.println(new String("rtm test with main!"));
 
-        new Thread(new Runnable() {
+        // case 1
+        baseTest();
 
-            @Override
-            public void run() {
-                // case 1
-                baseTest();
+        // case 2
+//        asyncStressTest();
 
-                // case 2
-//                asyncStressTest();
-
-                // case 3
-//                singleClientConcurrentTest();
-            }
-        }).start();
+        // case 3
+//        singleClientConcurrentTest();
     }
 
     public static void baseTest() {

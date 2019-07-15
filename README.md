@@ -20,6 +20,20 @@
 
 * 不要阻塞事件触发和回调, 否则线程池将被耗尽
 
+#### 关于IPV6 ####
+
+* `SOCKET`链接支持`IPV6`接口
+* 兼容`DNS64/NAT64`网络环境
+
+#### 关于连接 ####
+
+* 默认连接会自动保持, 如实现按需连接则需要通过`connect()`和`close()`进行连接或关闭处理
+* 或可通过`connect`和`close`事件以及注册`ping`服务来对连接进行管理
+
+#### 关于编码格式 ####
+
+* 消息发送接口仅支持`UTF-8`格式编码的`String`类型数据, `Binary`数据需进行`Base64`编解码
+
 #### 一个例子 ####
 
 ```java
@@ -91,13 +105,14 @@ client.getEvent().addListener("error", new FPEvent.IListener() {
 });
 
 // push service
-client.getProcessor().getEvent().addListener(RTMConfig.SERVER_PUSH.recvPing, new FPEvent.IListener() {
+RTMProcessor processor = client.rtmProcessor();
+
+processor.addPushService(RTMConfig.SERVER_PUSH.recvMessage, new RTMProcessor.IService() {
 
     @Override
-    public void fpEvent(EventData evd) {
+    public void Service(Map<String, Object> data) {
 
-        System.out.println("\n[PUSH] ".concat(evd.getType()).concat(":"));
-        System.out.println(evd.getPayload().toString());
+        System.out.println("[recvMessage]: " + JsonHelper.getInstance().getJson().toJSON(data));
     }
 });
 
@@ -134,71 +149,88 @@ baseTest();
 
 #### PushService ####
 
-请参考 `RTMConfig.SERVER_PUSH` 成员
+* `RTMProcessor::addPushService(String name, IService is)`: 添加推送回调
+    * `name`: **(String)** 推送服务类型, 参考`RTMConfig.SERVER_PUSH`成员
+    * `is`: **(IService)** 回调方法
 
-* `ping`: RTMGate主动ping
-    * `data`: **(Map)**
+* `RTMProcessor::removePushService(String name)`: 删除推送回调
+    * `name`: **(String)** 推送服务类型, 参考`RTMConfig.SERVER_PUSH`成员
 
-* `pushmsg`: RTMGate主动推送P2P消息
-    * `data.from`: **(long)** 发送者 id
-    * `data.to`: **(long)** 接收者 id
-    * `data.mtype`: **(byte)** 消息类型
-    * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-    * `data.msg`: **(String)** 消息内容
-    * `data.attrs`: **(String)** 发送时附加的自定义内容
-    * `data.mtime`: **(long)** 
+* `RTMProcessor::hasPushService(String name)`: 是否存在推送回调
+    * `name`: **(String)** 推送服务类型, 参考`RTMConfig.SERVER_PUSH`成员
 
-* `pushgroupmsg`: RTMGate主动推送Group消息
-    * `data.from`: **(long)** 发送者 id
-    * `data.gid`: **(long)** Group id
-    * `data.mtype`: **(byte)** 消息类型
-    * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-    * `data.msg`: **(String)** 消息内容
-    * `data.attrs`: **(String)** 发送时附加的自定义内容
-    * `data.mtime`: **(long)** 
+* `RTMConfig.SERVER_PUSH`:
+    * `ping`: RTMGate主动ping
+        * `data`: **(Map(String, Object))**
+            * `data`: **(Map)**
 
-* `pushroommsg`: RTMGate主动推送Room消息
-    * `data.from`: **(long)** 发送者 id
-    * `data.rid`: **(long)** Room id
-    * `data.mtype`: **(byte)** 消息类型
-    * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-    * `data.msg`: **(String)** 消息内容
-    * `data.attrs`: **(String)** 发送时附加的自定义内容
-    * `data.mtime`: **(long)** 
+    * `pushmsg`: RTMGate主动推送P2P消息
+        * `data`: **(Map(String, Object))**
+            * `data.from`: **(long)** 发送者 id
+            * `data.to`: **(long)** 接收者 id
+            * `data.mtype`: **(byte)** 消息类型
+            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
+            * `data.msg`: **(String)** 消息内容
+            * `data.attrs`: **(String)** 发送时附加的自定义内容
+            * `data.mtime`: **(long)**
 
-* `pushfile`: RTMGate主动推送P2P文件
-    * `data.from`: **(long)** 发送者 id
-    * `data.to`: **(long)** 接收者 id
-    * `data.mtype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
-    * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-    * `data.msg`: **(String)** 文件获取地址(url)
-    * `data.attrs`: **(String)** 发送时附加的自定义内容
-    * `data.mtime`: **(long)** 
+    * `pushgroupmsg`: RTMGate主动推送Group消息
+        * `data`: **(Map(String, Object))**
+            * `data.from`: **(long)** 发送者 id
+            * `data.gid`: **(long)** Group id
+            * `data.mtype`: **(byte)** 消息类型
+            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
+            * `data.msg`: **(String)** 消息内容
+            * `data.attrs`: **(String)** 发送时附加的自定义内容
+            * `data.mtime`: **(long)**
 
-* `pushgroupfile`: RTMGate主动推送Group文件
-    * `data.from`: **(long)** 发送者 id
-    * `data.gid`: **(long)** Group id
-    * `data.mtype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
-    * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-    * `data.msg`: **(String)** 文件获取地址(url)
-    * `data.attrs`: **(String)** 发送时附加的自定义内容
-    * `data.mtime`: **(long)** 
+    * `pushroommsg`: RTMGate主动推送Room消息
+        * `data`: **(Map(String, Object))**
+            * `data.from`: **(long)** 发送者 id
+            * `data.rid`: **(long)** Room id
+            * `data.mtype`: **(byte)** 消息类型
+            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
+            * `data.msg`: **(String)** 消息内容
+            * `data.attrs`: **(String)** 发送时附加的自定义内容
+            * `data.mtime`: **(long)**
 
-* `pushroomfile`: RTMGate主动推送Room文件
-    * `data.from`: **(long)** 发送者 id
-    * `data.rid`: **(long)** Room id
-    * `data.mtype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
-    * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-    * `data.msg`: **(String)** 文件获取地址(url)
-    * `data.attrs`: **(String)** 发送时附加的自定义内容
-    * `data.mtime`: **(long)** 
+    * `pushfile`: RTMGate主动推送P2P文件
+        * `data`: **(Map(String, Object))**
+            * `data.from`: **(long)** 发送者 id
+            * `data.to`: **(long)** 接收者 id
+            * `data.mtype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
+            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
+            * `data.msg`: **(String)** 文件获取地址(url)
+            * `data.attrs`: **(String)** 发送时附加的自定义内容
+            * `data.mtime`: **(long)**
 
-* `pushevent`: RTMGate主动推送事件 
-    * `data.event`: **(String)** 事件名称, 请参考 `RTMConfig.SERVER_EVENT` 成员
-    * `data.uid`: **(long)** 触发者 id
-    * `data.time`: **(int)** 触发时间(s)
-    * `data.endpoint`: **(String)** 对应的RTMGate地址
-    * `data.data`: **(String)** `预留`
+    * `pushgroupfile`: RTMGate主动推送Group文件
+        * `data`: **(Map(String, Object))**
+            * `data.from`: **(long)** 发送者 id
+            * `data.gid`: **(long)** Group id
+            * `data.mtype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
+            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
+            * `data.msg`: **(String)** 文件获取地址(url)
+            * `data.attrs`: **(String)** 发送时附加的自定义内容
+            * `data.mtime`: **(long)**
+
+    * `pushroomfile`: RTMGate主动推送Room文件
+        * `data`: **(Map(String, Object))**
+            * `data.from`: **(long)** 发送者 id
+            * `data.rid`: **(long)** Room id
+            * `data.mtype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
+            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
+            * `data.msg`: **(String)** 文件获取地址(url)
+            * `data.attrs`: **(String)** 发送时附加的自定义内容
+            * `data.mtime`: **(long)**
+
+    * `pushevent`: RTMGate主动推送事件
+        * `data`: **(Map(String, Object))**
+            * `data.event`: **(String)** 事件名称, 请参考 `RTMConfig.SERVER_EVENT` 成员
+            * `data.uid`: **(long)** 触发者 id
+            * `data.time`: **(int)** 触发时间(s)
+            * `data.endpoint`: **(String)** 对应的RTMGate地址
+            * `data.data`: **(String)** `预留`
 
 #### API ####
 
@@ -219,7 +251,7 @@ baseTest();
     * `timeout`: **(int)** 超时时间(ms), 默认: `30 * 1000`
     * `startTimerThread`: **(boolean)** 是否开启计时器线程 (负责超时检测/安全检查)
 
-* `getProcessor`: **(FPProcessor)** 监听PushService的句柄
+* `rtmProcessor`: **(RTMProcessor)** 监听PushService的句柄
 
 * `destroy()`: 断开连接并销毁
 

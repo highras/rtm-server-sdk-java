@@ -6,6 +6,8 @@ import com.fpnn.event.EventData;
 import com.fpnn.event.FPEvent;
 import com.rtm.RTMClient;
 import com.rtm.RTMConfig;
+import com.rtm.RTMProcessor;
+import com.rtm.json.JsonHelper;
 
 import java.util.*;
 
@@ -62,13 +64,14 @@ public class TestCase {
                 false
         );
 
-        this._client.getProcessor().getEvent().addListener(RTMConfig.SERVER_PUSH.recvPing, new FPEvent.IListener() {
+        RTMProcessor processor = this._client.rtmProcessor();
+
+        processor.addPushService(RTMConfig.SERVER_PUSH.recvMessage, new RTMProcessor.IService() {
 
             @Override
-            public void fpEvent(EventData evd) {
+            public void Service(Map<String, Object> data) {
 
-                System.out.println("\n[PUSH] ".concat(evd.getType()).concat(":"));
-                System.out.println(evd.getPayload().toString());
+                 System.out.println("[recvMessage]: " + JsonHelper.getInstance().getJson().toJSON(data));
             }
         });
     }

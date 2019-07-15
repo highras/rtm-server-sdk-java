@@ -1,5 +1,6 @@
 package com.rtm;
 
+import com.fpnn.ErrorRecorder;
 import com.fpnn.FPData;
 import com.fpnn.FPProcessor;
 import com.fpnn.event.EventData;
@@ -9,13 +10,19 @@ import com.rtm.json.JsonHelper;
 import com.rtm.msgpack.PayloadPacker;
 import com.rtm.msgpack.PayloadUnpacker;
 
-import java.io.IOException;
 import java.util.*;
 
 public class RTMProcessor implements FPProcessor.IProcessor {
 
+    public interface IService {
+
+        void Service(Map<String, Object> data);
+    }
+
     private FPEvent _event;
-    private Map _midMap = new HashMap();
+    private Map<String, Long> _midMap = new HashMap<String, Long>();
+
+    private Map<String, IService> _actionMap = new HashMap<String, IService>();
 
     public RTMProcessor(FPEvent event) {
 
@@ -26,6 +33,21 @@ public class RTMProcessor implements FPProcessor.IProcessor {
     public FPEvent getEvent() {
 
         return this._event;
+    }
+
+    public void destroy() {
+
+        this.clearPingTimestamp();
+
+        synchronized (this._midMap) {
+
+            this._midMap.clear();
+        }
+
+        synchronized (this._actionMap) {
+
+            this._actionMap.clear();
+        }
     }
 
     @Override
@@ -50,9 +72,9 @@ public class RTMProcessor implements FPProcessor.IProcessor {
 
                 packer.pack(new HashMap());
                 bytes = packer.toByteArray();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
 
-                ex.printStackTrace();
+                ErrorRecorder.getInstance().recordError(ex);
             }
 
             if (bytes.length > 0) {
@@ -65,9 +87,9 @@ public class RTMProcessor implements FPProcessor.IProcessor {
             try {
 
                 payload = unpacker.unpack();
-            } catch (IOException ex) {
+            } catch (Exception ex) {
 
-                ex.printStackTrace();
+                ErrorRecorder.getInstance().recordError(ex);
             }
         }
 
@@ -113,14 +135,61 @@ public class RTMProcessor implements FPProcessor.IProcessor {
                 RTMProcessor.class.getMethod(data.getMethod(), Map.class).invoke(this, payload);
             } catch(Exception ex) {
 
-                this._event.fireEvent(new EventData(this, "error", ex));
+                ErrorRecorder.getInstance().recordError(ex);
             }
         }
     }
 
-    public void destroy() {
+    @Override
+    public boolean hasPushService(String name) {
 
-        this._midMap.clear();
+        if (name == null || name.isEmpty()) {
+
+            return false;
+        }
+
+        return this._actionMap.containsKey(name);
+    }
+
+    public void addPushService(String name, IService is) {
+
+        synchronized (this._actionMap) {
+
+            if (!this._actionMap.containsKey(name)) {
+
+                this._actionMap.put(name, is);
+            } else {
+
+                this._event.fireEvent(new EventData(this, "error", new Exception("push service exist")));
+            }
+        }
+    }
+
+    public void removePushService(String name) {
+
+        synchronized (this._actionMap) {
+
+            if (this._actionMap.containsKey(name)) {
+
+                this._actionMap.remove(name);
+            }
+        }
+    }
+
+    private void pushService(String name, Map<String, Object> data) {
+
+        synchronized (this._actionMap) {
+
+            if (this._actionMap.containsKey(name)) {
+
+                IService is = this._actionMap.get(name);
+
+                if (is != null) {
+
+                    is.Service(data);
+                }
+            }
+        }
     }
 
     /**
@@ -146,14 +215,14 @@ public class RTMProcessor implements FPProcessor.IProcessor {
         }
 
         byte mtype = (byte)data.get("mtype");
+        String name = RTMConfig.SERVER_PUSH.recvMessage;
 
         if (mtype >= 40 && mtype <= 50) {
 
-            this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvFile, data));
-            return;
+            name = RTMConfig.SERVER_PUSH.recvFile;
         }
 
-        this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvMessage, data));
+        this.pushService(name, data);
     }
 
     /**
@@ -179,14 +248,14 @@ public class RTMProcessor implements FPProcessor.IProcessor {
         }
 
         byte mtype = (byte)data.get("mtype");
+        String name = RTMConfig.SERVER_PUSH.recvGroupMessage;
 
         if (mtype >= 40 && mtype <= 50) {
 
-            this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvGroupFile, data));
-            return;
+            name = RTMConfig.SERVER_PUSH.recvGroupFile;
         }
 
-        this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvGroupMessage, data));
+        this.pushService(name, data);
     }
 
     /**
@@ -212,14 +281,14 @@ public class RTMProcessor implements FPProcessor.IProcessor {
         }
 
         byte mtype = (byte)data.get("mtype");
+        String name = RTMConfig.SERVER_PUSH.recvRoomMessage;
 
         if (mtype >= 40 && mtype <= 50) {
 
-            this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvRoomFile, data));
-            return;
+            name = RTMConfig.SERVER_PUSH.recvRoomFile;
         }
 
-        this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvRoomMessage, data));
+        this.pushService(name, data);
     }
 
     /**
@@ -234,7 +303,7 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      */
     public void pushevent(Map data) {
 
-        this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvEvent, data));
+        this.pushService(RTMConfig.SERVER_PUSH.recvEvent, data);
     }
 
     /**
@@ -245,11 +314,41 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      */
     public void ping(Map data) {
 
-        this._event.fireEvent(new EventData(this, RTMConfig.SERVER_PUSH.recvPing, data));
+        this._lastPingTimestamp = System.currentTimeMillis();
+        this.pushService(RTMConfig.SERVER_PUSH.recvPing, data);
+    }
+
+    private long _lastPingTimestamp;
+
+    public long getPingTimestamp() {
+
+        return this._lastPingTimestamp;
+    }
+
+    public void clearPingTimestamp() {
+
+        this._lastPingTimestamp = 0;
+    }
+
+    public void initPingTimestamp() {
+
+        if (this._lastPingTimestamp == 0) {
+
+            this._lastPingTimestamp = System.currentTimeMillis();
+        }
     }
 
     @Override
     public void onSecond(long timestamp) {
+
+        if (this._lastPingTimestamp > 0) {
+
+            if (timestamp - this._lastPingTimestamp > RTMConfig.RECV_PING_TIMEOUT) {
+
+                this.clearPingTimestamp();
+                this._event.fireEvent(new EventData(this, "ping_timeout"));
+            }
+        }
 
         this.checkExpire(timestamp);
     }
@@ -275,7 +374,7 @@ public class RTMProcessor implements FPProcessor.IProcessor {
 
             if (this._midMap.containsKey(key)) {
 
-                long expire = (long) this._midMap.get(key);
+                long expire = this._midMap.get(key);
 
                 if (expire > timestamp) {
 
@@ -300,23 +399,20 @@ public class RTMProcessor implements FPProcessor.IProcessor {
             while (itor.hasNext()) {
 
                 Map.Entry entry = (Map.Entry) itor.next();
-                String key = (String) entry.getKey();
-                long expire = (long) entry.getValue();
 
-                if (expire > timestamp) {
+                if ((long) entry.getValue() > timestamp) {
 
                     continue;
                 }
 
-                keys.add(key);
+                keys.add(entry.getKey());
             }
 
             itor = keys.iterator();
 
             while (itor.hasNext()) {
 
-                String key = (String) itor.next();
-                this._midMap.remove(key);
+                this._midMap.remove(itor.next());
             }
         }
     }

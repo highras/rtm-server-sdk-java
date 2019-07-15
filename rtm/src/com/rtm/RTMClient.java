@@ -1,6 +1,7 @@
 package com.rtm;
 
 import com.fpnn.FPClient;
+import com.fpnn.FPConfig;
 import com.fpnn.FPData;
 import com.fpnn.callback.CallbackData;
 import com.fpnn.callback.FPCallback;
@@ -56,6 +57,7 @@ public class RTMClient extends BaseClient {
 
     private int _pid;
     private String _secret;
+    private RTMProcessor _processor;
 
     /**
      * @param {int}     pid
@@ -95,7 +97,40 @@ public class RTMClient extends BaseClient {
 
         super.init(host, port, reconnect, timeout);
 
-        this.getProcessor().setProcessor(new RTMProcessor(this.getEvent()));
+        System.out.println("Hello RTM! rtm@" + RTMConfig.VERSION + ", fpnn@" + FPConfig.VERSION);
+
+        this._processor = new RTMProcessor(this.getEvent());
+
+        final RTMClient self = this;
+        final RTMProcessor fprocessor = this._processor;
+
+        this.getEvent().addListener("ping_timeout", new FPEvent.IListener() {
+
+            @Override
+            public void fpEvent(EventData evd) {
+
+                if (self.isOpen()) {
+
+                    self.close(new Exception("ping timeout"));
+                }
+            }
+        });
+
+        this.getEvent().addListener("connect", new FPEvent.IListener() {
+
+            @Override
+            public void fpEvent(EventData evd) {
+
+                fprocessor.initPingTimestamp();
+            }
+        });
+
+        this.getProcessor().setProcessor(this._processor);
+    }
+
+    public RTMProcessor rtmProcessor() {
+
+        return this._processor;
     }
 
     @Override
@@ -1956,7 +1991,7 @@ public class RTMClient extends BaseClient {
 
                     for (int i = 0; i < list.size(); i++) {
 
-                        Map map = new HashMap();
+                        Map<String, Object> map = new HashMap<String, Object>();
                         List items = (ArrayList) list.get(i);
 
                         map.put("id", items.get(0));
@@ -2075,7 +2110,7 @@ public class RTMClient extends BaseClient {
 
                     for (int i = 0; i < list.size(); i++) {
 
-                        Map map = new HashMap();
+                        Map<String, Object> map = new HashMap<String, Object>();
                         List items = (ArrayList) list.get(i);
 
                         map.put("id", items.get(0));
@@ -2192,7 +2227,7 @@ public class RTMClient extends BaseClient {
 
                     for (int i = 0; i < list.size(); i++) {
 
-                        Map map = new HashMap();
+                        Map<String, Object> map = new HashMap<String, Object>();
                         List items = (ArrayList) list.get(i);
 
                         map.put("id", items.get(0));
@@ -2313,7 +2348,7 @@ public class RTMClient extends BaseClient {
 
                     for (int i = 0; i < list.size(); i++) {
 
-                        Map map = new HashMap();
+                        Map<String, Object> map = new HashMap<String, Object>();
                         List items = (ArrayList) list.get(i);
 
                         map.put("id", items.get(0));

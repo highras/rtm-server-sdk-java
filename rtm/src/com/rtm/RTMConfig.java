@@ -2,7 +2,10 @@ package com.rtm;
 
 public class RTMConfig {
 
-    public static final int MID_TTL = 5 * 1000;
+    public static final String VERSION = "1.0.0";
+
+    public static final int MID_TTL = 5 * 1000;                         //MID缓存超时时间(ms)
+    public static final int RECV_PING_TIMEOUT = 40 * 1000;              //客户端收到Ping超时时间(ms)
 
     public class FILE_TYPE {
 
