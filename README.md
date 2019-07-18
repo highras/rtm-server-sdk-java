@@ -645,10 +645,10 @@ baseTest();
             * `payload`: **(Map)**
             * `exception`: **(Exception)**
 
-* `addEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback)`: 添加 `事件` / `消息` 监听
+* `addEvtListener(List<Long> gids, List<Long> rids, List<Long> uids, List<String> events, int timeout, FPCallback.ICallback callback)`: 添加 `事件` / `消息` 监听, 仅对当前链接有效, 增量添加
     * `gids`: **(List(Long))** 多个Group id
     * `rids`: **(List(Long))** 多个Room id
-    * `p2p`: **(boolean)** P2P消息
+    * `uids`: **(List(Long))** 多个用户 id
     * `events`: **(List(String))** 多个事件名称, 请参考 `RTMConfig.SERVER_EVENT` 成员
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
@@ -656,10 +656,10 @@ baseTest();
             * `payload`: **(Map)**
             * `exception`: **(Exception)**
 
-* `removeEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback)`: 删除 `事件` / `消息` 监听
+* `removeEvtListener(List<Long> gids, List<Long> rids, List<Long> uids, List<String> events, int timeout, FPCallback.ICallback callback)`: 删除 `事件` / `消息` 监听, 仅对当前链接有效, 增量取消
     * `gids`: **(List(Long))** 多个Group id
     * `rids`: **(List(Long))** 多个Room id
-    * `p2p`: **(boolean)** P2P消息
+    * `List<Long>`: **(boolean)** 多个用户 id
     * `events`: **(List(String))** 多个事件名称, 请参考 `RTMConfig.SERVER_EVENT` 成员
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
@@ -667,18 +667,21 @@ baseTest();
             * `payload`: **(Map)**
             * `exception`: **(Exception)**
 
-* `setEvtListener(boolean all, int timeout, FPCallback.ICallback callback)`: 更新 `事件` / `消息` 监听
-    * `all`: **(boolean)** `true`: 监听所有 `事件` / `消息`, `false`: 取消所有 `事件` / `消息` 监听
+* `setEvtListener(boolean p2p, boolean group, boolean room, boolean ev, int timeout, FPCallback.ICallback callback)`: 更新 `事件` / `消息` 监听, 仅对当前链接有效, 全量覆盖, 每个链接以本次设置为准
+    * `p2p`: **(boolean)** `true`: 忽略uids, 监听全部p2p的 `事件` / `消息`,  `false`: 则只监听uids中的 `事件` / `消息`
+    * `group`: **(boolean)** `true`: 忽略gids, 监听全部Group的 `事件` / `消息`,  `false`: 则只监听gids中的 `事件` / `消息`
+    * `room`: **(boolean)** `true`: 忽略rids, 监听全部Room的 `事件` / `消息`,  `false`: 则只监听rids中的 `事件` / `消息`
+    * `ev`: **(boolean)** `true`: 忽略events, 监听全部 `事件`,  `false`: 则只监听events中的 `事件`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
             * `payload`: **(Map)**
             * `exception`: **(Exception)**
         
-* `setEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback)`: 更新 `事件` / `消息` 监听
+* `setEvtListener(List<Long> gids, List<Long> rids, List<Long> uids, List<String> events, int timeout, FPCallback.ICallback callback)`: 更新 `事件` / `消息` 监听, 仅对当前链接有效, 全量覆盖, 每个链接以本次设置为准
     * `gids`: **(List(Long))** 多个Group id
     * `rids`: **(List(Long))** 多个Room id
-    * `p2p`: **(boolean)** P2P消息, `true`: 监听, `false`: 取消监听
+    * `uids`: **(List(Long))** 多个用户 id
     * `events`: **(List(String))** 多个事件名称, 请参考 `RTMConfig.SERVER_EVENT` 成员
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法

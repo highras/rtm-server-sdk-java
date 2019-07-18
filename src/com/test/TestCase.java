@@ -936,7 +936,7 @@ public class TestCase {
 
         //ServerGate (35)
         //---------------------------------addEvtListener--------------------------------------
-        this._client.addEvtListener(null, rids, true, evets, timeout, new FPCallback.ICallback() {
+        this._client.addEvtListener(null, rids, tos, evets, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -960,7 +960,7 @@ public class TestCase {
 
         //ServerGate (36)
         //---------------------------------removeEvtListener--------------------------------------
-        this._client.removeEvtListener(gids, null, false, evets, timeout, new FPCallback.ICallback() {
+        this._client.removeEvtListener(gids, null, tos, evets, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -984,7 +984,7 @@ public class TestCase {
 
         //ServerGate (37)
         //---------------------------------setEvtListener--------------------------------------
-        this._client.setEvtListener(true, timeout, new FPCallback.ICallback() {
+        this._client.setEvtListener(true, true, true, true, timeout, new FPCallback.ICallback() {
 
             @Override
             public void callback(CallbackData cbd) {
@@ -1004,25 +1004,25 @@ public class TestCase {
             }
         });
 
-        // this._client.setEvtListener(gids, rids, true, evets, timeout, new FPCallback.ICallback() {
-
-        //     @Override
-        //     public void callback(CallbackData cbd) {
-
-        //         Object obj = cbd.getPayload();
-
-        //         if (obj != null) {
-
-        //             Map payload = (Map) obj;
-        //             System.out.println("\n[DATA] setEvtListener:");
-        //             System.out.println(payload);
-        //         } else {
-
-        //             System.err.println("\n[ERR] setEvtListener:");
-        //             System.err.println(cbd.getException().getMessage());
-        //         }
-        //     }
-        // });
+//         this._client.setEvtListener(gids, rids, tos, evets, timeout, new FPCallback.ICallback() {
+//
+//             @Override
+//             public void callback(CallbackData cbd) {
+//
+//                 Object obj = cbd.getPayload();
+//
+//                 if (obj != null) {
+//
+//                     Map payload = (Map) obj;
+//                     System.out.println("\n[DATA] setEvtListener:");
+//                     System.out.println(payload);
+//                 } else {
+//
+//                     System.err.println("\n[ERR] setEvtListener:");
+//                     System.err.println(cbd.getException().getMessage());
+//                 }
+//             }
+//         });
 
         this.threadSleep(sleep);
 

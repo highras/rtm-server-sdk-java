@@ -2479,7 +2479,7 @@ public class RTMClient extends BaseClient {
      *
      * @param {List(Long)}              gids
      * @param {List(Long)}              rids
-     * @param {boolean}                 p2p
+     * @param {List<Long>}              uids
      * @param {List(String)}            events
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
@@ -2492,7 +2492,7 @@ public class RTMClient extends BaseClient {
      * @param {Map}                     payload
      * </CallbackData>
      */
-    public void addEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback) {
+    public void addEvtListener(List<Long> gids, List<Long> rids, List<Long> uids, List<String> events, int timeout, FPCallback.ICallback callback) {
 
         long salt = MidGenerator.gen();
 
@@ -2512,9 +2512,9 @@ public class RTMClient extends BaseClient {
             payload.put("rids", rids);
         }
 
-        if (p2p) {
+        if (uids != null && uids.size() > 0) {
 
-            payload.put("p2p", true);
+            payload.put("uids", uids);
         }
 
         if (events != null && events.size() > 0) {
@@ -2549,7 +2549,7 @@ public class RTMClient extends BaseClient {
      *
      * @param {List(Long)}              gids
      * @param {List(Long)}              rids
-     * @param {boolean}                 p2p
+     * @param {List<Long>}              uids
      * @param {List(String)}            events
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
@@ -2562,7 +2562,7 @@ public class RTMClient extends BaseClient {
      * @param {Map}                     payload
      * </CallbackData>
      */
-    public void removeEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback) {
+    public void removeEvtListener(List<Long> gids, List<Long> rids, List<Long> uids, List<String> events, int timeout, FPCallback.ICallback callback) {
 
         long salt = MidGenerator.gen();
 
@@ -2582,9 +2582,9 @@ public class RTMClient extends BaseClient {
             payload.put("rids", rids);
         }
 
-        if (p2p) {
+        if (uids != null && uids.size() > 0) {
 
-            payload.put("p2p", true);
+            payload.put("uids", uids);
         }
 
         if (events != null && events.size() > 0) {
@@ -2617,7 +2617,10 @@ public class RTMClient extends BaseClient {
      *  
      * ServerGate (37)
      *
-     * @param {boolean}                 all
+     * @param {boolean}                 p2p
+     * @param {boolean}                 group
+     * @param {boolean}                 room
+     * @param {boolean}                 ev
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
      *
@@ -2629,7 +2632,7 @@ public class RTMClient extends BaseClient {
      * @param {Map}                     payload
      * </CallbackData>
      */
-    public void setEvtListener(boolean all, int timeout, FPCallback.ICallback callback) {
+    public void setEvtListener(boolean p2p, boolean group, boolean room, boolean ev, int timeout, FPCallback.ICallback callback) {
 
         long salt = MidGenerator.gen();
 
@@ -2638,12 +2641,15 @@ public class RTMClient extends BaseClient {
         payload.put("pid", this._pid);
         payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
-        payload.put("all", all);
+        payload.put("p2p", p2p);
+        payload.put("group", group);
+        payload.put("room", room);
+        payload.put("ev", ev);
 
         FPData data = new FPData();
         data.setFlag(0x1);
         data.setMtype(0x1);
-        data.setMethod("removelisten");
+        data.setMethod("setlisten");
 
         byte[] bytes = new byte[0];
         PayloadPacker packer = new PayloadPacker();
@@ -2667,7 +2673,7 @@ public class RTMClient extends BaseClient {
      *
      * @param {List(Long)}              gids
      * @param {List(Long)}              rids
-     * @param {boolean}                 p2p
+     * @param {List(Long)}              uids
      * @param {List(String)}            events
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
@@ -2680,7 +2686,7 @@ public class RTMClient extends BaseClient {
      * @param {Map}                     payload
      * </CallbackData>
      */
-    public void setEvtListener(List<Long> gids, List<Long> rids, boolean p2p, List<String> events, int timeout, FPCallback.ICallback callback) {
+    public void setEvtListener(List<Long> gids, List<Long> rids, List<Long> uids, List<String> events, int timeout, FPCallback.ICallback callback) {
 
         long salt = MidGenerator.gen();
 
@@ -2689,15 +2695,31 @@ public class RTMClient extends BaseClient {
         payload.put("pid", this._pid);
         payload.put("sign", this.genSign(salt));
         payload.put("salt", salt);
-        payload.put("gids", gids);
-        payload.put("rids", rids);
-        payload.put("p2p", p2p);
-        payload.put("events", events);
+
+        if (gids != null && gids.size() > 0) {
+
+            payload.put("gids", gids);
+        }
+
+        if (rids != null && rids.size() > 0) {
+
+            payload.put("rids", rids);
+        }
+
+        if (uids != null && uids.size() > 0) {
+
+            payload.put("uids", uids);
+        }
+
+        if (events != null && events.size() > 0) {
+
+            payload.put("events", events);
+        }
 
         FPData data = new FPData();
         data.setFlag(0x1);
         data.setMtype(0x1);
-        data.setMethod("removelisten");
+        data.setMethod("setlisten");
 
         byte[] bytes = new byte[0];
         PayloadPacker packer = new PayloadPacker();
