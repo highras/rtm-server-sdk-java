@@ -56,7 +56,7 @@ public class TestMain {
         String endpoint = "35.167.185.139:13013";
 
 
-        RTMClient client = new RTMClient(0, "", endpoint, true, 20 * 1000, true);
+        RTMClient client = new RTMClient(0, "", endpoint, true, 20 * 1000);
 
         client.getEvent().addListener("connect", new FPEvent.IListener() {
 

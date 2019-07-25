@@ -10,11 +10,7 @@
 
 #### 关于线程 ####
 
-* 一个计时器线程`ThreadPool.getInstance().startTimerThread()`, 负责超时检测/安全检查 
-    * 默认实现`Executors.newScheduledThreadPool(1)`, 构造`RTMClient`时可以选择是否启用该线程
-    * 如果已有计时器, `NIOCore.getInstance().checkSecond()` 周期性调用该方法，以进行超时检查（建议频率1s）
-
-* 一个线程池, 接口`ThreadPool.IThreadPool` 
+* 线程池接口`ThreadPool.IThreadPool` 
     * 默认实现`Executors.newFixedThreadPool(FPConfig.MAX_THREAD_COUNT)`
     * 如需自己管理线程，实现该接口并注册线程池`ThreadPool.getInstance().setPool(IThreadPool value)`
 
@@ -51,8 +47,7 @@ RTMClient client = new RTMClient(
     "rtm-nx-front.ifunplus.cn",
     13315,
     true,
-    20 * 1000,
-    true
+    20 * 1000
 );
 
 // 添加监听
@@ -234,22 +229,20 @@ baseTest();
 
 #### API ####
 
-* `constructor(int pid, String secret, String host, int port, boolean reconnect, int timeout, boolean startTimerThread)`: 构造RTMClient
+* `constructor(int pid, String secret, String host, int port, boolean reconnect, int timeout)`: 构造RTMClient
     * `pid`: **(int)** 应用编号, RTM提供
     * `secret`: **(String)** 应用加密, RTM提供
     * `host`: **(String)** 地址, RTM提供
     * `port`: **(int)** 端口, RTM提供
     * `reconnect`: **(boolean)** 是否自动重连
     * `timeout`: **(int)** 超时时间(ms), 默认: `30 * 1000`
-    * `startTimerThread`: **(boolean)** 是否开启计时器线程 (负责超时检测/安全检查)
 
-* `constructor(int pid, String secret, String endpoint, boolean reconnect, int timeout, boolean startTimerThread)`: 构造RTMClient
+* `constructor(int pid, String secret, String endpoint, boolean reconnect, int timeout)`: 构造RTMClient
     * `pid`: **(int)** 应用编号, RTM提供
     * `secret`: **(String)** 应用加密, RTM提供
     * `endpoint`: **(String)** 地址与端口, RTM提供
     * `reconnect`: **(boolean)** 是否自动重连
     * `timeout`: **(int)** 超时时间(ms), 默认: `30 * 1000`
-    * `startTimerThread`: **(boolean)** 是否开启计时器线程 (负责超时检测/安全检查)
 
 * `rtmProcessor`: **(RTMProcessor)** 监听PushService的句柄
 

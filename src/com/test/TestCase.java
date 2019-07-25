@@ -24,8 +24,7 @@ public class TestCase {
                 "52.83.245.22",
                 13315,
                 true,
-                20 * 1000,
-                true
+                20 * 1000
         );
 
         TestCase self = this;

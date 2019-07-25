@@ -66,11 +66,10 @@ public class RTMClient extends BaseClient {
      * @param {String}  endpoint
      * @param {boolean} reconnect
      * @param {int}     timeout
-     * @param {boolean} startTimerThread
      */
-    public RTMClient(int pid, String secret, String endpoint, boolean reconnect, int timeout, boolean startTimerThread) {
+    public RTMClient(int pid, String secret, String endpoint, boolean reconnect, int timeout) {
 
-        super(endpoint, reconnect, timeout, startTimerThread);
+        super(endpoint, reconnect, timeout);
 
         this._pid = pid;
         this._secret = secret;
@@ -83,11 +82,10 @@ public class RTMClient extends BaseClient {
      * @param {int}     port
      * @param {boolean} reconnect
      * @param {int}     timeout
-     * @param {boolean} startTimerThread
      */
-    public RTMClient(int pid, String secret, String host, int port, boolean reconnect, int timeout, boolean startTimerThread) {
+    public RTMClient(int pid, String secret, String host, int port, boolean reconnect, int timeout) {
 
-        super(host, port, reconnect, timeout, startTimerThread);
+        super(host, port, reconnect, timeout);
 
         this._pid = pid;
         this._secret = secret;
@@ -3218,7 +3216,7 @@ public class RTMClient extends BaseClient {
                         return;
                     }
 
-                    FileClient fileClient = new FileClient(endpoint, ftimeout, false);
+                    FileClient fileClient = new FileClient(endpoint, ftimeout);
 
                     payload = new HashMap();
 
@@ -3297,14 +3295,14 @@ public class RTMClient extends BaseClient {
 
 class FileClient extends BaseClient {
 
-    public FileClient(String endpoint, int timeout, boolean startTimerThread) {
+    public FileClient(String endpoint, int timeout) {
 
-        super(endpoint, false, timeout, startTimerThread);
+        super(endpoint, false, timeout);
     }
 
-    public FileClient(String host, int port, int timeout, boolean startTimerThread) {
+    public FileClient(String host, int port, int timeout) {
 
-        super(host, port, false, timeout, startTimerThread);
+        super(host, port, false, timeout);
     }
 
     @Override
@@ -3433,24 +3431,16 @@ class FileClient extends BaseClient {
 
 class BaseClient extends FPClient {
 
-    public BaseClient(String endpoint, boolean reconnect, int timeout, boolean startTimerThread) {
+    public BaseClient(String endpoint, boolean reconnect, int timeout) {
 
         super(endpoint, reconnect, timeout);
-
-        if (startTimerThread) {
-
-            ThreadPool.getInstance().startTimerThread();
-        }
+        ThreadPool.getInstance().startTimerThread();
     }
 
-    public BaseClient(String host, int port, boolean reconnect, int timeout, boolean startTimerThread) {
+    public BaseClient(String host, int port, boolean reconnect, int timeout) {
 
         super(host, port, reconnect, timeout);
-
-        if (startTimerThread) {
-
-            ThreadPool.getInstance().startTimerThread();
-        }
+        ThreadPool.getInstance().startTimerThread();
     }
 
     @Override
