@@ -62,7 +62,7 @@ client.getEvent().addListener("connect", new FPEvent.IListener() {
         client.sendMessage(778877, 778899, (byte) 8, "hello !", "", 0, 5 * 1000, new FPCallback.ICallback() {
 
             @Override
-            public void callback(FPCallback cbd) {
+            public void callback(CallbackData cbd) {
 
                 Object obj = cbd.getPayload();
 
