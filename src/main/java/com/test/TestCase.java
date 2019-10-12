@@ -270,7 +270,7 @@ public class TestCase {
         this.threadSleep(sleep);
         //ServerGate (2f)
         //---------------------------------getGroupMessage--------------------------------------
-        this._client.getGroupMessage(gid, false, 10, 0, 0, 0, new byte[] {8}, timeout, new FPCallback.ICallback() {
+        this._client.getGroupMessage(gid, false, 10, 0, 0, 0, Arrays.asList((byte)8), timeout, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
@@ -288,7 +288,7 @@ public class TestCase {
         this.threadSleep(sleep);
         //ServerGate (2g)
         //---------------------------------getRoomMessage--------------------------------------
-        this._client.getRoomMessage(rid, false, 10, 0, 0, 0, new byte[] {8}, timeout, new FPCallback.ICallback() {
+        this._client.getRoomMessage(rid, false, 10, 0, 0, 0, Arrays.asList((byte)8), timeout, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
@@ -306,7 +306,7 @@ public class TestCase {
         this.threadSleep(sleep);
         //ServerGate (2h)
         //---------------------------------getBroadcastMessage--------------------------------------
-        this._client.getBroadcastMessage(false, 10, 0, 0, 0, new byte[] {8}, timeout, new FPCallback.ICallback() {
+        this._client.getBroadcastMessage(false, 10, 0, 0, 0, Arrays.asList((byte)8), timeout, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
@@ -324,7 +324,7 @@ public class TestCase {
         this.threadSleep(sleep);
         //ServerGate (2i)
         //---------------------------------getP2PMessage--------------------------------------
-        this._client.getP2PMessage(from, to, false, 10, 0, 0, 0, new byte[] {8}, timeout, new FPCallback.ICallback() {
+        this._client.getP2PMessage(from, to, false, 10, 0, 0, 0, Arrays.asList((byte)8), timeout, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();

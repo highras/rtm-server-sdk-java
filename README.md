@@ -377,14 +377,14 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `getGroupMessage(long gid, boolean desc, int num, long begin, long end, long lastid, byte[] mtypes, int timeout, FPCallback.ICallback callback)`: 获取Group历史消息
+* `getGroupMessage(long gid, boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback)`: 获取Group历史消息
     * `gid`: **(long)** Group id
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
     * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
     * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
-    * `mtypes`: **(byte[])** 获取历史消息的消息类型集合
+    * `mtypes`: **(List(Byte))** 获取历史消息的消息类型集合
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -399,14 +399,14 @@ client.connect();
                 * `GroupMsg.attrs` **(String)**
                 * `GroupMsg.mtime` **(long)**
 
-* `getRoomMessage(long rid, boolean desc, int num, long begin, long end, long lastid, byte[] mtypes, int timeout, FPCallback.ICallback callback)`: 获取Room历史消息
+* `getRoomMessage(long rid, boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback)`: 获取Room历史消息
     * `rid`: **(long)** Room id
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
     * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
     * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
-    * `mtypes`: **(byte[])** 获取历史消息的消息类型集合
+    * `mtypes`: **(List(Byte))** 获取历史消息的消息类型集合
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -421,13 +421,13 @@ client.connect();
                 * `RoomMsg.attrs` **(String)**
                 * `RoomMsg.mtime` **(long)**
 
-* `getBroadcastMessage(boolean desc, int num, long begin, long end, long lastid, byte[] mtypes, int timeout, FPCallback.ICallback callback)`: 获取广播历史消息
+* `getBroadcastMessage(boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback)`: 获取广播历史消息
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
     * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
     * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
-    * `mtypes`: **(byte[])** 获取历史消息的消息类型集合
+    * `mtypes`: **(List(Byte))** 获取历史消息的消息类型集合
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -442,7 +442,7 @@ client.connect();
                 * `BroadcastMsg.attrs` **(String)**
                 * `BroadcastMsg.mtime` **(long)**
 
-* `getP2PMessage(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, byte[] mtypes, int timeout, FPCallback.ICallback callback)`: 获取P2P历史消息
+* `getP2PMessage(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback)`: 获取P2P历史消息
     * `uid`: **(long)** 获取和两个用户之间的历史消息
     * `ouid`: **(long)** 获取和两个用户之间的历史消息
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
@@ -450,7 +450,7 @@ client.connect();
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
     * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
     * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
-    * `mtypes`: **(byte[])** 获取历史消息的消息类型集合
+    * `mtypes`: **(List(Byte))** 获取历史消息的消息类型集合
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -476,7 +476,7 @@ client.connect();
             * `payload`: **(Map)**
             * `exception`: **(Exception)**
 
-* `sendChat(long from, long to, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送消息, `mtype=30`
+* `sendChat(long from, long to, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送消息, `mtype=(byte)30`
     * `from`: **(long)** 发送方 id
     * `to`: **(long)** 接收方uid
     * `msg`: **(String)** 消息内容
@@ -489,7 +489,7 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `sendChats(long from, List<Long> tos, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送多人消息, `mtype=30`
+* `sendChats(long from, List<Long> tos, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送多人消息, `mtype=(byte)30`
     * `from`: **(long)** 发送方 id
     * `tos`: **(List(Long))** 接收方uids
     * `msg`: **(String)** 消息内容
@@ -502,7 +502,7 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `sendGroupChat(long from, long gid, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送group消息, `mtype=30`
+* `sendGroupChat(long from, long gid, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送group消息, `mtype=(byte)30`
     * `from`: **(long)** 发送方 id
     * `gid`: **(long)** group id
     * `msg`: **(String)** 消息内容
@@ -515,7 +515,7 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `sendRoomChat(long from, long rid, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送room消息, `mtype=30`
+* `sendRoomChat(long from, long rid, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送room消息, `mtype=(byte)30`
     * `from`: **(long)** 发送方 id
     * `rid`: **(long)** room id
     * `msg`: **(String)** 消息内容
@@ -528,7 +528,7 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `broadcastChat(long from, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 广播消息(andmin id), `mtype=30`
+* `broadcastChat(long from, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 广播消息(andmin id), `mtype=(byte)30`
     * `from`: **(long)** admin id
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 可传`""`
@@ -540,7 +540,7 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `getGroupChat(long gid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取Group历史消息, `mtypes=new byte[] { 30 }`
+* `getGroupChat(long gid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取Group历史消息, `mtypes=Arrays.asList((byte)30)`
     * `gid`: **(long)** Group id
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
@@ -560,7 +560,7 @@ client.connect();
                 * `GroupMsg.attrs` **(String)**
                 * `GroupMsg.mtime` **(long)**
 
-* `getRoomChat(long rid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取Room历史消息, `mtypes=new byte[] { 30 }`
+* `getRoomChat(long rid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取Room历史消息, `mtypes=Arrays.asList((byte)30)`
     * `rid`: **(long)** Room id
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
@@ -580,7 +580,7 @@ client.connect();
                 * `RoomMsg.attrs` **(String)**
                 * `RoomMsg.mtime` **(long)**
 
-* `getBroadcastChat(boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取广播历史消息, `mtypes=new byte[] { 30 }`
+* `getBroadcastChat(boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取广播历史消息, `mtypes=Arrays.asList((byte)30)`
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
@@ -599,7 +599,7 @@ client.connect();
                 * `BroadcastMsg.attrs` **(String)**
                 * `BroadcastMsg.mtime` **(long)**
 
-* `getP2PChat(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取P2P历史消息, `mtypes=new byte[] { 30 }`
+* `getP2PChat(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取P2P历史消息, `mtypes=Arrays.asList((byte)30)`
     * `uid`: **(long)** 获取和两个用户之间的历史消息
     * `ouid`: **(long)** 获取和两个用户之间的历史消息
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页

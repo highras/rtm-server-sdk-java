@@ -638,7 +638,7 @@ public class RTMClient extends BaseClient {
      * @param {long}                    begin
      * @param {long}                    end
      * @param {long}                    lastid
-     * @param {byte[]}                  mtypes
+     * @param {List(Byte)}              mtypes
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
      *
@@ -661,7 +661,7 @@ public class RTMClient extends BaseClient {
      * @param {long}                    mtime
      * </GroupMsg>
      */
-    public void getGroupMessage(long gid, boolean desc, int num, long begin, long end, long lastid, byte[] mtypes, int timeout, FPCallback.ICallback callback) {
+    public void getGroupMessage(long gid, boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback) {
         long salt = MidGenerator.gen();
         Map payload = new HashMap();
         payload.put("pid", this._pid);
@@ -683,7 +683,7 @@ public class RTMClient extends BaseClient {
             payload.put("lastid", lastid);
         }
 
-        if (mtypes != null && mtypes.length > 0) {
+        if (mtypes != null && mtypes.size() > 0) {
             payload.put("mtypes", mtypes);
         }
 
@@ -753,7 +753,7 @@ public class RTMClient extends BaseClient {
      * @param {long}                    begin
      * @param {long}                    end
      * @param {long}                    lastid
-     * @param {byte[]}                  mtypes
+     * @param {List(Byte)}              mtypes
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
      *
@@ -776,7 +776,7 @@ public class RTMClient extends BaseClient {
      * @param {long}                    mtime
      * </RoomMsg>
      */
-    public void getRoomMessage(long rid, boolean desc, int num, long begin, long end, long lastid, byte[] mtypes, int timeout, FPCallback.ICallback callback) {
+    public void getRoomMessage(long rid, boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback) {
         long salt = MidGenerator.gen();
         Map payload = new HashMap();
         payload.put("pid", this._pid);
@@ -798,7 +798,7 @@ public class RTMClient extends BaseClient {
             payload.put("lastid", lastid);
         }
 
-        if (mtypes != null && mtypes.length > 0) {
+        if (mtypes != null && mtypes.size() > 0) {
             payload.put("mtypes", mtypes);
         }
 
@@ -867,7 +867,7 @@ public class RTMClient extends BaseClient {
      * @param {long}                    begin
      * @param {long}                    end
      * @param {long}                    lastid
-     * @param {byte[]}                  mtypes
+     * @param {List(Byte)}              mtypes
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
      *
@@ -890,7 +890,7 @@ public class RTMClient extends BaseClient {
      * @param {long}                    mtime
      * </BroadcastMsg>
      */
-    public void getBroadcastMessage(boolean desc, int num, long begin, long end, long lastid, byte[] mtypes, int timeout, FPCallback.ICallback callback) {
+    public void getBroadcastMessage(boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback) {
         long salt = MidGenerator.gen();
         Map payload = new HashMap();
         payload.put("pid", this._pid);
@@ -911,7 +911,7 @@ public class RTMClient extends BaseClient {
             payload.put("lastid", lastid);
         }
 
-        if (mtypes != null && mtypes.length > 0) {
+        if (mtypes != null && mtypes.size() > 0) {
             payload.put("mtypes", mtypes);
         }
 
@@ -982,7 +982,7 @@ public class RTMClient extends BaseClient {
      * @param {long}                    begin
      * @param {long}                    end
      * @param {long}                    lastid
-     * @param {byte[]}                  mtypes
+     * @param {List(Byte)}              mtypes
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
      *
@@ -1005,7 +1005,7 @@ public class RTMClient extends BaseClient {
      * @param {long}                    mtime
      * </P2PMsg>
      */
-    public void getP2PMessage(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, byte[] mtypes, int timeout, FPCallback.ICallback callback) {
+    public void getP2PMessage(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback) {
         long salt = MidGenerator.gen();
         Map payload = new HashMap();
         payload.put("pid", this._pid);
@@ -1028,7 +1028,7 @@ public class RTMClient extends BaseClient {
             payload.put("lastid", lastid);
         }
 
-        if (mtypes != null && mtypes.length > 0) {
+        if (mtypes != null && mtypes.size() > 0) {
             payload.put("mtypes", mtypes);
         }
 
@@ -1291,7 +1291,7 @@ public class RTMClient extends BaseClient {
      * </GroupMsg>
      */
     public void getGroupChat(long gid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback) {
-        this.getGroupMessage(gid, desc, num, begin, end, lastid, new byte[] {(byte)30}, timeout, callback);
+        this.getGroupMessage(gid, desc, num, begin, end, lastid, Arrays.asList((byte)30), timeout, callback);
     }
 
     /**
@@ -1326,7 +1326,7 @@ public class RTMClient extends BaseClient {
      * </RoomMsg>
      */
     public void getRoomChat(long rid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback) {
-        this.getRoomMessage(rid, desc, num, begin, end, lastid, new byte[] {(byte)30}, timeout, callback);
+        this.getRoomMessage(rid, desc, num, begin, end, lastid, Arrays.asList((byte)30), timeout, callback);
     }
 
     /**
@@ -1360,7 +1360,7 @@ public class RTMClient extends BaseClient {
      * </BroadcastMsg>
      */
     public void getBroadcastChat(boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback) {
-        this.getBroadcastMessage(desc, num, begin, end, lastid, new byte[] {(byte)30}, timeout, callback);
+        this.getBroadcastMessage(desc, num, begin, end, lastid, Arrays.asList((byte)30), timeout, callback);
     }
 
     /**
@@ -1396,7 +1396,7 @@ public class RTMClient extends BaseClient {
      * </P2PMsg>
      */
     public void getP2PChat(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback) {
-        this.getP2PMessage(uid, ouid, desc, num, begin, end, lastid, new byte[] {(byte)30}, timeout, callback);
+        this.getP2PMessage(uid, ouid, desc, num, begin, end, lastid, Arrays.asList((byte)30), timeout, callback);
     }
 
     /**
