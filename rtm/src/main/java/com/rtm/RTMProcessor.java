@@ -313,12 +313,19 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      *
      * serverPush (3a)
      *
-     * @param {long}        data.from
-     * @param {long}        data.to
-     * @param {long}        data.mid
-     * @param {String}      data.msg
-     * @param {String}      data.attrs
-     * @param {long}        data.mtime
+     * @param {long}            data.from
+     * @param {long}            data.to
+     * @param {long}            data.mid
+     * @param {JsonString}      data.msg
+     * @param {String}          data.attrs
+     * @param {long}            data.mtime
+     *
+     * <JsonString>
+     * @param {string}          source
+     * @param {string}          target
+     * @param {string}          sourceText
+     * @param {string}          targetText
+     * </JsonString>
      */
     public void pushchat(Map data) {}
 
@@ -326,12 +333,19 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      *
      * ServerGate (3b)
      *
-     * @param {long}        data.from
-     * @param {long}        data.gid
-     * @param {long}        data.mid
-     * @param {String}      data.msg
-     * @param {String}      data.attrs
-     * @param {long}        data.mtime
+     * @param {long}            data.from
+     * @param {long}            data.gid
+     * @param {long}            data.mid
+     * @param {String}          data.msg
+     * @param {String}          data.attrs
+     * @param {long}            data.mtime
+     *
+     * <JsonString>
+     * @param {string}          source
+     * @param {string}          target
+     * @param {string}          sourceText
+     * @param {string}          targetText
+     * </JsonString>
      */
     public void pushgroupchat(Map data) {}
 
@@ -339,12 +353,19 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      *
      * ServerGate (3c)
      *
-     * @param {long}        data.from
-     * @param {long}        data.rid
-     * @param {long}        data.mid
-     * @param {String}      data.msg
-     * @param {String}      data.attrs
-     * @param {long}        data.mtime
+     * @param {long}            data.from
+     * @param {long}            data.rid
+     * @param {long}            data.mid
+     * @param {String}          data.msg
+     * @param {String}          data.attrs
+     * @param {long}            data.mtime
+     *
+     * <JsonString>
+     * @param {string}          source
+     * @param {string}          target
+     * @param {string}          sourceText
+     * @param {string}          targetText
+     * </JsonString>
      */
     public void pushroomchat(Map data) {}
 

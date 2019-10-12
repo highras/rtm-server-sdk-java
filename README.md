@@ -203,27 +203,39 @@ client.connect();
             * `data.from`: **(long)** 发送者 id
             * `data.to`: **(long)** 接收者 id
             * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-            * `data.msg`: **(String)** 消息内容
             * `data.attrs`: **(String)** 发送时附加的自定义内容
             * `data.mtime`: **(long)**
+            * `data.msg`: **(JsonString)** 消息内容
+                * `source`: **(String)** 原始消息语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
+                * `target`: **(String)** 翻译后的语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
+                * `sourceText`: **(String)** 原始消息
+                * `targetText`: **(String)** 翻译后的消息
 
     * `pushgroupchat`: RTMGate主动推送Group消息
         * `data`: **(Map(String, Object))**
             * `data.from`: **(long)** 发送者 id
             * `data.gid`: **(long)** Group id
             * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-            * `data.msg`: **(String)** 消息内容
             * `data.attrs`: **(String)** 发送时附加的自定义内容
             * `data.mtime`: **(long)**
+            * `data.msg`: **(JsonString)** 消息内容
+                * `source`: **(String)** 原始消息语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
+                * `target`: **(String)** 翻译后的语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
+                * `sourceText`: **(String)** 原始消息
+                * `targetText`: **(String)** 翻译后的消息 
 
     * `pushroomchat`: RTMGate主动推送Room消息
         * `data`: **(Map(String, Object))**
             * `data.from`: **(long)** 发送者 id
             * `data.rid`: **(long)** Room id
             * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-            * `data.msg`: **(String)** 消息内容
             * `data.attrs`: **(String)** 发送时附加的自定义内容
             * `data.mtime`: **(long)**
+            * `data.msg`: **(JsonString)** 消息内容
+                * `source`: **(String)** 原始消息语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
+                * `target`: **(String)** 翻译后的语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
+                * `sourceText`: **(String)** 原始消息
+                * `targetText`: **(String)** 翻译后的消息 
 
 #### API ####
 
