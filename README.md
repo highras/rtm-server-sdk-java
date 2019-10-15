@@ -479,7 +479,7 @@ client.connect();
 * `sendChat(long from, long to, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送消息, `mtype=(byte)30`
     * `from`: **(long)** 发送方 id
     * `to`: **(long)** 接收方uid
-    * `msg`: **(String)** 消息内容
+    * `msg`: **(String)** 消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
     * `attrs`: **(String)** 消息附加信息, 没有可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
@@ -492,7 +492,7 @@ client.connect();
 * `sendChats(long from, List<Long> tos, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送多人消息, `mtype=(byte)30`
     * `from`: **(long)** 发送方 id
     * `tos`: **(List(Long))** 接收方uids
-    * `msg`: **(String)** 消息内容
+    * `msg`: **(String)** 消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
     * `attrs`: **(String)** 消息附加信息, 没有可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
@@ -505,7 +505,7 @@ client.connect();
 * `sendGroupChat(long from, long gid, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送group消息, `mtype=(byte)30`
     * `from`: **(long)** 发送方 id
     * `gid`: **(long)** group id
-    * `msg`: **(String)** 消息内容
+    * `msg`: **(String)** 消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
     * `attrs`: **(String)** 消息附加信息, 可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
@@ -518,7 +518,7 @@ client.connect();
 * `sendRoomChat(long from, long rid, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送room消息, `mtype=(byte)30`
     * `from`: **(long)** 发送方 id
     * `rid`: **(long)** room id
-    * `msg`: **(String)** 消息内容
+    * `msg`: **(String)** 消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
     * `attrs`: **(String)** 消息附加信息, 可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
@@ -530,7 +530,7 @@ client.connect();
 
 * `broadcastChat(long from, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 广播消息(andmin id), `mtype=(byte)30`
     * `from`: **(long)** admin id
-    * `msg`: **(String)** 消息内容
+    * `msg`: **(String)** 消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
     * `attrs`: **(String)** 消息附加信息, 可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
