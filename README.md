@@ -311,7 +311,7 @@ client.connect();
 * `sendMessage(long from, long to, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送消息
     * `from`: **(long)** 发送方 id
     * `to`: **(long)** 接收方uid
-    * `mtype`: **(byte)** 消息类型
+    * `mtype`: **(byte)** 消息类型（请使用51-127，禁止使用50及以下的值）
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 没有可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
@@ -325,7 +325,7 @@ client.connect();
 * `sendMessages(long from, List<Long> tos, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送多人消息
     * `from`: **(long)** 发送方 id
     * `tos`: **(List(Long))** 接收方uids
-    * `mtype`: **(byte)** 消息类型
+    * `mtype`: **(byte)** 消息类型（请使用51-127，禁止使用50及以下的值）
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 没有可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
@@ -339,7 +339,7 @@ client.connect();
 * `sendGroupMessage(long from, long gid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送group消息
     * `from`: **(long)** 发送方 id
     * `gid`: **(long)** group id
-    * `mtype`: **(byte)** 消息类型
+    * `mtype`: **(byte)** 消息类型（请使用51-127，禁止使用50及以下的值）
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
@@ -353,7 +353,7 @@ client.connect();
 * `sendRoomMessage(long from, long rid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送room消息
     * `from`: **(long)** 发送方 id
     * `rid`: **(long)** room id
-    * `mtype`: **(byte)** 消息类型
+    * `mtype`: **(byte)** 消息类型（请使用51-127，禁止使用50及以下的值）
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
@@ -366,7 +366,7 @@ client.connect();
 
 * `broadcastMessage(long from, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 广播消息(andmin id)
     * `from`: **(long)** admin id
-    * `mtype`: **(byte)** 消息类型
+    * `mtype`: **(byte)** 消息类型（请使用51-127，禁止使用50及以下的值）
     * `msg`: **(String)** 消息内容
     * `attrs`: **(String)** 消息附加信息, 可传`""`
     * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
