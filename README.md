@@ -55,7 +55,7 @@ client.getEvent().addListener("connect", new FPEvent.IListener() {
     @Override
     public void fpEvent(EventData evd) {
         System.out.println("Connected!");
-        // 发送消息
+        // 发送业务消息
         client.sendMessage(778877, 778899, (byte) 8, "hello !", "", 0, 5 * 1000, new FPCallback.ICallback() {
             @Override
             public void callback(FPCallback cbd) {
@@ -138,33 +138,33 @@ client.connect();
             * `data.endpoint`: **(String)** 对应的RTMGate地址
             * `data.data`: **(String)** `预留`
 
-    * `pushmsg`: RTMGate主动推送P2P消息
+    * `pushmsg`: RTMGate主动推送P2P业务消息
         * `data`: **(Map(String, Object))**
             * `data.from`: **(long)** 发送者 id
             * `data.to`: **(long)** 接收者 id
-            * `data.mtype`: **(byte)** 消息类型
-            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-            * `data.msg`: **(String)** 消息内容
+            * `data.mtype`: **(byte)** 业务消息类型
+            * `data.mid`: **(long)** 业务消息 id, 当前链接会话内唯一
+            * `data.msg`: **(String)** 业务消息内容
             * `data.attrs`: **(String)** 发送时附加的自定义内容
             * `data.mtime`: **(long)**
 
-    * `pushgroupmsg`: RTMGate主动推送Group消息
+    * `pushgroupmsg`: RTMGate主动推送Group业务消息
         * `data`: **(Map(String, Object))**
             * `data.from`: **(long)** 发送者 id
             * `data.gid`: **(long)** Group id
-            * `data.mtype`: **(byte)** 消息类型
-            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-            * `data.msg`: **(String)** 消息内容
+            * `data.mtype`: **(byte)** 业务消息类型
+            * `data.mid`: **(long)** 业务消息 id, 当前链接会话内唯一
+            * `data.msg`: **(String)** 业务消息内容
             * `data.attrs`: **(String)** 发送时附加的自定义内容
             * `data.mtime`: **(long)**
 
-    * `pushroommsg`: RTMGate主动推送Room消息
+    * `pushroommsg`: RTMGate主动推送Room业务消息
         * `data`: **(Map(String, Object))**
             * `data.from`: **(long)** 发送者 id
             * `data.rid`: **(long)** Room id
-            * `data.mtype`: **(byte)** 消息类型
-            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
-            * `data.msg`: **(String)** 消息内容
+            * `data.mtype`: **(byte)** 业务消息类型
+            * `data.mid`: **(long)** 业务消息 id, 当前链接会话内唯一
+            * `data.msg`: **(String)** 业务消息内容
             * `data.attrs`: **(String)** 发送时附加的自定义内容
             * `data.mtime`: **(long)**
 
@@ -173,7 +173,7 @@ client.connect();
             * `data.from`: **(long)** 发送者 id
             * `data.to`: **(long)** 接收者 id
             * `data.mtype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
-            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
+            * `data.mid`: **(long)** 业务文件消息 id, 当前链接会话内唯一
             * `data.msg`: **(String)** 文件获取地址(url)
             * `data.attrs`: **(String)** 发送时附加的自定义内容
             * `data.mtime`: **(long)**
@@ -183,7 +183,7 @@ client.connect();
             * `data.from`: **(long)** 发送者 id
             * `data.gid`: **(long)** Group id
             * `data.mtype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
-            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
+            * `data.mid`: **(long)** 业务文件消息 id, 当前链接会话内唯一
             * `data.msg`: **(String)** 文件获取地址(url)
             * `data.attrs`: **(String)** 发送时附加的自定义内容
             * `data.mtime`: **(long)**
@@ -193,49 +193,49 @@ client.connect();
             * `data.from`: **(long)** 发送者 id
             * `data.rid`: **(long)** Room id
             * `data.mtype`: **(byte)** 文件类型, 请参考 `RTMConfig.FILE_TYPE` 成员
-            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
+            * `data.mid`: **(long)** 业务文件消息 id, 当前链接会话内唯一
             * `data.msg`: **(String)** 文件获取地址(url)
             * `data.attrs`: **(String)** 发送时附加的自定义内容
             * `data.mtime`: **(long)**
 
-    * `pushchat`: RTMGate主动推送P2P消息
+    * `pushchat`: RTMGate主动推送P2P聊天消息
         * `data`: **(Map(String, Object))**
             * `data.from`: **(long)** 发送者 id
             * `data.to`: **(long)** 接收者 id
-            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
+            * `data.mid`: **(long)** 聊天消息 id, 当前链接会话内唯一
             * `data.attrs`: **(String)** 发送时附加的自定义内容
             * `data.mtime`: **(long)**
-            * `data.msg`: **(JsonString)** 消息内容
-                * `source`: **(String)** 原始消息语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
+            * `data.msg`: **(JsonString)** 聊天消息内容
+                * `source`: **(String)** 原始聊天消息语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
                 * `target`: **(String)** 翻译后的语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
-                * `sourceText`: **(String)** 原始消息
-                * `targetText`: **(String)** 翻译后的消息
+                * `sourceText`: **(String)** 原始聊天消息
+                * `targetText`: **(String)** 翻译后的聊天消息
 
-    * `pushgroupchat`: RTMGate主动推送Group消息
+    * `pushgroupchat`: RTMGate主动推送Group聊天消息
         * `data`: **(Map(String, Object))**
             * `data.from`: **(long)** 发送者 id
             * `data.gid`: **(long)** Group id
-            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
+            * `data.mid`: **(long)** 聊天消息 id, 当前链接会话内唯一
             * `data.attrs`: **(String)** 发送时附加的自定义内容
             * `data.mtime`: **(long)**
-            * `data.msg`: **(JsonString)** 消息内容
-                * `source`: **(String)** 原始消息语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
+            * `data.msg`: **(JsonString)** 聊天消息内容
+                * `source`: **(String)** 原始聊天消息语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
                 * `target`: **(String)** 翻译后的语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
-                * `sourceText`: **(String)** 原始消息
-                * `targetText`: **(String)** 翻译后的消息 
+                * `sourceText`: **(String)** 原始聊天消息
+                * `targetText`: **(String)** 翻译后的聊天消息 
 
-    * `pushroomchat`: RTMGate主动推送Room消息
+    * `pushroomchat`: RTMGate主动推送Room聊天消息
         * `data`: **(Map(String, Object))**
             * `data.from`: **(long)** 发送者 id
             * `data.rid`: **(long)** Room id
-            * `data.mid`: **(long)** 消息 id, 当前链接会话内唯一
+            * `data.mid`: **(long)** 聊天消息 id, 当前链接会话内唯一
             * `data.attrs`: **(String)** 发送时附加的自定义内容
             * `data.mtime`: **(long)**
-            * `data.msg`: **(JsonString)** 消息内容
-                * `source`: **(String)** 原始消息语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
+            * `data.msg`: **(JsonString)** 聊天消息内容
+                * `source`: **(String)** 原始聊天消息语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
                 * `target`: **(String)** 翻译后的语言类型, 参考`RTMConfig.TRANS_LANGUAGE`成员
-                * `sourceText`: **(String)** 原始消息
-                * `targetText`: **(String)** 翻译后的消息 
+                * `sourceText`: **(String)** 原始聊天消息
+                * `targetText`: **(String)** 翻译后的聊天消息 
 
 #### API ####
 
@@ -308,13 +308,13 @@ client.connect();
             * `payload`: **(Map)**
             * `exception`: **(Exception)**
 
-* `sendMessage(long from, long to, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送消息
+* `sendMessage(long from, long to, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送业务消息
     * `from`: **(long)** 发送方 id
     * `to`: **(long)** 接收方uid
-    * `mtype`: **(byte)** 消息类型（请使用51-127，禁止使用50及以下的值）
-    * `msg`: **(String)** 消息内容
-    * `attrs`: **(String)** 消息附加信息, 没有可传`""`
-    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `mtype`: **(byte)** 业务消息类型（请使用51-127，禁止使用50及以下的值）
+    * `msg`: **(String)** 业务消息内容
+    * `attrs`: **(String)** 业务消息附加信息, 没有可传`""`
+    * `mid`: **(long)** 业务消息 id, 用于过滤重复业务消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -322,13 +322,13 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `sendMessages(long from, List<Long> tos, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送多人消息
+* `sendMessages(long from, List<Long> tos, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送多人业务消息
     * `from`: **(long)** 发送方 id
     * `tos`: **(List(Long))** 接收方uids
-    * `mtype`: **(byte)** 消息类型（请使用51-127，禁止使用50及以下的值）
-    * `msg`: **(String)** 消息内容
-    * `attrs`: **(String)** 消息附加信息, 没有可传`""`
-    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `mtype`: **(byte)** 业务消息类型（请使用51-127，禁止使用50及以下的值）
+    * `msg`: **(String)** 业务消息内容
+    * `attrs`: **(String)** 业务消息附加信息, 没有可传`""`
+    * `mid`: **(long)** 业务消息 id, 用于过滤重复业务消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -336,13 +336,13 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `sendGroupMessage(long from, long gid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送group消息
+* `sendGroupMessage(long from, long gid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送group业务消息
     * `from`: **(long)** 发送方 id
     * `gid`: **(long)** group id
-    * `mtype`: **(byte)** 消息类型（请使用51-127，禁止使用50及以下的值）
-    * `msg`: **(String)** 消息内容
-    * `attrs`: **(String)** 消息附加信息, 可传`""`
-    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `mtype`: **(byte)** 业务消息类型（请使用51-127，禁止使用50及以下的值）
+    * `msg`: **(String)** 业务消息内容
+    * `attrs`: **(String)** 业务消息附加信息, 可传`""`
+    * `mid`: **(long)** 业务消息 id, 用于过滤重复业务消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -350,13 +350,13 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `sendRoomMessage(long from, long rid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送room消息
+* `sendRoomMessage(long from, long rid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送room业务消息
     * `from`: **(long)** 发送方 id
     * `rid`: **(long)** room id
-    * `mtype`: **(byte)** 消息类型（请使用51-127，禁止使用50及以下的值）
-    * `msg`: **(String)** 消息内容
-    * `attrs`: **(String)** 消息附加信息, 可传`""`
-    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `mtype`: **(byte)** 业务消息类型（请使用51-127，禁止使用50及以下的值）
+    * `msg`: **(String)** 业务消息内容
+    * `attrs`: **(String)** 业务消息附加信息, 可传`""`
+    * `mid`: **(long)** 业务消息 id, 用于过滤重复业务消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -364,12 +364,12 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `broadcastMessage(long from, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 广播消息(andmin id)
+* `broadcastMessage(long from, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 广播业务消息(andmin id)
     * `from`: **(long)** admin id
-    * `mtype`: **(byte)** 消息类型（请使用51-127，禁止使用50及以下的值）
-    * `msg`: **(String)** 消息内容
-    * `attrs`: **(String)** 消息附加信息, 可传`""`
-    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `mtype`: **(byte)** 业务消息类型（请使用51-127，禁止使用50及以下的值）
+    * `msg`: **(String)** 业务消息内容
+    * `attrs`: **(String)** 业务消息附加信息, 可传`""`
+    * `mid`: **(long)** 业务消息 id, 用于过滤重复业务消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -377,14 +377,14 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `getGroupMessage(long gid, boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback)`: 获取Group历史消息
+* `getGroupMessage(long gid, boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback)`: 获取Group历史业务消息
     * `gid`: **(long)** Group id
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
     * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
-    * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
-    * `mtypes`: **(List(Byte))** 获取历史消息的消息类型集合
+    * `lastid`: **(long)** 最后一条业务消息的id, 第一次默认传`0`, 条件：`> or <`
+    * `mtypes`: **(List(Byte))** 获取历史业务消息的类型集合
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -399,14 +399,14 @@ client.connect();
                 * `GroupMsg.attrs` **(String)**
                 * `GroupMsg.mtime` **(long)**
 
-* `getRoomMessage(long rid, boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback)`: 获取Room历史消息
+* `getRoomMessage(long rid, boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback)`: 获取Room历史业务消息
     * `rid`: **(long)** Room id
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
     * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
-    * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
-    * `mtypes`: **(List(Byte))** 获取历史消息的消息类型集合
+    * `lastid`: **(long)** 最后一条业务消息的id, 第一次默认传`0`, 条件：`> or <`
+    * `mtypes`: **(List(Byte))** 获取历史业务消息的类型集合
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -421,13 +421,13 @@ client.connect();
                 * `RoomMsg.attrs` **(String)**
                 * `RoomMsg.mtime` **(long)**
 
-* `getBroadcastMessage(boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback)`: 获取广播历史消息
+* `getBroadcastMessage(boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback)`: 获取广播历史业务消息
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
     * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
-    * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
-    * `mtypes`: **(List(Byte))** 获取历史消息的消息类型集合
+    * `lastid`: **(long)** 最后一条业务消息的id, 第一次默认传`0`, 条件：`> or <`
+    * `mtypes`: **(List(Byte))** 获取历史业务消息的类型集合
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -442,15 +442,15 @@ client.connect();
                 * `BroadcastMsg.attrs` **(String)**
                 * `BroadcastMsg.mtime` **(long)**
 
-* `getP2PMessage(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback)`: 获取P2P历史消息
-    * `uid`: **(long)** 获取和两个用户之间的历史消息
-    * `ouid`: **(long)** 获取和两个用户之间的历史消息
+* `getP2PMessage(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, List<Byte> mtypes, int timeout, FPCallback.ICallback callback)`: 获取P2P历史业务消息
+    * `uid`: **(long)** 获取和两个用户之间的历史业务消息
+    * `ouid`: **(long)** 获取和两个用户之间的历史业务消息
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
     * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
-    * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
-    * `mtypes`: **(List(Byte))** 获取历史消息的消息类型集合
+    * `lastid`: **(long)** 最后一条业务消息的id, 第一次默认传`0`, 条件：`> or <`
+    * `mtypes`: **(List(Byte))** 获取历史业务消息的类型集合
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -465,23 +465,23 @@ client.connect();
                 * `P2PMsg.attrs` **(String)**
                 * `P2PMsg.mtime` **(long)**
 
-* `deleteMessage(long mid, long from, long xid, byte type, int timeout, FPCallback.ICallback callback)`: 删除消息
-    * `mid`: **(long)** 消息 id
+* `deleteMessage(long mid, long from, long xid, byte type, int timeout, FPCallback.ICallback callback)`: 删除业务消息
+    * `mid`: **(long)** 业务消息 id
     * `from`: **(long)** 发送方 id
     * `xid`: **(long)** 接收放 id, `rid/gid/uid`
-    * `type`: **(byte)** 消息发送分类 `1:P2P, 2:Group, 3:Room, 4:Broadcast`
+    * `type`: **(byte)** 业务消息发送分类 `1:P2P, 2:Group, 3:Room, 4:Broadcast`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
             * `payload`: **(Map)**
             * `exception`: **(Exception)**
 
-* `sendChat(long from, long to, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送消息, `mtype=(byte)30`
+* `sendChat(long from, long to, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送聊天消息, `mtype=(byte)30`
     * `from`: **(long)** 发送方 id
     * `to`: **(long)** 接收方uid
-    * `msg`: **(String)** 消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
-    * `attrs`: **(String)** 消息附加信息, 没有可传`""`
-    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `msg`: **(String)** 聊天消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
+    * `attrs`: **(String)** 聊天消息附加信息, 没有可传`""`
+    * `mid`: **(long)** 聊天消息 id, 用于过滤重复聊天消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -489,12 +489,12 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `sendChats(long from, List<Long> tos, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送多人消息, `mtype=(byte)30`
+* `sendChats(long from, List<Long> tos, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送多人聊天消息, `mtype=(byte)30`
     * `from`: **(long)** 发送方 id
     * `tos`: **(List(Long))** 接收方uids
-    * `msg`: **(String)** 消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
-    * `attrs`: **(String)** 消息附加信息, 没有可传`""`
-    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `msg`: **(String)** 聊天消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
+    * `attrs`: **(String)** 聊天消息附加信息, 没有可传`""`
+    * `mid`: **(long)** 聊天消息 id, 用于过滤重复聊天消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -502,12 +502,12 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `sendGroupChat(long from, long gid, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送group消息, `mtype=(byte)30`
+* `sendGroupChat(long from, long gid, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送group聊天消息, `mtype=(byte)30`
     * `from`: **(long)** 发送方 id
     * `gid`: **(long)** group id
-    * `msg`: **(String)** 消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
-    * `attrs`: **(String)** 消息附加信息, 可传`""`
-    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `msg`: **(String)** 聊天消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
+    * `attrs`: **(String)** 聊天消息附加信息, 可传`""`
+    * `mid`: **(long)** 聊天消息 id, 用于过滤重复聊天消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -515,12 +515,12 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `sendRoomChat(long from, long rid, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送room消息, `mtype=(byte)30`
+* `sendRoomChat(long from, long rid, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 发送room聊天消息, `mtype=(byte)30`
     * `from`: **(long)** 发送方 id
     * `rid`: **(long)** room id
-    * `msg`: **(String)** 消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
-    * `attrs`: **(String)** 消息附加信息, 可传`""`
-    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `msg`: **(String)** 聊天消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
+    * `attrs`: **(String)** 聊天消息附加信息, 可传`""`
+    * `mid`: **(long)** 聊天消息 id, 用于过滤重复聊天消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -528,11 +528,11 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `broadcastChat(long from, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 广播消息(andmin id), `mtype=(byte)30`
+* `broadcastChat(long from, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback)`: 广播聊天消息(andmin id), `mtype=(byte)30`
     * `from`: **(long)** admin id
-    * `msg`: **(String)** 消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
-    * `attrs`: **(String)** 消息附加信息, 可传`""`
-    * `mid`: **(long)** 消息 id, 用于过滤重复消息, 非重发时为`0`
+    * `msg`: **(String)** 聊天消息内容，附加修饰信息不要放这里，方便后继的操作，比如翻译，敏感词过滤等等
+    * `attrs`: **(String)** 聊天消息附加信息, 可传`""`
+    * `mid`: **(long)** 聊天消息 id, 用于过滤重复聊天消息, 非重发时为`0`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -540,13 +540,13 @@ client.connect();
             * `payload`: **(Map(mtime:long))**
             * `exception`: **(Exception)**
 
-* `getGroupChat(long gid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取Group历史消息, `mtypes=Arrays.asList((byte)30)`
+* `getGroupChat(long gid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取Group历史聊天消息, `mtypes=Arrays.asList((byte)30)`
     * `gid`: **(long)** Group id
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
     * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
-    * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
+    * `lastid`: **(long)** 最后一条聊天消息的id, 第一次默认传`0`, 条件：`> or <`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -560,13 +560,13 @@ client.connect();
                 * `GroupMsg.attrs` **(String)**
                 * `GroupMsg.mtime` **(long)**
 
-* `getRoomChat(long rid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取Room历史消息, `mtypes=Arrays.asList((byte)30)`
+* `getRoomChat(long rid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取Room历史聊天消息, `mtypes=Arrays.asList((byte)30)`
     * `rid`: **(long)** Room id
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
     * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
-    * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
+    * `lastid`: **(long)** 最后一条聊天消息的id, 第一次默认传`0`, 条件：`> or <`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -580,12 +580,12 @@ client.connect();
                 * `RoomMsg.attrs` **(String)**
                 * `RoomMsg.mtime` **(long)**
 
-* `getBroadcastChat(boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取广播历史消息, `mtypes=Arrays.asList((byte)30)`
+* `getBroadcastChat(boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取广播历史聊天消息, `mtypes=Arrays.asList((byte)30)`
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
     * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
-    * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
+    * `lastid`: **(long)** 最后一条聊天消息的id, 第一次默认传`0`, 条件：`> or <`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -599,14 +599,14 @@ client.connect();
                 * `BroadcastMsg.attrs` **(String)**
                 * `BroadcastMsg.mtime` **(long)**
 
-* `getP2PChat(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取P2P历史消息, `mtypes=Arrays.asList((byte)30)`
-    * `uid`: **(long)** 获取和两个用户之间的历史消息
-    * `ouid`: **(long)** 获取和两个用户之间的历史消息
+* `getP2PChat(long uid, long ouid, boolean desc, int num, long begin, long end, long lastid, int timeout, FPCallback.ICallback callback)`: 获取P2P历史聊天消息, `mtypes=Arrays.asList((byte)30)`
+    * `uid`: **(long)** 获取和两个用户之间的历史聊天消息
+    * `ouid`: **(long)** 获取和两个用户之间的历史聊天消息
     * `desc`: **(boolean)** `true`: 则从`end`的时间戳开始倒序翻页, `false`: 则从`begin`的时间戳顺序翻页
     * `num`: **(int)** 获取数量, **一次最多获取20条, 建议10条**
     * `begin`: **(long)** 开始时间戳, 毫秒, 默认`0`, 条件：`>=`
     * `end`: **(long)** 结束时间戳, 毫秒, 默认`0`, 条件：`<=`
-    * `lastid`: **(long)** 最后一条消息的id, 第一次默认传`0`, 条件：`> or <`
+    * `lastid`: **(long)** 最后一条聊天消息的id, 第一次默认传`0`, 条件：`> or <`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
@@ -620,20 +620,20 @@ client.connect();
                 * `P2PMsg.attrs` **(String)**
                 * `P2PMsg.mtime` **(long)**
 
-* `deleteChat(long mid, long from, long xid, byte type, int timeout, FPCallback.ICallback callback)`: 删除消息
-    * `mid`: **(long)** 消息 id
+* `deleteChat(long mid, long from, long xid, byte type, int timeout, FPCallback.ICallback callback)`: 删除聊天消息
+    * `mid`: **(long)** 聊天消息 id
     * `from`: **(long)** 发送方 id
     * `xid`: **(long)** 接收放 id, `rid/gid/uid`
-    * `type`: **(byte)** 消息发送分类 `1:P2P, 2:Group, 3:Room, 4:Broadcast`
+    * `type`: **(byte)** 聊天消息发送分类 `1:P2P, 2:Group, 3:Room, 4:Broadcast`
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
             * `payload`: **(Map)**
             * `exception`: **(Exception)**
 
-* `translate(String text, String src, String dst, String type, String profanity, int timeout, FPCallback.ICallback callback)`: 翻译消息, 返回{source:原始消息语言类型,target:翻译后的语言类型,sourceText:原始消息,targetText:翻译后的消息}
-    * `text`: **(String)** 待翻译的原始消息
-    * `src`: **(String)** 待翻译的消息的语言类型, 参考RTMConfig.TRANS_LANGUAGE成员
+* `translate(String text, String src, String dst, String type, String profanity, int timeout, FPCallback.ICallback callback)`: 翻译消息, 返回{source:原始聊天消息语言类型,target:翻译后的语言类型,sourceText:原始聊天消息,targetText:翻译后的聊天消息}
+    * `text`: **(String)** 待翻译的原始聊天消息
+    * `src`: **(String)** 待翻译的聊天消息的语言类型, 参考RTMConfig.TRANS_LANGUAGE成员
     * `dst`: **(String)** 本次翻译的目标语言类型, 参考RTMConfig.TRANS_LANGUAGE成员
     * `type`: **(String)** 可选值为`chat`或`mail`, 默认:`chat`
     * `profanity`: **(String)** 敏感语过滤, 设置为以下三项之一: `off` `stop` `censor`
