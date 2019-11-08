@@ -107,7 +107,7 @@ public class RTMClient {
         this.delayConnect(timestamp);
     }
 
-    public RTMProcessor rtmProcessor() {
+    public RTMProcessor getProcessor() {
         synchronized (self_locker) {
             return this._processor;
         }
@@ -119,16 +119,7 @@ public class RTMClient {
         return this._event;
     }
 
-    public FPPackage getPackage() {
-        synchronized (self_locker) {
-            if (this._baseClient != null) {
-                return this._baseClient.getPackage();
-            }
-        }
-        return null;
-    }
-
-    public CallbackData sendQuest(FPData data, int timeout) {
+    private CallbackData sendQuest(FPData data, int timeout) {
         synchronized (self_locker) {
             if (this._baseClient != null) {
                 return this._baseClient.sendQuest(data, timeout);
@@ -137,7 +128,7 @@ public class RTMClient {
         return new CallbackData(new Exception("connnect first"));
     }
 
-    public void sendQuest(FPData data, FPCallback.ICallback callback, int timeout) {
+    private void sendQuest(FPData data, FPCallback.ICallback callback, int timeout) {
         synchronized (self_locker) {
             if (this._baseClient != null) {
                 this._baseClient.sendQuest(data, callback, timeout);
@@ -145,7 +136,7 @@ public class RTMClient {
         }
     }
 
-    public void sendQuest(String method, Map<String, Object> payload, FPCallback.ICallback callback, int timeout) {
+    private void sendQuest(String method, Map<String, Object> payload, FPCallback.ICallback callback, int timeout) {
         FPData data = new FPData();
         data.setFlag(0x1);
         data.setMtype(0x1);
@@ -2047,7 +2038,7 @@ public class RTMClient {
      * @param {CallbackData}                cbdata
      *
      * <CallbackData>
-     * @param {Map(text:String)}            payload
+     * @param {Map(text:String,lang:String)}    payload
      * @param {Exception}                   exception
      * </CallbackData>
      */
@@ -3596,6 +3587,8 @@ public class RTMClient {
      * @param {long}                    to
      * @param {byte}                    mtype
      * @param {byte[]}                  fileBytes
+     * @param {String}                  fileExt
+     * @param {String}                  fileName
      * @param {long}                    mid
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
@@ -3608,9 +3601,11 @@ public class RTMClient {
      * @param {Exception}               exception
      * @param {long}                    mid
      */
-    public void sendFile(long from, long to, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback) {
+    public void sendFile(long from, long to, byte mtype, byte[] fileBytes, String fileExt, String fileName, long mid, int timeout, FPCallback.ICallback callback) {
         if (fileBytes == null || fileBytes.length <= 0) {
-            System.err.println("empty file bytes!");
+            if (callback != null) {
+                callback.callback(new CallbackData(new Exception("empty file bytes!")));
+            }
             return;
         }
 
@@ -3621,6 +3616,8 @@ public class RTMClient {
                 put("to", to);
                 put("mtype", mtype);
                 put("file", fileBytes);
+                put("ext", fileExt);
+                put("filename", fileName);
             }
         };
         this.fileSendProcess(ops, mid, timeout, callback);
@@ -3634,6 +3631,8 @@ public class RTMClient {
      * @param {List(Long)}              tos
      * @param {byte}                    mtype
      * @param {byte[]}                  fileBytes
+     * @param {String}                  fileExt
+     * @param {String}                  fileName
      * @param {long}                    mid
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
@@ -3646,9 +3645,11 @@ public class RTMClient {
      * @param {Exception}               exception
      * @param {long}                    mid
      */
-    public void sendFiles(long from, List<Long> tos, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback) {
+    public void sendFiles(long from, List<Long> tos, byte mtype, byte[] fileBytes, String fileExt, String fileName, long mid, int timeout, FPCallback.ICallback callback) {
         if (fileBytes == null || fileBytes.length <= 0) {
-            System.err.println("empty file bytes!");
+            if (callback != null) {
+                callback.callback(new CallbackData(new Exception("empty file bytes!")));
+            }
             return;
         }
 
@@ -3659,6 +3660,8 @@ public class RTMClient {
                 put("tos", tos);
                 put("mtype", mtype);
                 put("file", fileBytes);
+                put("ext", fileExt);
+                put("filename", fileName);
             }
         };
         this.fileSendProcess(ops, mid, timeout, callback);
@@ -3672,6 +3675,8 @@ public class RTMClient {
      * @param {long}                    gid
      * @param {byte}                    mtype
      * @param {byte[]}                  fileBytes
+     * @param {String}                  fileExt
+     * @param {String}                  fileName
      * @param {long}                    mid
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
@@ -3684,9 +3689,11 @@ public class RTMClient {
      * @param {Exception}               exception
      * @param {long}                    mid
      */
-    public void sendGroupFile(long from, long gid, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback) {
+    public void sendGroupFile(long from, long gid, byte mtype, byte[] fileBytes, String fileExt, String fileName, long mid, int timeout, FPCallback.ICallback callback) {
         if (fileBytes == null || fileBytes.length <= 0) {
-            System.err.println("empty file bytes!");
+            if (callback != null) {
+                callback.callback(new CallbackData(new Exception("empty file bytes!")));
+            }
             return;
         }
 
@@ -3697,6 +3704,8 @@ public class RTMClient {
                 put("gid", gid);
                 put("mtype", mtype);
                 put("file", fileBytes);
+                put("ext", fileExt);
+                put("filename", fileName);
             }
         };
         this.fileSendProcess(ops, mid, timeout, callback);
@@ -3710,6 +3719,8 @@ public class RTMClient {
      * @param {long}                    rid
      * @param {byte}                    mtype
      * @param {byte[]}                  fileBytes
+     * @param {String}                  fileExt
+     * @param {String}                  fileName
      * @param {long}                    mid
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
@@ -3722,9 +3733,11 @@ public class RTMClient {
      * @param {Exception}               exception
      * @param {long}                    mid
      */
-    public void sendRoomFile(long from, long rid, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback) {
+    public void sendRoomFile(long from, long rid, byte mtype, byte[] fileBytes, String fileExt, String fileName, long mid, int timeout, FPCallback.ICallback callback) {
         if (fileBytes == null || fileBytes.length <= 0) {
-            System.err.println("empty file bytes!");
+            if (callback != null) {
+                callback.callback(new CallbackData(new Exception("empty file bytes!")));
+            }
             return;
         }
 
@@ -3735,6 +3748,8 @@ public class RTMClient {
                 put("rid", rid);
                 put("mtype", mtype);
                 put("file", fileBytes);
+                put("ext", fileExt);
+                put("filename", fileName);
             }
         };
         this.fileSendProcess(ops, mid, timeout, callback);
@@ -3747,6 +3762,8 @@ public class RTMClient {
      * @param {long}                    from
      * @param {byte}                    mtype
      * @param {byte[]}                  fileBytes
+     * @param {String}                  fileExt
+     * @param {String}                  fileName
      * @param {long}                    mid
      * @param {int}                     timeout
      * @param {FPCallback.ICallback}    callback
@@ -3759,9 +3776,11 @@ public class RTMClient {
      * @param {Exception}               exception
      * @param {long}                    mid
      */
-    public void broadcastFile(long from, byte mtype, byte[] fileBytes, long mid, int timeout, FPCallback.ICallback callback) {
+    public void broadcastFile(long from, byte mtype, byte[] fileBytes, String fileExt, String fileName, long mid, int timeout, FPCallback.ICallback callback) {
         if (fileBytes == null || fileBytes.length <= 0) {
-            System.err.println("empty file bytes!");
+            if (callback != null) {
+                callback.callback(new CallbackData(new Exception("empty file bytes!")));
+            }
             return;
         }
 
@@ -3771,12 +3790,14 @@ public class RTMClient {
                 put("from", from);
                 put("mtype", mtype);
                 put("file", fileBytes);
+                put("ext", fileExt);
+                put("filename", fileName);
             }
         };
         this.fileSendProcess(ops, mid, timeout, callback);
     }
 
-    private void fileSendProcess(Map ops, long mid, int timeout, FPCallback.ICallback callback) {
+    private void fileSendProcess(Map<String, Object> ops, long mid, int timeout, FPCallback.ICallback callback) {
         if (mid == 0) {
             mid = MidGenerator.gen();
         }
@@ -3870,7 +3891,7 @@ public class RTMClient {
                 }
 
                 synchronized (self_locker) {
-                    fileClient.send(self._sender, (String) fops.get("cmd"), (byte[]) fops.get("file"), token, payload, ftimeout, fcb);
+                    fileClient.send(self._sender, ops, token, payload, ftimeout, fcb);
                 }
             }
         }, timeout);
@@ -4079,22 +4100,54 @@ public class RTMClient {
          * @param {int}                  timeout
          * @param {FPCallback.ICallback} callback
          */
-        public void send(RTMSender sender, String method, byte[] fileBytes, String token, Map payload, int timeout, FPCallback.ICallback callback) {
+        public void send(RTMSender sender, Map<String, Object> ops, String token, Map payload, int timeout, FPCallback.ICallback callback) {
+            String method = null;
+            if (ops.containsKey("cmd")){
+                method = (String) ops.get("cmd");
+            }
+            if (method == null || method.isEmpty()) {
+                if (callback != null) {
+                    callback.callback(new CallbackData(new Exception("wrong cmd!")));
+                }
+                return;
+            }
+
+            byte[] fileBytes = null;
+            if (ops.containsKey("file")){
+                fileBytes = (byte[]) ops.get("file");
+            }
             String fileMd5 = FPManager.getInstance().md5(fileBytes).toLowerCase();
             String sign = FPManager.getInstance().md5(fileMd5.concat(":").concat(token)).toLowerCase();
             if (sign == null || sign.isEmpty()) {
-                ErrorRecorder.getInstance().recordError(new Exception("wrong sign!"));
+                if (callback != null) {
+                    callback.callback(new CallbackData(new Exception("wrong sign!")));
+                }
                 return;
             }
+
             if (!this.hasConnect()) {
                 this.connect();
             }
 
+            String fileExt = null;
+            if (ops.containsKey("ext")) {
+                fileExt = (String) ops.get("ext");
+            }
+            String fileName = null;
+            if (ops.containsKey("filename")) {
+                fileName = (String) ops.get("filename");
+            }
             Map<String, Object> attrs = new HashMap<String, Object>() {
                 {
                     put("sign", sign);
                 }
             };
+            if (fileExt != null && !fileExt.isEmpty()) {
+                attrs.put("ext", fileExt);
+            }
+            if (fileName != null && !fileName.isEmpty()) {
+                attrs.put("filename", fileName);
+            }
 
             payload.put("token", token);
             payload.put("file", fileBytes);

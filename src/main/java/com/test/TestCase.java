@@ -1,7 +1,6 @@
 package com.test;
 
 import com.fpnn.ErrorRecorder;
-import com.fpnn.FPClient;
 import com.fpnn.callback.CallbackData;
 import com.fpnn.callback.FPCallback;
 import com.fpnn.event.EventData;
@@ -56,7 +55,7 @@ public class TestCase {
             false,
             false
         );
-        RTMProcessor processor = this._client.rtmProcessor();
+        RTMProcessor processor = this._client.getProcessor();
         processor.addPushService(RTMConfig.SERVER_PUSH.recvMessage, new RTMProcessor.IService() {
             @Override
             public void Service(Map<String, Object> data) {
@@ -1248,7 +1247,7 @@ public class TestCase {
         this.threadSleep(sleep);
         //fileGate (1)
         //---------------------------------sendFile--------------------------------------
-        this._client.sendFile(from, to, (byte)50, fileBytes, 0, 30 * 1000, new FPCallback.ICallback() {
+        this._client.sendFile(from, to, (byte)50, fileBytes, null, null, 0, 30 * 1000, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
@@ -1266,7 +1265,7 @@ public class TestCase {
         this.threadSleep(sleep);
         //fileGate (2)
         //---------------------------------sendFiles--------------------------------------
-        this._client.sendFiles(from, tos, (byte)50, fileBytes, 0, 30 * 1000, new FPCallback.ICallback() {
+        this._client.sendFiles(from, tos, (byte)50, fileBytes, "", "", 0, 30 * 1000, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
@@ -1284,7 +1283,7 @@ public class TestCase {
         this.threadSleep(sleep);
         //fileGate (3)
         //---------------------------------sendGroupFile--------------------------------------
-        this._client.sendGroupFile(from, gid, (byte)50, fileBytes, 0, 30 * 1000, new FPCallback.ICallback() {
+        this._client.sendGroupFile(from, gid, (byte)50, fileBytes, "jpg", "pic",0, 30 * 1000, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
@@ -1302,7 +1301,7 @@ public class TestCase {
         this.threadSleep(sleep);
         //fileGate (4)
         //---------------------------------sendRoomFile--------------------------------------
-        this._client.sendRoomFile(from, rid, (byte)50, fileBytes, 0, 30 * 1000, new FPCallback.ICallback() {
+        this._client.sendRoomFile(from, rid, (byte)50, fileBytes, null, null, 0, 30 * 1000, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
@@ -1320,7 +1319,7 @@ public class TestCase {
         this.threadSleep(sleep);
         //fileGate (5)
         //---------------------------------broadcastFile--------------------------------------
-        this._client.broadcastFile(from, (byte)50, fileBytes, 0, 30 * 1000, new FPCallback.ICallback() {
+        this._client.broadcastFile(from, (byte)50, fileBytes, null, null, 0, 30 * 1000, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
