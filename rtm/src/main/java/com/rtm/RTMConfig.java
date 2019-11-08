@@ -2,17 +2,26 @@ package com.rtm;
 
 public class RTMConfig {
 
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.2.3";
 
     public static final int MID_TTL = 5 * 1000;                         //MID缓存超时时间(ms)
-    public static final int RECV_PING_TIMEOUT = 40 * 1000;              //客户端收到Ping超时时间(ms)
+    public static final int RECONN_COUNT_ONCE = 1;                      //一次重新连接流程中的尝试次数
+    public static final int CONNCT_INTERVAL = 40 * 1000;                //尝试重新连接的时间间隔(ms)
+    public static final int RECV_PING_TIMEOUT = 40 * 1000;              //收到Ping超时时间(ms)
 
     public class FILE_TYPE {
 
-        public static final byte image = 40;        //图片
-        public static final byte audio = 41;        //语音
-        public static final byte video = 42;        //视频
-        public static final byte file = 50;         //泛指文件，服务器会修改此值（如果服务器可以判断出具体类型的话，仅在mtype=50的情况下）
+        public static final byte image = 40;            //图片
+        public static final byte audio = 41;            //语音
+        public static final byte video = 42;            //视频
+        public static final byte file = 50;             //泛指文件，服务器会修改此值（如果服务器可以判断出具体类型的话，仅在mtype=50的情况下）
+    }
+
+    public class CHAT_TYPE {
+
+        public static final byte text = 30;             //文本
+        public static final byte audio = 31;            //语音
+        public static final byte cmd = 32;              //命令
     }
 
     public class SERVER_PUSH {
@@ -31,6 +40,14 @@ public class RTMConfig {
         public static final String recvChat = "pushchat";
         public static final String recvGroupChat = "pushgroupchat";
         public static final String recvRoomChat = "pushroomchat";
+
+        public static final String recvAudio = "pushaudio";
+        public static final String recvGroupAudio = "pushgroupaudio";
+        public static final String recvRoomAudio = "pushroomaudio";
+
+        public static final String recvCmd = "pushcmd";
+        public static final String recvGroupCmd = "pushgroupcmd";
+        public static final String recvRoomCmd = "pushroomcmd";
     }
 
     public class SERVER_EVENT {

@@ -8,6 +8,7 @@ import static java.lang.Thread.sleep;
 public class TestMain {
 
     public static void main(String[] args) {
+        RTMClient.RTMRegistration.register();
         System.out.println(new String("rtm test with main!"));
         // case 1
         baseTest();
@@ -42,7 +43,7 @@ public class TestMain {
 
     public static void singleClientConcurrentTest() {
         String endpoint = "35.167.185.139:13013";
-        RTMClient client = new RTMClient(0, "", endpoint, true, 20 * 1000);
+        RTMClient client = new RTMClient(0, "", endpoint, true, 20 * 1000, false);
         client.getEvent().addListener("connect", new FPEvent.IListener() {
             @Override
             public void fpEvent(EventData evd) {
@@ -55,7 +56,7 @@ public class TestMain {
             public void fpEvent(EventData evd) {
                 System.out.println("\nclose");
                 incConnectionClosed();
-                //                System.out.print('~');
+//                System.out.print('~');
             }
         });
         client.getEvent().addListener("error", new FPEvent.IListener() {

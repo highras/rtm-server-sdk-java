@@ -1,78 +1,65 @@
 package com.rtm;
 
+import java.nio.charset.Charset;
+import java.util.*;
+
 import com.fpnn.ErrorRecorder;
 import com.fpnn.FPData;
+import com.fpnn.FPManager;
 import com.fpnn.FPProcessor;
-import com.fpnn.event.EventData;
-import com.fpnn.event.FPEvent;
-import com.fpnn.nio.NIOCore;
 import com.rtm.json.JsonHelper;
-import com.rtm.msgpack.PayloadPacker;
 import com.rtm.msgpack.PayloadUnpacker;
-
-import java.util.*;
 
 public class RTMProcessor implements FPProcessor.IProcessor {
 
     public interface IService {
-
         void Service(Map<String, Object> data);
     }
 
-    private FPEvent _event;
-    private Map<String, Long> _midMap = new HashMap<String, Long>();
+    class PingLocker {
+        public int status = 0;
+    }
 
+    private static String JSON_PAYLOAD = "{}";
+    private static byte[] MSGPACK_PAYLOAD = { (byte)0x80 };
+
+    private Object self_locker = new Object();
+    private Map<String, Long> _duplicateMap = new HashMap<String, Long>();
     private Map<String, IService> _actionMap = new HashMap<String, IService>();
-
-    public RTMProcessor(FPEvent event) {
-        this._event = event;
-    }
-
-    @Override
-    public FPEvent getEvent() {
-        return this._event;
-    }
 
     public void destroy() {
         this.clearPingTimestamp();
 
-        synchronized (this._midMap) {
-            this._midMap.clear();
-        }
-
-        synchronized (this._actionMap) {
+        synchronized (self_locker) {
             this._actionMap.clear();
+            this._duplicateMap.clear();
         }
     }
 
     @Override
     public void service(FPData data, FPProcessor.IAnswer answer) {
-        Map payload = null;
-
-        if (data.getFlag() == 0) {
-            JsonHelper.IJson json = JsonHelper.getInstance().getJson();
-            answer.sendAnswer(json.toJSON(new HashMap()), false);
-            payload = json.toMap(data.jsonPayload());
+        if (data == null) {
+            return;
         }
 
-        if (data.getFlag() == 1) {
-            byte[] bytes = new byte[0];
-            PayloadPacker packer = new PayloadPacker();
+        Map<String, Object> payload = null;
+
+        if (data.getFlag() == 0 && data.jsonPayload() != null) {
+            answer.sendAnswer(JSON_PAYLOAD, false);
 
             try {
-                packer.pack(new HashMap());
-                bytes = packer.toByteArray();
+                JsonHelper.IJson json = JsonHelper.getInstance().getJson();
+                payload = json.toMap(data.jsonPayload());
             } catch (Exception ex) {
                 ErrorRecorder.getInstance().recordError(ex);
             }
+        }
 
-            if (bytes.length > 0) {
-                answer.sendAnswer(bytes, false);
-            }
-
-            PayloadUnpacker unpacker = new PayloadUnpacker(data.msgpackPayload());
+        if (data.getFlag() == 1 && data.msgpackPayload() != null) {
+            answer.sendAnswer(MSGPACK_PAYLOAD, false);
 
             try {
+                PayloadUnpacker unpacker = new PayloadUnpacker(data.msgpackPayload());
                 payload = unpacker.unpack();
             } catch (Exception ex) {
                 ErrorRecorder.getInstance().recordError(ex);
@@ -121,22 +108,29 @@ public class RTMProcessor implements FPProcessor.IProcessor {
         if (name == null || name.isEmpty()) {
             return false;
         }
-
         return true;
     }
 
     public void addPushService(String name, IService is) {
-        synchronized (this._actionMap) {
+        if (name == null || name.isEmpty()) {
+            return;
+        }
+
+        synchronized (self_locker) {
             if (!this._actionMap.containsKey(name)) {
                 this._actionMap.put(name, is);
             } else {
-                this._event.fireEvent(new EventData(this, "error", new Exception("push service exist")));
+                System.out.println("push service exist");
             }
         }
     }
 
     public void removePushService(String name) {
-        synchronized (this._actionMap) {
+        if (name == null || name.isEmpty()) {
+            return;
+        }
+
+        synchronized (self_locker) {
             if (this._actionMap.containsKey(name)) {
                 this._actionMap.remove(name);
             }
@@ -144,12 +138,15 @@ public class RTMProcessor implements FPProcessor.IProcessor {
     }
 
     private void pushService(String name, Map<String, Object> data) {
-        synchronized (this._actionMap) {
+        synchronized (self_locker) {
             if (this._actionMap.containsKey(name)) {
                 IService is = this._actionMap.get(name);
-
-                if (is != null) {
-                    is.Service(data);
+                try {
+                    if (is != null) {
+                        is.Service(data);
+                    }
+                } catch (Exception ex) {
+                    ErrorRecorder.getInstance().recordError(ex);
                 }
             }
         }
@@ -161,9 +158,12 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      *
      * @param {Map}         data
      */
-    public void ping(Map data) {
-        this._lastPingTimestamp = System.currentTimeMillis();
+    public void ping(Map<String, Object> data) {
         this.pushService(RTMConfig.SERVER_PUSH.recvPing, data);
+
+        synchronized (ping_locker) {
+            this._lastPingTimestamp = FPManager.getInstance().getMilliTimestamp();
+        }
     }
 
     /**
@@ -178,7 +178,7 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      * @param {String}      data.attrs
      * @param {long}        data.mtime
      */
-    public void pushmsg(Map data) {
+    public void pushmsg(Map<String, Object> data) {
         byte mtype = 0;
         String name = RTMConfig.SERVER_PUSH.recvMessage;
 
@@ -197,9 +197,26 @@ public class RTMProcessor implements FPProcessor.IProcessor {
             mtype = (byte) data.get("mtype");
         }
 
-        if (mtype == 30) {
+        if (mtype != RTMConfig.CHAT_TYPE.audio) {
+            if (data.containsKey("msg") && data.get("msg") instanceof byte[]) {
+                String msg = new String((byte[]) data.get("msg"), Charset.forName("UTF-8"));
+                data.put("msg", msg);
+            }
+        }
+
+        if (mtype == RTMConfig.CHAT_TYPE.text) {
             data.remove("mtype");
             name = RTMConfig.SERVER_PUSH.recvChat;
+        }
+
+        if (mtype == RTMConfig.CHAT_TYPE.audio) {
+            data.remove("mtype");
+            name = RTMConfig.SERVER_PUSH.recvAudio;
+        }
+
+        if (mtype == RTMConfig.CHAT_TYPE.cmd) {
+            data.remove("mtype");
+            name = RTMConfig.SERVER_PUSH.recvCmd;
         }
 
         if (mtype >= 40 && mtype <= 50) {
@@ -221,7 +238,7 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      * @param {String}      data.attrs
      * @param {long}        data.mtime
      */
-    public void pushgroupmsg(Map data) {
+    public void pushgroupmsg(Map<String, Object> data) {
         byte mtype = 0;
         String name = RTMConfig.SERVER_PUSH.recvGroupMessage;
 
@@ -240,9 +257,26 @@ public class RTMProcessor implements FPProcessor.IProcessor {
             mtype = (byte) data.get("mtype");
         }
 
-        if (mtype == 30) {
+        if (mtype != RTMConfig.CHAT_TYPE.audio) {
+            if (data.containsKey("msg") && data.get("msg") instanceof byte[]) {
+                String msg = new String((byte[]) data.get("msg"), Charset.forName("UTF-8"));
+                data.put("msg", msg);
+            }
+        }
+
+        if (mtype == RTMConfig.CHAT_TYPE.text) {
             data.remove("mtype");
             name = RTMConfig.SERVER_PUSH.recvGroupChat;
+        }
+
+        if (mtype == RTMConfig.CHAT_TYPE.audio) {
+            data.remove("mtype");
+            name = RTMConfig.SERVER_PUSH.recvGroupAudio;
+        }
+
+        if (mtype == RTMConfig.CHAT_TYPE.cmd) {
+            data.remove("mtype");
+            name = RTMConfig.SERVER_PUSH.recvGroupCmd;
         }
 
         if (mtype >= 40 && mtype <= 50) {
@@ -264,7 +298,7 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      * @param {String}      data.attrs
      * @param {long}        data.mtime
      */
-    public void pushroommsg(Map data) {
+    public void pushroommsg(Map<String, Object> data) {
         byte mtype = 0;
         String name = RTMConfig.SERVER_PUSH.recvRoomMessage;
 
@@ -283,9 +317,26 @@ public class RTMProcessor implements FPProcessor.IProcessor {
             mtype = (byte) data.get("mtype");
         }
 
-        if (mtype == 30) {
+        if (mtype != RTMConfig.CHAT_TYPE.audio) {
+            if (data.containsKey("msg") && data.get("msg") instanceof byte[]) {
+                String msg = new String((byte[]) data.get("msg"), Charset.forName("UTF-8"));
+                data.put("msg", msg);
+            }
+        }
+
+        if (mtype == RTMConfig.CHAT_TYPE.text) {
             data.remove("mtype");
             name = RTMConfig.SERVER_PUSH.recvRoomChat;
+        }
+
+        if (mtype == RTMConfig.CHAT_TYPE.audio) {
+            data.remove("mtype");
+            name = RTMConfig.SERVER_PUSH.recvRoomAudio;
+        }
+
+        if (mtype == RTMConfig.CHAT_TYPE.cmd) {
+            data.remove("mtype");
+            name = RTMConfig.SERVER_PUSH.recvRoomCmd;
         }
 
         if (mtype >= 40 && mtype <= 50) {
@@ -297,6 +348,48 @@ public class RTMProcessor implements FPProcessor.IProcessor {
 
     /**
      *
+     * serverPush(a)
+     *
+     * @param {long}            data.from
+     * @param {long}            data.to
+     * @param {byte}            data.mtype
+     * @param {long}            data.mid
+     * @param {Url}             data.msg
+     * @param {String}          data.attrs
+     * @param {long}            data.mtime
+     */
+    public void pushfile(Map<String, Object> data) {}
+
+    /**
+     *
+     * serverPush(b)
+     *
+     * @param {long}            data.from
+     * @param {long}            data.gid
+     * @param {byte}            data.mtype
+     * @param {long}            data.mid
+     * @param {Url}             data.msg
+     * @param {String}          data.attrs
+     * @param {long}            data.mtime
+     */
+    public void pushgroupfile(Map<String, Object> data) {}
+
+    /**
+     *
+     * serverPush(c)
+     *
+     * @param {long}            data.from
+     * @param {long}            data.rid
+     * @param {byte}            data.mtype
+     * @param {long}            data.mid
+     * @param {Url}             data.msg
+     * @param {String}          data.attrs
+     * @param {long}            data.mtime
+     */
+    public void pushroomfile(Map<String, Object> data) {}
+
+    /**
+     *
      * ServerGate (2d)
      *
      * @param {String}      data.event
@@ -305,7 +398,7 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      * @param {String}      data.endpoint
      * @param {String}      data.data
      */
-    public void pushevent(Map data) {
+    public void pushevent(Map<String, Object> data) {
         this.pushService(RTMConfig.SERVER_PUSH.recvEvent, data);
     }
 
@@ -321,13 +414,39 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      * @param {long}            data.mtime
      *
      * <JsonString>
-     * @param {string}          source
-     * @param {string}          target
-     * @param {string}          sourceText
-     * @param {string}          targetText
+     * @param {String}          source
+     * @param {String}          target
+     * @param {String}          sourceText
+     * @param {String}          targetText
      * </JsonString>
      */
-    public void pushchat(Map data) {}
+    public void pushchat(Map<String, Object> data) {}
+
+    /**
+     *
+     * serverPush(3a')
+     *
+     * @param {long}            data.from
+     * @param {long}            data.to
+     * @param {long}            data.mid
+     * @param {byte[]}          data.msg
+     * @param {String}          data.attrs
+     * @param {long}            data.mtime
+     */
+    public void pushaudio(Map<String, Object> data) {}
+
+    /**
+     *
+     * serverPush(3a'')
+     *
+     * @param {long}            data.from
+     * @param {long}            data.to
+     * @param {long}            data.mid
+     * @param {String}          data.msg
+     * @param {String}          data.attrs
+     * @param {long}            data.mtime
+     */
+    public void pushcmd(Map<String, Object> data) {}
 
     /**
      *
@@ -341,13 +460,39 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      * @param {long}            data.mtime
      *
      * <JsonString>
-     * @param {string}          source
-     * @param {string}          target
-     * @param {string}          sourceText
-     * @param {string}          targetText
+     * @param {String}          source
+     * @param {String}          target
+     * @param {String}          sourceText
+     * @param {String}          targetText
      * </JsonString>
      */
-    public void pushgroupchat(Map data) {}
+    public void pushgroupchat(Map<String, Object> data) {}
+
+    /**
+     *
+     * serverPush(3b')
+     *
+     * @param {long}            data.from
+     * @param {long}            data.gid
+     * @param {long}            data.mid
+     * @param {byte[]}          data.msg
+     * @param {String}          data.attrs
+     * @param {long}            data.mtime
+     */
+    public void pushgroupaudio(Map<String, Object> data) {}
+
+    /**
+     *
+     * serverPush(3b'')
+     *
+     * @param {long}            data.from
+     * @param {long}            data.gid
+     * @param {long}            data.mid
+     * @param {String}          data.msg
+     * @param {String}          data.attrs
+     * @param {long}            data.mtime
+     */
+    public void pushgroupcmd(Map<String, Object> data) {}
 
     /**
      *
@@ -361,91 +506,114 @@ public class RTMProcessor implements FPProcessor.IProcessor {
      * @param {long}            data.mtime
      *
      * <JsonString>
-     * @param {string}          source
-     * @param {string}          target
-     * @param {string}          sourceText
-     * @param {string}          targetText
+     * @param {String}          source
+     * @param {String}          target
+     * @param {String}          sourceText
+     * @param {String}          targetText
      * </JsonString>
      */
-    public void pushroomchat(Map data) {}
+    public void pushroomchat(Map<String, Object> data) {}
+
+    /**
+     *
+     * serverPush(3c')
+     *
+     * @param {long}            data.from
+     * @param {long}            data.rid
+     * @param {long}            data.mid
+     * @param {byte[]}          data.msg
+     * @param {String}          data.attrs
+     * @param {long}            data.mtime
+     */
+    public void pushroomaudio(Map<String, Object> data) {}
+
+    /**
+     *
+     * serverPush(3c'')
+     *
+     * @param {long}            data.from
+     * @param {long}            data.rid
+     * @param {long}            data.mid
+     * @param {String}          data.msg
+     * @param {String}          data.attrs
+     * @param {long}            data.mtime
+     */
+    public void pushroomcmd(Map<String, Object> data) {}
 
     private long _lastPingTimestamp;
+    private PingLocker ping_locker = new PingLocker();
 
     public long getPingTimestamp() {
-        return this._lastPingTimestamp;
+        synchronized (ping_locker) {
+            return this._lastPingTimestamp;
+        }
     }
 
     public void clearPingTimestamp() {
-        this._lastPingTimestamp = 0;
+        synchronized (ping_locker) {
+            this._lastPingTimestamp = 0;
+        }
     }
 
     public void initPingTimestamp() {
-        if (this._lastPingTimestamp == 0) {
-            this._lastPingTimestamp = System.currentTimeMillis();
+        synchronized (ping_locker) {
+            if (this._lastPingTimestamp == 0) {
+                this._lastPingTimestamp = FPManager.getInstance().getMilliTimestamp();
+            }
         }
     }
 
     @Override
     public void onSecond(long timestamp) {
-        if (this._lastPingTimestamp > 0) {
-            if (timestamp - this._lastPingTimestamp > RTMConfig.RECV_PING_TIMEOUT) {
-                this.clearPingTimestamp();
-                this._event.fireEvent(new EventData(this, "ping_timeout"));
-            }
-        }
-
         this.checkExpire(timestamp);
     }
 
     private boolean checkMid(int type, long mid, long uid, long rgid) {
-        String key = String.valueOf(type);
-        key = key.concat("_");
-        key = key.concat(String.valueOf(mid));
-        key = key.concat("_");
-        key = key.concat(String.valueOf(uid));
+        StringBuilder sb = new StringBuilder(50);
+        sb.append(type);
+        sb.append("_");
+        sb.append(mid);
+        sb.append("_");
+        sb.append(uid);
 
         if (rgid > 0) {
-            key = key.concat("_");
-            key = key.concat(String.valueOf(rgid));
+            sb.append("_");
+            sb.append(rgid);
         }
+        String key = sb.toString();
 
-        synchronized (this._midMap) {
-            long timestamp = NIOCore.getInstance().getTimestamp();
+        synchronized (self_locker) {
+            long timestamp = FPManager.getInstance().getMilliTimestamp();
 
-            if (this._midMap.containsKey(key)) {
-                long expire = this._midMap.get(key);
+            if (this._duplicateMap.containsKey(key)) {
+                long expire = this._duplicateMap.get(key);
 
                 if (expire > timestamp) {
                     return false;
                 }
-
-                this._midMap.remove(key);
+                this._duplicateMap.remove(key);
             }
-
-            this._midMap.put(key, RTMConfig.MID_TTL + timestamp);
+            this._duplicateMap.put(key, RTMConfig.MID_TTL + timestamp);
             return true;
         }
     }
 
     private void checkExpire(long timestamp) {
-        synchronized (this._midMap) {
-            List keys = new ArrayList();
-            Iterator itor = this._midMap.entrySet().iterator();
+        synchronized (self_locker) {
+            List<String> keys = new ArrayList<String>();
+            Iterator itor = this._duplicateMap.entrySet().iterator();
 
             while (itor.hasNext()) {
                 Map.Entry entry = (Map.Entry) itor.next();
-
                 if ((long) entry.getValue() > timestamp) {
                     continue;
                 }
-
-                keys.add(entry.getKey());
+                keys.add((String) entry.getKey());
             }
 
             itor = keys.iterator();
-
             while (itor.hasNext()) {
-                this._midMap.remove(itor.next());
+                this._duplicateMap.remove(itor.next());
             }
         }
     }

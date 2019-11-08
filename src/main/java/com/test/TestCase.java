@@ -1,5 +1,7 @@
 package com.test;
 
+import com.fpnn.ErrorRecorder;
+import com.fpnn.FPClient;
 import com.fpnn.callback.CallbackData;
 import com.fpnn.callback.FPCallback;
 import com.fpnn.event.EventData;
@@ -9,6 +11,10 @@ import com.rtm.RTMConfig;
 import com.rtm.RTMProcessor;
 import com.rtm.json.JsonHelper;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.*;
 
 public class TestCase {
@@ -20,12 +26,12 @@ public class TestCase {
         this._client = new RTMClient(
             11000001,
             "ef3617e5-e886-4a4e-9eef-7263c0320628",
-            "52.83.245.22",
-            13315,
+            "52.83.245.22:13315",
             true,
-            20 * 1000
+            20 * 1000,
+            true
         );
-        TestCase self = this;
+        final TestCase self = this;
         this._client.getEvent().addListener("connect", new FPEvent.IListener() {
             @Override
             public void fpEvent(EventData evd) {
@@ -65,7 +71,7 @@ public class TestCase {
         long to = 778899;
         long fuid = 778898;
         long mid = 0;
-        byte[] fileBytes = this._client.loadFile("key/java.jpeg");
+        byte[] fileBytes = new LoadFile().read("key/java.jpeg");
         List<Long> tos = new ArrayList();
         tos.add(from);
         tos.add(fuid);
@@ -342,7 +348,7 @@ public class TestCase {
         this.threadSleep(sleep);
         //ServerGate (2j)
         //---------------------------------deleteMessage--------------------------------------
-        this._client.deleteMessage(mid, from, to, (byte) 1, timeout, new FPCallback.ICallback() {
+        this._client.deleteMessage(mid, from, to, timeout, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
@@ -522,7 +528,7 @@ public class TestCase {
         this.threadSleep(sleep);
         //ServerGate (3j)
         //---------------------------------deleteChat--------------------------------------
-        this._client.deleteChat(mid, from, to, (byte) 1, timeout, new FPCallback.ICallback() {
+        this._client.deleteChat(mid, from, to, timeout, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
@@ -1349,5 +1355,44 @@ public class TestCase {
         }
 
         this._sleepCount++;
+    }
+
+    class LoadFile {
+        /**
+         * @param {String} derPath
+         */
+        public byte[] read(String derPath) {
+            File f = new File(derPath);
+
+            if (!f.exists()) {
+                System.err.println(new String("file not exists! path: ").concat(f.getAbsolutePath()));
+                return null;
+            }
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream((int) f.length());
+            BufferedInputStream in = null;
+
+            try {
+                in = new BufferedInputStream(new FileInputStream(f));
+                int buf_size = 1024;
+                byte[] buffer = new byte[buf_size];
+                int len = 0;
+
+                while (-1 != (len = in.read(buffer, 0, buf_size))) {
+                    bos.write(buffer, 0, len);
+                }
+                return bos.toByteArray();
+            } catch (Exception ex) {
+                ErrorRecorder.getInstance().recordError(ex);
+            } finally {
+                try {
+                    in.close();
+                    bos.close();
+                } catch (Exception ex) {
+                    ErrorRecorder.getInstance().recordError(ex);
+                }
+            }
+            return null;
+        }
     }
 }
