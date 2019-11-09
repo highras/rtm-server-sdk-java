@@ -123,4 +123,13 @@ public class PayloadUnpacker {
 
         throw new IOException("Invalid payload format.");
     }
+
+    public static byte[] getBytes(String s) {
+        byte[] bytes = null;
+
+        try {
+            bytes = s.getBytes(MessagePack.UTF8);
+        } catch (Exception ex) {}
+        return bytes;
+    }
 }

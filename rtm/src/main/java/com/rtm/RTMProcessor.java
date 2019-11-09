@@ -1,6 +1,5 @@
 package com.rtm;
 
-import java.nio.charset.Charset;
 import java.util.*;
 
 import com.fpnn.ErrorRecorder;
@@ -197,19 +196,16 @@ public class RTMProcessor implements FPProcessor.IProcessor {
             mtype = (byte) data.get("mtype");
         }
 
-        if (mtype != RTMConfig.CHAT_TYPE.audio) {
-            if (data.containsKey("msg") && data.get("msg") instanceof byte[]) {
-                String msg = new String((byte[]) data.get("msg"), Charset.forName("UTF-8"));
-                data.put("msg", msg);
-            }
-        }
-
         if (mtype == RTMConfig.CHAT_TYPE.text) {
             data.remove("mtype");
             name = RTMConfig.SERVER_PUSH.recvChat;
         }
 
         if (mtype == RTMConfig.CHAT_TYPE.audio) {
+            if (data.containsKey("msg") && data.get("msg") instanceof String) {
+                byte[] msg  = PayloadUnpacker.getBytes((String) data.get("msg"));
+                data.put("msg", msg);
+            }
             data.remove("mtype");
             name = RTMConfig.SERVER_PUSH.recvAudio;
         }
@@ -257,19 +253,16 @@ public class RTMProcessor implements FPProcessor.IProcessor {
             mtype = (byte) data.get("mtype");
         }
 
-        if (mtype != RTMConfig.CHAT_TYPE.audio) {
-            if (data.containsKey("msg") && data.get("msg") instanceof byte[]) {
-                String msg = new String((byte[]) data.get("msg"), Charset.forName("UTF-8"));
-                data.put("msg", msg);
-            }
-        }
-
         if (mtype == RTMConfig.CHAT_TYPE.text) {
             data.remove("mtype");
             name = RTMConfig.SERVER_PUSH.recvGroupChat;
         }
 
         if (mtype == RTMConfig.CHAT_TYPE.audio) {
+            if (data.containsKey("msg") && data.get("msg") instanceof String) {
+                byte[] msg  = PayloadUnpacker.getBytes((String) data.get("msg"));
+                data.put("msg", msg);
+            }
             data.remove("mtype");
             name = RTMConfig.SERVER_PUSH.recvGroupAudio;
         }
@@ -317,19 +310,16 @@ public class RTMProcessor implements FPProcessor.IProcessor {
             mtype = (byte) data.get("mtype");
         }
 
-        if (mtype != RTMConfig.CHAT_TYPE.audio) {
-            if (data.containsKey("msg") && data.get("msg") instanceof byte[]) {
-                String msg = new String((byte[]) data.get("msg"), Charset.forName("UTF-8"));
-                data.put("msg", msg);
-            }
-        }
-
         if (mtype == RTMConfig.CHAT_TYPE.text) {
             data.remove("mtype");
             name = RTMConfig.SERVER_PUSH.recvRoomChat;
         }
 
         if (mtype == RTMConfig.CHAT_TYPE.audio) {
+            if (data.containsKey("msg") && data.get("msg") instanceof String) {
+                byte[] msg  = PayloadUnpacker.getBytes((String) data.get("msg"));
+                data.put("msg", msg);
+            }
             data.remove("mtype");
             name = RTMConfig.SERVER_PUSH.recvRoomAudio;
         }

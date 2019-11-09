@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.StringBuilder;
-import java.nio.charset.Charset;
 import java.util.*;
 
 import com.fpnn.*;
@@ -83,6 +82,7 @@ public class RTMClient {
             }
         };
         FPManager.getInstance().addSecond(this._secondListener);
+        ErrorRecorder.getInstance().setRecorder(new RTMErrorRecorder(this._debug));
     }
 
     private Object self_locker = new Object();
@@ -162,7 +162,7 @@ public class RTMClient {
                 FPManager.getInstance().removeSecond(this._secondListener);
                 this._secondListener = null;
             }
-            this.getEvent().fireEvent(new EventData(this,"close", false));
+            this.getEvent().fireEvent(new EventData(this,"close", this._reconnect));
             this.getEvent().removeListener();
 
             if (this._sender != null) {
@@ -256,7 +256,7 @@ public class RTMClient {
                 this._baseClient = null;
             }
         }
-        this.getEvent().fireEvent(new EventData(this, "close"));
+        this.getEvent().fireEvent(new EventData(this, "close", this._reconnect));
         this.reconnect();
     }
 
@@ -518,7 +518,7 @@ public class RTMClient {
      * </CallbackData>
      */
     public void sendMessage(long from, long to, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
-        this.sendMessage(from, to, mtype, msg, attrs, mid, timeout, callback);
+        this.sendMessage(from, to, mtype, (Object) msg, attrs, mid, timeout, callback);
     }
 
     private void sendMessage(long from, long to, byte mtype, Object msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
@@ -583,7 +583,7 @@ public class RTMClient {
      * </CallbackData>
      */
     public void sendMessages(long from, List<Long> tos, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
-        this.sendMessages(from, tos, mtype, msg, attrs, mid, timeout, callback);
+        this.sendMessages(from, tos, mtype, (Object) msg, attrs, mid, timeout, callback);
     }
 
     private void sendMessages(long from, List<Long> tos, byte mtype, Object msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
@@ -648,7 +648,7 @@ public class RTMClient {
      * </CallbackData>
      */
     public void sendGroupMessage(long from, long gid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
-        this.sendGroupMessage(from, gid, mtype, msg, attrs, mid, timeout, callback);
+        this.sendGroupMessage(from, gid, mtype, (Object) msg, attrs, mid, timeout, callback);
     }
 
     private void sendGroupMessage(long from, long gid, byte mtype, Object msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
@@ -713,7 +713,7 @@ public class RTMClient {
      * </CallbackData>
      */
     public void sendRoomMessage(long from, long rid, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
-        this.sendRoomMessage(from, rid, mtype, msg, attrs, mid, timeout, callback);
+        this.sendRoomMessage(from, rid, mtype, (Object) msg, attrs, mid, timeout, callback);
     }
 
     private void sendRoomMessage(long from, long rid, byte mtype, Object msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
@@ -777,7 +777,7 @@ public class RTMClient {
      * </CallbackData>
      */
     public void broadcastMessage(long from, byte mtype, String msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
-        this.broadcastMessage(from, mtype, msg, attrs, mid, timeout, callback);
+        this.broadcastMessage(from, mtype, (Object) msg, attrs, mid, timeout, callback);
     }
 
     private void broadcastMessage(long from, byte mtype, Object msg, String attrs, long mid, int timeout, FPCallback.ICallback callback) {
@@ -903,9 +903,9 @@ public class RTMClient {
                         groupMsg.put("mtime", items.get(6));
 
                         byte mtype = (byte) groupMsg.get("mtype");
-                        if (mtype != RTMConfig.CHAT_TYPE.audio) {
-                            if (groupMsg.containsKey("msg") && groupMsg.get("msg") instanceof byte[]) {
-                                String msg = new String((byte[]) groupMsg.get("msg"), Charset.forName("UTF-8"));
+                        if (mtype == RTMConfig.CHAT_TYPE.audio) {
+                            if (groupMsg.containsKey("msg") && groupMsg.get("msg") instanceof String) {
+                                byte[] msg  = PayloadUnpacker.getBytes((String) groupMsg.get("msg"));
                                 groupMsg.put("msg", msg);
                             }
                         }
@@ -1004,9 +1004,9 @@ public class RTMClient {
                         roomMsg.put("mtime", items.get(6));
 
                         byte mtype = (byte) roomMsg.get("mtype");
-                        if (mtype != RTMConfig.CHAT_TYPE.audio) {
-                            if (roomMsg.containsKey("msg") && roomMsg.get("msg") instanceof byte[]) {
-                                String msg = new String((byte[]) roomMsg.get("msg"), Charset.forName("UTF-8"));
+                        if (mtype == RTMConfig.CHAT_TYPE.audio) {
+                            if (roomMsg.containsKey("msg") && roomMsg.get("msg") instanceof String) {
+                                byte[] msg  = PayloadUnpacker.getBytes((String) roomMsg.get("msg"));
                                 roomMsg.put("msg", msg);
                             }
                         }
@@ -1103,9 +1103,9 @@ public class RTMClient {
                         broadcastMsg.put("mtime", items.get(6));
 
                         byte mtype = (byte) broadcastMsg.get("mtype");
-                        if (mtype != RTMConfig.CHAT_TYPE.audio) {
-                            if (broadcastMsg.containsKey("msg") && broadcastMsg.get("msg") instanceof byte[]) {
-                                String msg = new String((byte[]) broadcastMsg.get("msg"), Charset.forName("UTF-8"));
+                        if (mtype == RTMConfig.CHAT_TYPE.audio) {
+                            if (broadcastMsg.containsKey("msg") && broadcastMsg.get("msg") instanceof String) {
+                                byte[] msg  = PayloadUnpacker.getBytes((String) broadcastMsg.get("msg"));
                                 broadcastMsg.put("msg", msg);
                             }
                         }
@@ -1207,8 +1207,8 @@ public class RTMClient {
 
                         byte mtype = (byte) p2pMsg.get("mtype");
                         if (mtype != RTMConfig.CHAT_TYPE.audio) {
-                            if (p2pMsg.containsKey("msg") && p2pMsg.get("msg") instanceof byte[]) {
-                                String msg = new String((byte[]) p2pMsg.get("msg"), Charset.forName("UTF-8"));
+                            if (p2pMsg.containsKey("msg") && p2pMsg.get("msg") instanceof String) {
+                                byte[] msg  = PayloadUnpacker.getBytes((String) p2pMsg.get("msg"));
                                 p2pMsg.put("msg", msg);
                             }
                         }
@@ -3949,6 +3949,21 @@ public class RTMClient {
     public static class RTMRegistration {
         public static void register() {
             FPManager.getInstance().init();
+        }
+    }
+
+    class RTMErrorRecorder implements ErrorRecorder.IErrorRecorder {
+        private boolean _debug;
+
+        public RTMErrorRecorder(boolean debug) {
+            this._debug = debug;
+        }
+
+        @Override
+        public void recordError(Exception ex) {
+            if (this._debug) {
+                System.out.println(ex);
+            }
         }
     }
 
