@@ -1,6 +1,5 @@
 package com.test;
 
-import com.fpnn.ErrorRecorder;
 import com.fpnn.callback.CallbackData;
 import com.fpnn.callback.FPCallback;
 import com.fpnn.event.EventData;
@@ -10,51 +9,49 @@ import com.rtm.RTMConfig;
 import com.rtm.RTMProcessor;
 import com.rtm.json.JsonHelper;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.*;
 
-public class TestCase {
+public class TestCase implements TestMain.ITestCase {
+
+    class SendLocker {
+        public int status = 0;
+    }
 
     private RTMClient _client;
     private int _sleepCount;
+    private byte[] _fileBytes;
 
-    public TestCase() {
+    public void startTest(byte[] fileBytes) {
+        this._fileBytes = fileBytes;
         this._client = new RTMClient(
-            11000001,
-            "ef3617e5-e886-4a4e-9eef-7263c0320628",
-            "52.83.245.22:13315",
-            true,
-            20 * 1000,
-            true
+                11000001,
+                "ef3617e5-e886-4a4e-9eef-7263c0320628",
+                "52.83.245.22:13315",
+                true,
+                20 * 1000,
+                true
         );
         final TestCase self = this;
         this._client.getEvent().addListener("connect", new FPEvent.IListener() {
             @Override
             public void fpEvent(EventData evd) {
-                self.onConnect();
+                System.out.println(new String("Connected!"));
+                self.startThread();
             }
         });
         this._client.getEvent().addListener("close", new FPEvent.IListener() {
             @Override
             public void fpEvent(EventData evd) {
-                self.onClose();
+                System.out.println(new String("Closed!"));
             }
         });
         this._client.getEvent().addListener("error", new FPEvent.IListener() {
             @Override
             public void fpEvent(EventData evd) {
-                self.onError(evd.getException());
+                evd.getException().printStackTrace();
             }
         });
-        this._client.connect(
-            "secp256k1",
-            "key/test-secp256k1-public.der-false",
-            false,
-            false
-        );
+        this._client.connect();
         RTMProcessor processor = this._client.getProcessor();
         processor.addPushService(RTMConfig.SERVER_PUSH.recvMessage, new RTMProcessor.IService() {
             @Override
@@ -64,24 +61,66 @@ public class TestCase {
         });
     }
 
-    private void onConnect() {
-        System.out.println(new String("Connected!"));
-        long from = 778877;
-        long to = 778899;
-        long fuid = 778898;
+    public void stopTest() {
+        this.stopThread();
+        if (this._client != null) {
+            this._client.destroy();
+            this._client = null;
+        }
+    }
+
+    private Thread _thread;
+    private SendLocker send_locker = new SendLocker();
+
+    private void startThread() {
+        synchronized (send_locker) {
+            if (send_locker.status != 0) {
+                return;
+            }
+            send_locker.status = 1;
+            try {
+                final TestCase self = this;
+                this._thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        self.beginTest();
+                    }
+                });
+                this._thread.start();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void stopThread() {
+        synchronized (send_locker) {
+            send_locker.status = 0;
+        }
+    }
+
+    private void beginTest() {
+        try {
+            this.doTest();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void doTest() {
+        long from = 1777779;
+        long to = 1778899;
+        long fuid = 1778898;
         long mid = 0;
-        byte[] fileBytes = new LoadFile().read("key/java.jpeg");
         List<Long> tos = new ArrayList();
-        tos.add(from);
+        tos.add((long)654321);
         tos.add(fuid);
         tos.add(to);
-        long gid = 999999;
-        long rid = 666666;
+        long gid = 999;
+        long rid = 666;
         List<Long> friends = new ArrayList();
         friends.add(fuid);
         friends.add(to);
-        double lat = 39239.1123;
-        double lng = 69394.4850;
         List<Long> gids = new ArrayList();
         gids.add(gid);
         List<Long> rids = new ArrayList();
@@ -91,7 +130,6 @@ public class TestCase {
         evets.add(RTMConfig.SERVER_EVENT.logout);
         int timeout = 20 * 1000;
         int sleep = 1000;
-        System.out.println("\ntest start!");
         this.threadSleep(sleep);
         //ServerGate (9c)
         //---------------------------------setEvtListener--------------------------------------
@@ -102,10 +140,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] setEvtListener:");
+                    System.out.print("[DATA] setEvtListener:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] setEvtListener:");
+                    System.err.print("[ERR] setEvtListener:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -120,10 +158,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getToken:");
+                    System.out.print("[DATA] getToken:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getToken:");
+                    System.err.print("[ERR] getToken:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -138,10 +176,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] kickout:");
+                    System.out.print("[DATA] kickout:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] kickout:");
+                    System.err.print("[ERR] kickout:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -156,10 +194,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] addDevice:");
+                    System.out.print("[DATA] addDevice:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] addDevice:");
+                    System.err.print("[ERR] addDevice:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -174,10 +212,28 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] removeDevice:");
+                    System.out.print("[DATA] removeDevice:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] removeDevice:");
+                    System.err.print("[ERR] removeDevice:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        this.threadSleep(sleep);
+        //ServerGate (1e)
+        //---------------------------------removeToken--------------------------------------
+        this._client.removeToken(to, timeout, new FPCallback.ICallback() {
+            @Override
+            public void callback(CallbackData cbd) {
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+                    Map payload = (Map) obj;
+                    System.out.print("[DATA] removeToken:");
+                    System.out.println(payload.toString());
+                } else {
+                    System.err.print("[ERR] removeToken:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -192,10 +248,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] sendMessage:");
+                    System.out.print("[DATA] sendMessage:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] sendMessage:");
+                    System.err.print("[ERR] sendMessage:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -210,10 +266,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] sendMessages:");
+                    System.out.print("[DATA] sendMessages:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] sendMessages:");
+                    System.err.print("[ERR] sendMessages:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -228,10 +284,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] sendGroupMessage:");
+                    System.out.print("[DATA] sendGroupMessage:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] sendGroupMessage:");
+                    System.err.print("[ERR] sendGroupMessage:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -246,10 +302,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] sendRoomMessage:");
+                    System.out.print("[DATA] sendRoomMessage:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] sendRoomMessage:");
+                    System.err.print("[ERR] sendRoomMessage:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -264,10 +320,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] broadcastMessage:");
+                    System.out.print("[DATA] broadcastMessage:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] broadcastMessage:");
+                    System.err.print("[ERR] broadcastMessage:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -282,10 +338,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getGroupMessage:");
+                    System.out.print("[DATA] getGroupMessage:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getGroupMessage:");
+                    System.err.print("[ERR] getGroupMessage:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -300,10 +356,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getRoomMessage:");
+                    System.out.print("[DATA] getRoomMessage:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getRoomMessage:");
+                    System.err.print("[ERR] getRoomMessage:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -318,10 +374,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getBroadcastMessage:");
+                    System.out.print("[DATA] getBroadcastMessage:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getBroadcastMessage:");
+                    System.err.print("[ERR] getBroadcastMessage:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -336,10 +392,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getP2PMessage:");
+                    System.out.print("[DATA] getP2PMessage:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getP2PMessage:");
+                    System.err.print("[ERR] getP2PMessage:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -354,10 +410,64 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] deleteMessage:");
+                    System.out.print("[DATA] deleteMessage:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] deleteMessage:");
+                    System.err.print("[ERR] deleteMessage:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        this.threadSleep(sleep);
+        //ServerGate (2j')
+        //---------------------------------deleteGroupMessage--------------------------------------
+        this._client.deleteGroupMessage(mid, from, gid, timeout, new FPCallback.ICallback() {
+            @Override
+            public void callback(CallbackData cbd) {
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+                    Map payload = (Map) obj;
+                    System.out.print("[DATA] deleteGroupMessage:");
+                    System.out.println(payload.toString());
+                } else {
+                    System.err.print("[ERR] deleteGroupMessage:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        this.threadSleep(sleep);
+        //ServerGate (2j'')
+        //---------------------------------deleteRoomMessage--------------------------------------
+        this._client.deleteRoomMessage(mid, from, rid, timeout, new FPCallback.ICallback() {
+            @Override
+            public void callback(CallbackData cbd) {
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+                    Map payload = (Map) obj;
+                    System.out.print("[DATA] deleteRoomMessage:");
+                    System.out.println(payload.toString());
+                } else {
+                    System.err.print("[ERR] deleteRoomMessage:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        this.threadSleep(sleep);
+        //ServerGate (2j''')
+        //---------------------------------deleteBroadcastMessage--------------------------------------
+        this._client.deleteBroadcastMessage(mid, from, timeout, new FPCallback.ICallback() {
+            @Override
+            public void callback(CallbackData cbd) {
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+                    Map payload = (Map) obj;
+                    System.out.print("[DATA] deleteBroadcastMessage:");
+                    System.out.println(payload.toString());
+                } else {
+                    System.err.print("[ERR] deleteBroadcastMessage:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -372,10 +482,28 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] sendChat:");
+                    System.out.print("[DATA] sendChat:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] sendChat:");
+                    System.err.print("[ERR] sendChat:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        this.threadSleep(sleep);
+        //ServerGate (3a'')
+        //---------------------------------sendCmd--------------------------------------
+        this._client.sendCmd(from, to, "friends_invite", "", 0, timeout, new FPCallback.ICallback() {
+            @Override
+            public void callback(CallbackData cbd) {
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+                    Map payload = (Map) obj;
+                    System.out.print("[DATA] sendCmd:");
+                    System.out.println(payload.toString());
+                } else {
+                    System.err.print("[ERR] sendCmd:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -390,10 +518,28 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] sendChats:");
+                    System.out.print("[DATA] sendChats:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] sendChats:");
+                    System.err.print("[ERR] sendChats:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        this.threadSleep(sleep);
+        //ServerGate (3b'')
+        //---------------------------------sendCmds--------------------------------------
+        this._client.sendCmds(from, tos, "friends_invite", "", 0, timeout, new FPCallback.ICallback() {
+            @Override
+            public void callback(CallbackData cbd) {
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+                    Map payload = (Map) obj;
+                    System.out.print("[DATA] sendCmds:");
+                    System.out.println(payload.toString());
+                } else {
+                    System.err.print("[ERR] sendCmds:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -408,10 +554,28 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] sendGroupChat:");
+                    System.out.print("[DATA] sendGroupChat:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] sendGroupChat:");
+                    System.err.print("[ERR] sendGroupChat:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        this.threadSleep(sleep);
+        //ServerGate (3c'')
+        //---------------------------------sendGroupCmd--------------------------------------
+        this._client.sendGroupCmd(from, gid, "group_friends_invite", "", 0, timeout, new FPCallback.ICallback() {
+            @Override
+            public void callback(CallbackData cbd) {
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+                    Map payload = (Map) obj;
+                    System.out.print("[DATA] sendGroupCmd:");
+                    System.out.println(payload.toString());
+                } else {
+                    System.err.print("[ERR] sendGroupCmd:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -426,10 +590,28 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] sendRoomChat:");
+                    System.out.print("[DATA] sendRoomChat:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] sendRoomChat:");
+                    System.err.print("[ERR] sendRoomChat:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        this.threadSleep(sleep);
+        //ServerGate (3d'')
+        //---------------------------------sendRoomCmd--------------------------------------
+        this._client.sendRoomCmd(from, rid, "room_friends_invite", "", 0, timeout, new FPCallback.ICallback() {
+            @Override
+            public void callback(CallbackData cbd) {
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+                    Map payload = (Map) obj;
+                    System.out.print("[DATA] sendRoomCmd:");
+                    System.out.println(payload.toString());
+                } else {
+                    System.err.print("[ERR] sendRoomCmd:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -444,10 +626,28 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] broadcastChat:");
+                    System.out.print("[DATA] broadcastChat:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] broadcastChat:");
+                    System.err.print("[ERR] broadcastChat:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        this.threadSleep(sleep);
+        //ServerGate (3e'')
+        //---------------------------------broadcastCmd--------------------------------------
+        this._client.broadcastCmd(from, "broadcast_friends_invite", "", 0, timeout, new FPCallback.ICallback() {
+            @Override
+            public void callback(CallbackData cbd) {
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+                    Map payload = (Map) obj;
+                    System.out.print("[DATA] broadcastCmd:");
+                    System.out.println(payload.toString());
+                } else {
+                    System.err.print("[ERR] broadcastCmd:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -462,10 +662,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getGroupChat:");
+                    System.out.print("[DATA] getGroupChat:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getGroupChat:");
+                    System.err.print("[ERR] getGroupChat:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -480,10 +680,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getRoomChat:");
+                    System.out.print("[DATA] getRoomChat:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getRoomChat:");
+                    System.err.print("[ERR] getRoomChat:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -498,10 +698,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getBroadcastChat:");
+                    System.out.print("[DATA] getBroadcastChat:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getBroadcastChat:");
+                    System.err.print("[ERR] getBroadcastChat:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -516,10 +716,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getP2PChat:");
+                    System.out.print("[DATA] getP2PChat:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getP2PChat:");
+                    System.err.print("[ERR] getP2PChat:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -534,10 +734,64 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] deleteChat:");
+                    System.out.print("[DATA] deleteChat:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] deleteChat:");
+                    System.err.print("[ERR] deleteChat:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        this.threadSleep(sleep);
+        //ServerGate (3j')
+        //---------------------------------deleteGroupChat--------------------------------------
+        this._client.deleteGroupChat(mid, from, gid, timeout, new FPCallback.ICallback() {
+            @Override
+            public void callback(CallbackData cbd) {
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+                    Map payload = (Map) obj;
+                    System.out.print("[DATA] deleteGroupChat:");
+                    System.out.println(payload.toString());
+                } else {
+                    System.err.print("[ERR] deleteGroupChat:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        this.threadSleep(sleep);
+        //ServerGate (3j'')
+        //---------------------------------deleteRoomChat--------------------------------------
+        this._client.deleteRoomChat(mid, from, rid, timeout, new FPCallback.ICallback() {
+            @Override
+            public void callback(CallbackData cbd) {
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+                    Map payload = (Map) obj;
+                    System.out.print("[DATA] deleteRoomChat:");
+                    System.out.println(payload.toString());
+                } else {
+                    System.err.print("[ERR] deleteRoomChat:");
+                    System.err.println(cbd.getException().getMessage());
+                }
+            }
+        });
+        this.threadSleep(sleep);
+        //ServerGate (3j'')
+        //---------------------------------deleteBroadcastChat--------------------------------------
+        this._client.deleteBroadcastChat(mid, from, timeout, new FPCallback.ICallback() {
+            @Override
+            public void callback(CallbackData cbd) {
+                Object obj = cbd.getPayload();
+
+                if (obj != null) {
+                    Map payload = (Map) obj;
+                    System.out.print("[DATA] deleteBroadcastChat:");
+                    System.out.println(payload.toString());
+                } else {
+                    System.err.print("[ERR] deleteBroadcastChat:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -552,10 +806,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] translate:");
+                    System.out.print("[DATA] translate:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] translate:");
+                    System.err.print("[ERR] translate:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -570,15 +824,18 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] profanity:");
+                    System.out.print("[DATA] profanity:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] profanity:");
+                    System.err.print("[ERR] profanity:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
         });
         this.threadSleep(sleep);
+        //ServerGate (3j)
+        //---------------------------------transcribe--------------------------------------
+        //this.threadSleep(sleep);
         //ServerGate (4a)
         //---------------------------------fileToken--------------------------------------
         this._client.fileToken(from, "sendfile", null, to, 0, 0, timeout, new FPCallback.ICallback() {
@@ -588,10 +845,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] fileToken:");
+                    System.out.print("[DATA] fileToken:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] fileToken:");
+                    System.err.print("[ERR] fileToken:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -606,10 +863,10 @@ public class TestCase {
 
                 if (obj != null) {
                     List<Long> payload = (List<Long>) obj;
-                    System.out.println("\n[DATA] getOnlineUsers:");
+                    System.out.print("[DATA] getOnlineUsers:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getOnlineUsers:");
+                    System.err.print("[ERR] getOnlineUsers:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -624,10 +881,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] addProjectBlack:");
+                    System.out.print("[DATA] addProjectBlack:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] addProjectBlack:");
+                    System.err.print("[ERR] addProjectBlack:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -642,10 +899,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] removeProjectBlack:");
+                    System.out.print("[DATA] removeProjectBlack:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] removeProjectBlack:");
+                    System.err.print("[ERR] removeProjectBlack:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -660,10 +917,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] isProjectBlack:");
+                    System.out.print("[DATA] isProjectBlack:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] isProjectBlack:");
+                    System.err.print("[ERR] isProjectBlack:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -678,10 +935,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] setUserInfo:");
+                    System.out.print("[DATA] setUserInfo:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] setUserInfo:");
+                    System.err.print("[ERR] setUserInfo:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -696,10 +953,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getUserInfo:");
+                    System.out.print("[DATA] getUserInfo:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getUserInfo:");
+                    System.err.print("[ERR] getUserInfo:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -714,10 +971,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getUserOpenInfo:");
+                    System.out.print("[DATA] getUserOpenInfo:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getUserOpenInfo:");
+                    System.err.print("[ERR] getUserOpenInfo:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -732,10 +989,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] addFriends:");
+                    System.out.print("[DATA] addFriends:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] addFriends:");
+                    System.err.print("[ERR] addFriends:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -750,10 +1007,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] deleteFriends:");
+                    System.out.print("[DATA] deleteFriends:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] deleteFriends:");
+                    System.err.print("[ERR] deleteFriends:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -768,10 +1025,10 @@ public class TestCase {
 
                 if (obj != null) {
                     List payload = (List<Long>) obj;
-                    System.out.println("\n[DATA] getFriends:");
+                    System.out.print("[DATA] getFriends:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getFriends:");
+                    System.err.print("[ERR] getFriends:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -786,10 +1043,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] isFriend:");
+                    System.out.print("[DATA] isFriend:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] isFriend:");
+                    System.err.print("[ERR] isFriend:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -804,10 +1061,10 @@ public class TestCase {
 
                 if (obj != null) {
                     List<Long> payload = (List<Long>) obj;
-                    System.out.println("\n[DATA] isFriends:");
+                    System.out.print("[DATA] isFriends:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] isFriends:");
+                    System.err.print("[ERR] isFriends:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -822,10 +1079,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] addGroupMembers:");
+                    System.out.print("[DATA] addGroupMembers:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] addGroupMembers:");
+                    System.err.print("[ERR] addGroupMembers:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -840,10 +1097,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] deleteGroupMembers:");
+                    System.out.print("[DATA] deleteGroupMembers:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] deleteGroupMembers:");
+                    System.err.print("[ERR] deleteGroupMembers:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -858,10 +1115,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] deleteGroup:");
+                    System.out.print("[DATA] deleteGroup:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] deleteGroup:");
+                    System.err.print("[ERR] deleteGroup:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -876,10 +1133,10 @@ public class TestCase {
 
                 if (obj != null) {
                     List<Long> payload = (List<Long>) obj;
-                    System.out.println("\n[DATA] getGroupMembers:");
+                    System.out.print("[DATA] getGroupMembers:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getGroupMembers:");
+                    System.err.print("[ERR] getGroupMembers:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -894,10 +1151,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] isGroupMember:");
+                    System.out.print("[DATA] isGroupMember:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] isGroupMember:");
+                    System.err.print("[ERR] isGroupMember:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -912,10 +1169,10 @@ public class TestCase {
 
                 if (obj != null) {
                     List<Long> payload = (List<Long>) obj;
-                    System.out.println("\n[DATA] getUserGroups:");
+                    System.out.print("[DATA] getUserGroups:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getUserGroups:");
+                    System.err.print("[ERR] getUserGroups:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -930,10 +1187,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] addGroupBan:");
+                    System.out.print("[DATA] addGroupBan:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] addGroupBan:");
+                    System.err.print("[ERR] addGroupBan:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -948,10 +1205,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] removeGroupBan:");
+                    System.out.print("[DATA] removeGroupBan:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] removeGroupBan:");
+                    System.err.print("[ERR] removeGroupBan:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -966,10 +1223,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] isBanOfGroup:");
+                    System.out.print("[DATA] isBanOfGroup:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] isBanOfGroup:");
+                    System.err.print("[ERR] isBanOfGroup:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -984,10 +1241,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] setGroupInfo:");
+                    System.out.print("[DATA] setGroupInfo:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] setGroupInfo:");
+                    System.err.print("[ERR] setGroupInfo:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1002,10 +1259,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getGroupInfo:");
+                    System.out.print("[DATA] getGroupInfo:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getGroupInfo:");
+                    System.err.print("[ERR] getGroupInfo:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1020,10 +1277,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] addRoomBan:");
+                    System.out.print("[DATA] addRoomBan:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] addRoomBan:");
+                    System.err.print("[ERR] addRoomBan:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1038,10 +1295,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] removeRoomBan:");
+                    System.out.print("[DATA] removeRoomBan:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] removeRoomBan:");
+                    System.err.print("[ERR] removeRoomBan:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1056,10 +1313,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] isBanOfRoom:");
+                    System.out.print("[DATA] isBanOfRoom:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] isBanOfRoom:");
+                    System.err.print("[ERR] isBanOfRoom:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1074,10 +1331,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] addRoomMember:");
+                    System.out.print("[DATA] addRoomMember:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] addRoomMember:");
+                    System.err.print("[ERR] addRoomMember:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1092,10 +1349,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] deleteRoomMember:");
+                    System.out.print("[DATA] deleteRoomMember:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] deleteRoomMember:");
+                    System.err.print("[ERR] deleteRoomMember:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1110,10 +1367,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] setRoomInfo:");
+                    System.out.print("[DATA] setRoomInfo:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] setRoomInfo:");
+                    System.err.print("[ERR] setRoomInfo:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1128,10 +1385,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] getRoomInfo:");
+                    System.out.print("[DATA] getRoomInfo:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] getRoomInfo:");
+                    System.err.print("[ERR] getRoomInfo:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1146,10 +1403,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] addEvtListener:");
+                    System.out.print("[DATA] addEvtListener:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] addEvtListener:");
+                    System.err.print("[ERR] addEvtListener:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1164,10 +1421,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] removeEvtListener:");
+                    System.out.print("[DATA] removeEvtListener:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] removeEvtListener:");
+                    System.err.print("[ERR] removeEvtListener:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1182,10 +1439,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] setEvtListener:");
+                    System.out.print("[DATA] setEvtListener:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] setEvtListener:");
+                    System.err.print("[ERR] setEvtListener:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1200,10 +1457,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] dataSet:");
+                    System.out.print("[DATA] dataSet:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] dataSet:");
+                    System.err.print("[ERR] dataSet:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1218,10 +1475,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] dataGet:");
+                    System.out.print("[DATA] dataGet:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] dataGet:");
+                    System.err.print("[ERR] dataGet:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1236,10 +1493,10 @@ public class TestCase {
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] dataDelete:");
+                    System.out.print("[DATA] dataDelete:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] dataDelete:");
+                    System.err.print("[ERR] dataDelete:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
@@ -1247,103 +1504,95 @@ public class TestCase {
         this.threadSleep(sleep);
         //fileGate (1)
         //---------------------------------sendFile--------------------------------------
-        this._client.sendFile(from, to, (byte)50, fileBytes, null, null, 0, 30 * 1000, new FPCallback.ICallback() {
+        this._client.sendFile(from, to, (byte)50, this._fileBytes, null, null, 0, 30 * 1000, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] sendFile:");
+                    System.out.print("[DATA] sendFile:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] sendFile:");
+                    System.err.print("[ERR] sendFile:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
         });
-        this.threadSleep(sleep);
+        this.threadSleep(sleep * 5);
         //fileGate (2)
         //---------------------------------sendFiles--------------------------------------
-        this._client.sendFiles(from, tos, (byte)50, fileBytes, "", "", 0, 30 * 1000, new FPCallback.ICallback() {
+        this._client.sendFiles(from, tos, (byte)50, this._fileBytes, "", "", 0, 30 * 1000, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] sendFiles:");
+                    System.out.print("[DATA] sendFiles:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] sendFiles:");
+                    System.err.print("[ERR] sendFiles:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
         });
-        this.threadSleep(sleep);
+        this.threadSleep(sleep * 5);
         //fileGate (3)
         //---------------------------------sendGroupFile--------------------------------------
-        this._client.sendGroupFile(from, gid, (byte)50, fileBytes, "jpg", "pic",0, 30 * 1000, new FPCallback.ICallback() {
+        this._client.sendGroupFile(from, gid, (byte)50, this._fileBytes, "jpg", "pic",0, 30 * 1000, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] sendGroupFile:");
+                    System.out.print("[DATA] sendGroupFile:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] sendGroupFile:");
+                    System.err.print("[ERR] sendGroupFile:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
         });
-        this.threadSleep(sleep);
+        this.threadSleep(sleep * 5);
         //fileGate (4)
         //---------------------------------sendRoomFile--------------------------------------
-        this._client.sendRoomFile(from, rid, (byte)50, fileBytes, null, null, 0, 30 * 1000, new FPCallback.ICallback() {
+        this._client.sendRoomFile(from, rid, (byte)50, this._fileBytes, null, null, 0, 30 * 1000, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] sendRoomFile:");
+                    System.out.print("[DATA] sendRoomFile:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] sendRoomFile:");
+                    System.err.print("[ERR] sendRoomFile:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
         });
-        this.threadSleep(sleep);
+        this.threadSleep(sleep * 5);
         //fileGate (5)
         //---------------------------------broadcastFile--------------------------------------
-        this._client.broadcastFile(from, (byte)50, fileBytes, null, null, 0, 30 * 1000, new FPCallback.ICallback() {
+        this._client.broadcastFile(from, (byte)50, this._fileBytes, null, null, 0, 30 * 1000, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
 
                 if (obj != null) {
                     Map payload = (Map) obj;
-                    System.out.println("\n[DATA] broadcastFile:");
+                    System.out.print("[DATA] broadcastFile:");
                     System.out.println(payload.toString());
                 } else {
-                    System.err.println("\n[ERR] broadcastFile:");
+                    System.err.print("[ERR] broadcastFile:");
                     System.err.println(cbd.getException().getMessage());
                 }
             }
         });
-        this.threadSleep(sleep);
-        System.out.println("\ntest end! ".concat(String.valueOf(this._sleepCount - 1)));
-    }
-
-    private void onClose() {
-        System.out.println(new String("Closed!"));
-    }
-
-    private void onError(Exception ex) {
-        ex.printStackTrace();
+        this.threadSleep(sleep * 5);
+        System.out.println("test end! ".concat(String.valueOf(this._sleepCount - 1)));
     }
 
     private void threadSleep(int ms) {
@@ -1354,44 +1603,5 @@ public class TestCase {
         }
 
         this._sleepCount++;
-    }
-
-    class LoadFile {
-        /**
-         * @param {String} derPath
-         */
-        public byte[] read(String derPath) {
-            File f = new File(derPath);
-
-            if (!f.exists()) {
-                System.err.println(new String("file not exists! path: ").concat(f.getAbsolutePath()));
-                return null;
-            }
-
-            ByteArrayOutputStream bos = new ByteArrayOutputStream((int) f.length());
-            BufferedInputStream in = null;
-
-            try {
-                in = new BufferedInputStream(new FileInputStream(f));
-                int buf_size = 1024;
-                byte[] buffer = new byte[buf_size];
-                int len = 0;
-
-                while (-1 != (len = in.read(buffer, 0, buf_size))) {
-                    bos.write(buffer, 0, len);
-                }
-                return bos.toByteArray();
-            } catch (Exception ex) {
-                ErrorRecorder.getInstance().recordError(ex);
-            } finally {
-                try {
-                    in.close();
-                    bos.close();
-                } catch (Exception ex) {
-                    ErrorRecorder.getInstance().recordError(ex);
-                }
-            }
-            return null;
-        }
     }
 }

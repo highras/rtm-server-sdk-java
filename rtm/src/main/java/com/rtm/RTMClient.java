@@ -128,13 +128,13 @@ public class RTMClient {
         return new CallbackData(new Exception("connnect first"));
     }
 
-    private void sendQuest(FPData data, FPCallback.ICallback callback, int timeout) {
-        synchronized (self_locker) {
-            if (this._baseClient != null) {
-                this._baseClient.sendQuest(data, callback, timeout);
-            }
-        }
-    }
+//    private void sendQuest(FPData data, FPCallback.ICallback callback, int timeout) {
+//        synchronized (self_locker) {
+//            if (this._baseClient != null) {
+//                this._baseClient.sendQuest(data, callback, timeout);
+//            }
+//        }
+//    }
 
     private void sendQuest(String method, Map<String, Object> payload, FPCallback.ICallback callback, int timeout) {
         FPData data = new FPData();
@@ -1262,7 +1262,7 @@ public class RTMClient {
         };
         payload.put("pid", this._pid);
 
-        if (xid > 0) {
+        if (xid >= 0) {
             payload.put("xid", xid);
         }
         this.sendQuest(cmd, payload, callback, timeout);
@@ -3989,10 +3989,10 @@ public class RTMClient {
             super(host, port, timeout);
         }
 
-        @Override
-        public void sendQuest(FPData data, FPCallback.ICallback callback, int timeout) {
-            super.sendQuest(data, this.questCallback(callback), timeout);
-        }
+//        @Override
+//        public void sendQuest(FPData data, FPCallback.ICallback callback, int timeout) {
+//            super.sendQuest(data, this.questCallback(callback), timeout);
+//        }
 
         @Override
         public CallbackData sendQuest(FPData data, int timeout) {

@@ -62,8 +62,6 @@ public class RTMSender {
             while (true) {
                 List<FPManager.IService> list;
                 synchronized (service_locker) {
-                    service_locker.wait();
-
                     if (service_locker.status == 0) {
                         return;
                     }
@@ -72,6 +70,9 @@ public class RTMSender {
                     this._serviceCache = new ArrayList<FPManager.IService>();
                 }
                 this.callService(list);
+                synchronized (service_locker) {
+                    service_locker.wait();
+                }
             }
         } catch (Exception ex) {
             ErrorRecorder.getInstance().recordError(ex);
