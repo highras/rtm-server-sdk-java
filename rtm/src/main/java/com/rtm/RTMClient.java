@@ -31,6 +31,7 @@ public class RTMClient {
     private String _secret;
     private String _endpoint;
     private boolean _reconnect;
+    private boolean _isClose;
 
     private RTMSender _sender;
     private RTMProcessor _processor;
@@ -46,15 +47,15 @@ public class RTMClient {
      */
     public RTMClient(int pid, String secret, String endpoint, boolean reconnect, int timeout, boolean debug) {
         if (pid <= 0) {
-            System.out.println("[RUM] The 'pid' Is Zero Or Negative!");
+            System.out.println("[RTM] The 'pid' Is Zero Or Negative!");
             return;
         }
         if (secret == null || secret.isEmpty()) {
-            System.out.println("[RUM] The 'secret' Is Null Or Empty!");
+            System.out.println("[RTM] The 'secret' Is Null Or Empty!");
             return;
         }
         if (endpoint == null || endpoint.isEmpty()) {
-            System.out.println("[RUM] The 'endpoint' Is Null Or Empty!");
+            System.out.println("[RTM] The 'endpoint' Is Null Or Empty!");
             return;
         }
 
@@ -150,11 +151,12 @@ public class RTMClient {
         }
 
         synchronized (self_locker) {
+            this._isClose = true;
             if (this._secondListener != null) {
                 FPManager.getInstance().removeSecond(this._secondListener);
                 this._secondListener = null;
             }
-            this.getEvent().fireEvent(new EventData(this, "close", this._reconnect));
+            this.getEvent().fireEvent(new EventData(this, "close", !this._isClose && this._reconnect));
             this.getEvent().removeListener();
 
             if (this._sender != null) {
@@ -215,6 +217,7 @@ public class RTMClient {
         synchronized (self_locker) {
             if (this._baseClient == null) {
                 final RTMClient self = this;
+                this._isClose = false;
                 this._baseClient = new BaseClient(this._endpoint, this._timeout);
                 this._baseClient.clientCallback = new FPClient.ICallback() {
                     @Override
@@ -248,7 +251,7 @@ public class RTMClient {
                 this._baseClient = null;
             }
         }
-        this.getEvent().fireEvent(new EventData(this, "close", this._reconnect));
+        this.getEvent().fireEvent(new EventData(this, "close", !this._isClose && this._reconnect));
         this.reconnect();
     }
 
@@ -266,6 +269,9 @@ public class RTMClient {
         }
         EncryptInfo info = null;
         synchronized (self_locker) {
+            if (this._isClose) {
+                return;
+            }
             if (this._processor != null) {
                 this._processor.clearPingTimestamp();
             }
