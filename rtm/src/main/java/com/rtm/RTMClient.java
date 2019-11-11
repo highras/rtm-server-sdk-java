@@ -82,7 +82,7 @@ public class RTMClient {
             }
         };
         FPManager.getInstance().addSecond(this._secondListener);
-        ErrorRecorder.getInstance().setRecorder(new RTMErrorRecorder(this._debug));
+        ErrorRecorder.getInstance().setRecorder(new RTMErrorRecorder(this._event, this._debug));
     }
 
     private Object self_locker = new Object();
@@ -154,7 +154,7 @@ public class RTMClient {
                 FPManager.getInstance().removeSecond(this._secondListener);
                 this._secondListener = null;
             }
-            this.getEvent().fireEvent(new EventData(this,"close", this._reconnect));
+            this.getEvent().fireEvent(new EventData(this, "close", this._reconnect));
             this.getEvent().removeListener();
 
             if (this._sender != null) {
@@ -3958,8 +3958,10 @@ public class RTMClient {
 
     class RTMErrorRecorder implements ErrorRecorder.IErrorRecorder {
         private boolean _debug;
+        private FPEvent _event;
 
-        public RTMErrorRecorder(boolean debug) {
+        public RTMErrorRecorder(FPEvent evt, boolean debug) {
+            this._event = evt;
             this._debug = debug;
         }
 
@@ -3967,6 +3969,9 @@ public class RTMClient {
         public void recordError(Exception ex) {
             if (this._debug) {
                 System.out.println(ex);
+            }
+            if (this._event != null) {
+                this._event.fireEvent(new EventData(this, "error", ex));
             }
         }
     }

@@ -18,6 +18,7 @@
 * `event`:
     * `connect`: 连接成功 
     * `error`: 发生异常
+        * `exception`: **(Exception)**
     * `close`: 连接关闭
         * `retry`: **(boolean)** 是否执行自动重连
 
