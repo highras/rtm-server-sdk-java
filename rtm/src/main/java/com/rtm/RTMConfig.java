@@ -6,7 +6,7 @@ public class RTMConfig {
 
     public static final int MID_TTL = 5 * 1000;                         //MID缓存超时时间(ms)
     public static final int RECONN_COUNT_ONCE = 1;                      //一次重新连接流程中的尝试次数
-    public static final int CONNCT_INTERVAL = 40 * 1000;                //尝试重新连接的时间间隔(ms)
+    public static final int CONNCT_INTERVAL = 1 * 1000;                 //尝试重新连接的时间间隔(ms)
     public static final int RECV_PING_TIMEOUT = 40 * 1000;              //收到Ping超时时间(ms)
 
     public class FILE_TYPE {

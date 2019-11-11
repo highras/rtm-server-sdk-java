@@ -108,9 +108,9 @@ public class TestCase implements TestMain.ITestCase {
     }
 
     private void doTest() {
-        long from = 1777779;
-        long to = 1778899;
-        long fuid = 1778898;
+        long from = 777779;
+        long to = 778899;
+        long fuid = 778898;
         long mid = 0;
         List<Long> tos = new ArrayList();
         tos.add((long)654321);
@@ -655,7 +655,7 @@ public class TestCase implements TestMain.ITestCase {
         this.threadSleep(sleep);
         //ServerGate (3f)
         //---------------------------------getGroupChat--------------------------------------
-        this._client.getGroupChat(gid, false, 10, 0, 0, 0, timeout, new FPCallback.ICallback() {
+        this._client.getGroupChat(gid, true, 10, 0, 0, 0, timeout, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
@@ -673,7 +673,7 @@ public class TestCase implements TestMain.ITestCase {
         this.threadSleep(sleep);
         //ServerGate (3g)
         //---------------------------------getRoomChat--------------------------------------
-        this._client.getRoomChat(rid, false, 10, 0, 0, 0, timeout, new FPCallback.ICallback() {
+        this._client.getRoomChat(rid, true, 10, 0, 0, 0, timeout, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
@@ -691,7 +691,7 @@ public class TestCase implements TestMain.ITestCase {
         this.threadSleep(sleep);
         //ServerGate (3h)
         //---------------------------------getBroadcastChat--------------------------------------
-        this._client.getBroadcastChat(false, 10, 0, 0, 0, timeout, new FPCallback.ICallback() {
+        this._client.getBroadcastChat(true, 10, 0, 0, 0, timeout, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();
@@ -709,7 +709,7 @@ public class TestCase implements TestMain.ITestCase {
         this.threadSleep(sleep);
         //ServerGate (3i)
         //---------------------------------getP2PChat--------------------------------------
-        this._client.getP2PChat(from, to, false, 10, 0, 0, 0, timeout, new FPCallback.ICallback() {
+        this._client.getP2PChat(from, to, true, 10, 0, 0, 0, timeout, new FPCallback.ICallback() {
             @Override
             public void callback(CallbackData cbd) {
                 Object obj = cbd.getPayload();

@@ -128,14 +128,6 @@ public class RTMClient {
         return new CallbackData(new Exception("connnect first"));
     }
 
-//    private void sendQuest(FPData data, FPCallback.ICallback callback, int timeout) {
-//        synchronized (self_locker) {
-//            if (this._baseClient != null) {
-//                this._baseClient.sendQuest(data, callback, timeout);
-//            }
-//        }
-//    }
-
     private void sendQuest(String method, Map<String, Object> payload, FPCallback.ICallback callback, int timeout) {
         FPData data = new FPData();
         data.setFlag(0x1);
@@ -888,7 +880,7 @@ public class RTMClient {
                 if (fcb == null) {
                     return;
                 }
-                Map payload = (Map) cbd.getPayload();
+                Map<String, Object> payload = (Map<String, Object>) cbd.getPayload();
                 if (payload != null && payload.containsKey("msgs")) {
                     List list = (ArrayList) payload.get("msgs");
                     for (int i = 0; i < list.size(); i++) {
@@ -898,11 +890,14 @@ public class RTMClient {
                         groupMsg.put("from", items.get(1));
                         groupMsg.put("mtype", items.get(2));
                         groupMsg.put("mid", items.get(3));
-                        groupMsg.put("msg", items.get(4));
-                        groupMsg.put("attrs", items.get(5));
-                        groupMsg.put("mtime", items.get(6));
-
-                        byte mtype = (byte) groupMsg.get("mtype");
+                        groupMsg.put("deleted", items.get(4));
+                        groupMsg.put("msg", items.get(5));
+                        groupMsg.put("attrs", items.get(6));
+                        groupMsg.put("mtime", items.get(7));
+                        if (groupMsg.containsKey("deleted")) {
+                            groupMsg.remove("deleted");
+                        }
+                        byte mtype = Byte.valueOf(groupMsg.get("mtype").toString()).byteValue();
                         if (mtype == RTMConfig.CHAT_TYPE.audio) {
                             if (groupMsg.containsKey("msg") && groupMsg.get("msg") instanceof String) {
                                 byte[] msg  = PayloadUnpacker.getBytes((String) groupMsg.get("msg"));
@@ -989,7 +984,7 @@ public class RTMClient {
                 if (fcb == null) {
                     return;
                 }
-                Map payload = (Map) cbd.getPayload();
+                Map<String, Object> payload = (Map<String, Object>) cbd.getPayload();
                 if (payload != null && payload.containsKey("msgs")) {
                     List list = (ArrayList) payload.get("msgs");
                     for (int i = 0; i < list.size(); i++) {
@@ -999,11 +994,14 @@ public class RTMClient {
                         roomMsg.put("from", items.get(1));
                         roomMsg.put("mtype", items.get(2));
                         roomMsg.put("mid", items.get(3));
-                        roomMsg.put("msg", items.get(4));
-                        roomMsg.put("attrs", items.get(5));
-                        roomMsg.put("mtime", items.get(6));
-
-                        byte mtype = (byte) roomMsg.get("mtype");
+                        roomMsg.put("deleted", items.get(4));
+                        roomMsg.put("msg", items.get(5));
+                        roomMsg.put("attrs", items.get(6));
+                        roomMsg.put("mtime", items.get(7));
+                        if (roomMsg.containsKey("deleted")) {
+                            roomMsg.remove("deleted");
+                        }
+                        byte mtype = Byte.valueOf(roomMsg.get("mtype").toString()).byteValue();
                         if (mtype == RTMConfig.CHAT_TYPE.audio) {
                             if (roomMsg.containsKey("msg") && roomMsg.get("msg") instanceof String) {
                                 byte[] msg  = PayloadUnpacker.getBytes((String) roomMsg.get("msg"));
@@ -1088,7 +1086,7 @@ public class RTMClient {
                 if (fcb == null) {
                     return;
                 }
-                Map payload = (Map) cbd.getPayload();
+                Map<String, Object> payload = (Map<String, Object>) cbd.getPayload();
                 if (payload != null && payload.containsKey("msgs")) {
                     List list = (ArrayList) payload.get("msgs");
                     for (int i = 0; i < list.size(); i++) {
@@ -1098,11 +1096,14 @@ public class RTMClient {
                         broadcastMsg.put("from", items.get(1));
                         broadcastMsg.put("mtype", items.get(2));
                         broadcastMsg.put("mid", items.get(3));
-                        broadcastMsg.put("msg", items.get(4));
-                        broadcastMsg.put("attrs", items.get(5));
-                        broadcastMsg.put("mtime", items.get(6));
-
-                        byte mtype = (byte) broadcastMsg.get("mtype");
+                        broadcastMsg.put("deleted", items.get(4));
+                        broadcastMsg.put("msg", items.get(5));
+                        broadcastMsg.put("attrs", items.get(6));
+                        broadcastMsg.put("mtime", items.get(7));
+                        if (broadcastMsg.containsKey("deleted")) {
+                            broadcastMsg.remove("deleted");
+                        }
+                        byte mtype = Byte.valueOf(broadcastMsg.get("mtype").toString()).byteValue();
                         if (mtype == RTMConfig.CHAT_TYPE.audio) {
                             if (broadcastMsg.containsKey("msg") && broadcastMsg.get("msg") instanceof String) {
                                 byte[] msg  = PayloadUnpacker.getBytes((String) broadcastMsg.get("msg"));
@@ -1191,7 +1192,7 @@ public class RTMClient {
                 if (fcb == null) {
                     return;
                 }
-                Map payload = (Map) cbd.getPayload();
+                Map<String, Object> payload = (Map<String, Object>) cbd.getPayload();
                 if (payload != null && payload.containsKey("msgs")) {
                     List list = (ArrayList) payload.get("msgs");
                     for (int i = 0; i < list.size(); i++) {
@@ -1201,11 +1202,14 @@ public class RTMClient {
                         p2pMsg.put("direction", items.get(1));
                         p2pMsg.put("mtype", items.get(2));
                         p2pMsg.put("mid", items.get(3));
-                        p2pMsg.put("msg", items.get(4));
-                        p2pMsg.put("attrs", items.get(5));
-                        p2pMsg.put("mtime", items.get(6));
-
-                        byte mtype = (byte) p2pMsg.get("mtype");
+                        p2pMsg.put("deleted", items.get(4));
+                        p2pMsg.put("msg", items.get(5));
+                        p2pMsg.put("attrs", items.get(6));
+                        p2pMsg.put("mtime", items.get(7));
+                        if (p2pMsg.containsKey("deleted")) {
+                            p2pMsg.remove("deleted");
+                        }
+                        byte mtype = Byte.valueOf(p2pMsg.get("mtype").toString()).byteValue();
                         if (mtype != RTMConfig.CHAT_TYPE.audio) {
                             if (p2pMsg.containsKey("msg") && p2pMsg.get("msg") instanceof String) {
                                 byte[] msg  = PayloadUnpacker.getBytes((String) p2pMsg.get("msg"));
@@ -3988,11 +3992,6 @@ public class RTMClient {
         public BaseClient(String host, int port, int timeout) {
             super(host, port, timeout);
         }
-
-//        @Override
-//        public void sendQuest(FPData data, FPCallback.ICallback callback, int timeout) {
-//            super.sendQuest(data, this.questCallback(callback), timeout);
-//        }
 
         @Override
         public CallbackData sendQuest(FPData data, int timeout) {
