@@ -101,24 +101,12 @@ public class RTMSender {
     private void stopServiceThread() {
         synchronized (service_locker) {
             if (service_locker.status == 1) {
-                service_locker.status = 2;
-
                 try {
                     service_locker.notify();
                 } catch (Exception ex) {
                     ErrorRecorder.getInstance().recordError(ex);
                 }
-
-                final RTMSender self = this;
-                FPManager.getInstance().delayTask(100, new FPManager.ITask() {
-                    @Override
-                    public void task(Object state) {
-                        synchronized (service_locker) {
-                            service_locker.status = 0;
-                            self._serviceCache.clear();
-                        }
-                    }
-                }, null);
+                service_locker.status = 0;
             }
         }
     }
