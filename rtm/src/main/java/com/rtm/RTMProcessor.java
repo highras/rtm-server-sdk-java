@@ -94,6 +94,10 @@ public class RTMProcessor implements FPProcessor.IProcessor {
                 payload.put("mtime", wantLong(payload, "mtime"));
             }
 
+            if (payload.containsKey("uid")) {
+                payload.put("uid", wantLong(payload, "uid"));
+            }
+
             try {
                 RTMProcessor.class.getMethod(data.getMethod(), Map.class).invoke(this, payload);
             } catch (Exception ex) {

@@ -2,7 +2,7 @@ package com.rtm;
 
 public class RTMConfig {
 
-    public static final String VERSION = "1.2.5";
+    public static final String VERSION = "1.2.6";
 
     public static final int MID_TTL = 5 * 1000;                         //MID缓存超时时间(ms)
     public static final int RECONN_COUNT_ONCE = 1;                      //一次重新连接流程中的尝试次数

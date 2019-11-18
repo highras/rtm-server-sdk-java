@@ -483,7 +483,6 @@
                 * `GroupMsg.id` **(long)**
                 * `GroupMsg.from` **(long)**
                 * `GroupMsg.mid` **(long)**
-                * `GroupMsg.deleted` **(boolean)**
                 * `GroupMsg.msg` **(String)**
                 * `GroupMsg.attrs` **(String)**
                 * `GroupMsg.mtime` **(long)**
@@ -503,7 +502,6 @@
                 * `RoomMsg.id` **(long)**
                 * `RoomMsg.from` **(long)**
                 * `RoomMsg.mid` **(long)**
-                * `RoomMsg.deleted` **(boolean)**
                 * `RoomMsg.msg` **(String)**
                 * `RoomMsg.attrs` **(String)**
                 * `RoomMsg.mtime` **(long)**
@@ -522,7 +520,6 @@
                 * `BroadcastMsg.id` **(long)**
                 * `BroadcastMsg.from` **(long)**
                 * `BroadcastMsg.mid` **(long)**
-                * `BroadcastMsg.deleted` **(boolean)**
                 * `BroadcastMsg.msg` **(String)**
                 * `BroadcastMsg.attrs` **(String)**
                 * `BroadcastMsg.mtime` **(long)**
@@ -543,7 +540,6 @@
                 * `P2PMsg.id` **(long)**
                 * `P2PMsg.direction` **(byte)**
                 * `P2PMsg.mid` **(long)**
-                * `P2PMsg.deleted` **(boolean)**
                 * `P2PMsg.msg` **(String)**
                 * `P2PMsg.attrs` **(String)**
                 * `P2PMsg.mtime` **(long)**
@@ -665,7 +661,7 @@
     * `timeout`: **(int)** 超时时间(ms)
     * `callback`: **(FPCallback.ICallback)** 回调方法
         * `cbdata`: **(CallbackData)**
-            * `payload`: **(boolean)**
+            * `payload`: **(Map(ok:boolean))**
             * `exception`: **(Exception)**
 
 * `setUserInfo(long uid, String oinfo, String pinfo, int timeout, FPCallback.ICallback callback)`: 设置用户的公开信息和私有信息
