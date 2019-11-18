@@ -3960,6 +3960,10 @@ public class RTMClient {
         public static void register() {
             FPManager.getInstance().init();
         }
+
+        public static void unregister() {
+            FPManager.getInstance().destroy();
+        }
     }
 
     class RTMErrorRecorder implements ErrorRecorder.IErrorRecorder {

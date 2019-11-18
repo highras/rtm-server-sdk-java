@@ -102,10 +102,30 @@ public class TestCase implements TestMain.ITestCase {
     private void beginTest() {
         try {
             this.doTest();
+//            this.doFinish();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+
+//    private void doFinish() {
+//        this._client.getToken(777779, 20 * 1000, new FPCallback.ICallback() {
+//            @Override
+//            public void callback(CallbackData cbd) {
+//                Object obj = cbd.getPayload();
+//
+//                if (obj != null) {
+//                    Map payload = (Map) obj;
+//                    System.out.print("[DATA] getToken:");
+//                    System.out.println(payload.toString());
+//                } else {
+//                    System.err.print("[ERR] getToken:");
+//                    System.err.println(cbd.getException().getMessage());
+//                }
+//            }
+//        });
+//        this._client.destroy();
+//    }
 
     private void doTest() {
         long from = 777779;

@@ -79,6 +79,9 @@ client.connect();
 // client.destroy();
 // client = null;
 
+//销毁服务
+// RTMClient.RTMRegistration.unregister();
+
 void send() {
     client.sendMessage(778877, 778899, (byte) 8, "hello !", "", 0, 5 * 1000, new FPCallback.ICallback() {
         @Override
