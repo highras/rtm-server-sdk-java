@@ -12,10 +12,7 @@ public class TestToken {
 
     static RTMClient client;
     public static void main(String[] args) {
-        System.out.println(new String("rtm test with main!"));
-
         RTMClient.RTMRegistration.register();
-
         client = new RTMClient(
                 11000001,
                 "ef3617e5-e886-4a4e-9eef-7263c0320628",
