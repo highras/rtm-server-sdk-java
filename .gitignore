@@ -1,7 +1,9 @@
-*.idea
-*.class
+.gradle
+/local.properties
+.DS_Store
+/build
+/captures
+.externalNativeBuild
 
-/**/.DS_Store
-/**/.vscode
-/**/node_modules
-/**/*.log
+/out/
+/target/
