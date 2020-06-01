@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="rtm-server-sdk:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f1c7141f-c4ec-4cff-930a-80d948226ec7" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="rtm-server-sdk" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Interface" />
+        <option value="Enum" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1TrTVJI60Qk0kfL39WhmjVRAlUs" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f1c7141f-c4ec-4cff-930a-80d948226ec7" name="Default Changelist" comment="" />
+      <created>1574217236080</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1574217236080</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/../../.." />
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="145" y="-1064" key="#Project_Structure" timestamp="1585050711135">
+      <screen x="-282" y="-1177" width="1920" height="1177" />
+    </state>
+    <state x="145" y="-1064" key="#Project_Structure/0.23.1440.831/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1584335928231" />
+    <state x="320" y="103" key="#Project_Structure/0.23.1440.831/-282.-1177.1920.1177@0.23.1440.831" timestamp="1584325592591" />
+    <state x="320" y="103" key="#Project_Structure/0.23.1440.831@0.23.1440.831" timestamp="1584471938693" />
+    <state x="145" y="-1064" key="#Project_Structure/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1585050711135" />
+    <state x="407" y="-893" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog" timestamp="1585050567806">
+      <screen x="-282" y="-1177" width="1920" height="1177" />
+    </state>
+    <state x="407" y="-893" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1585050567806" />
+    <state width="1398" height="215" key="GridCell.Tab.0.bottom" timestamp="1590996402741">
+      <screen x="-282" y="-1177" width="1920" height="1177" />
+    </state>
+    <state width="1398" height="215" key="GridCell.Tab.0.bottom/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1590996402741" />
+    <state width="1398" height="215" key="GridCell.Tab.0.bottom/0.23.1440.832@0.23.1440.832" timestamp="1585365835822" />
+    <state width="1398" height="215" key="GridCell.Tab.0.center" timestamp="1590996402740">
+      <screen x="-282" y="-1177" width="1920" height="1177" />
+    </state>
+    <state width="1398" height="215" key="GridCell.Tab.0.center/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1590996402740" />
+    <state width="1398" height="215" key="GridCell.Tab.0.center/0.23.1440.832@0.23.1440.832" timestamp="1585365835822" />
+    <state width="1398" height="215" key="GridCell.Tab.0.left" timestamp="1590996402739">
+      <screen x="-282" y="-1177" width="1920" height="1177" />
+    </state>
+    <state width="1398" height="215" key="GridCell.Tab.0.left/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1590996402739" />
+    <state width="1398" height="215" key="GridCell.Tab.0.left/0.23.1440.832@0.23.1440.832" timestamp="1585365835821" />
+    <state width="1398" height="215" key="GridCell.Tab.0.right" timestamp="1590996402740">
+      <screen x="-282" y="-1177" width="1920" height="1177" />
+    </state>
+    <state width="1398" height="215" key="GridCell.Tab.0.right/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1590996402740" />
+    <state width="1398" height="215" key="GridCell.Tab.0.right/0.23.1440.832@0.23.1440.832" timestamp="1585365835822" />
+    <state x="187" y="-950" key="SettingsEditor" timestamp="1590996303739">
+      <screen x="-282" y="-1177" width="1920" height="1177" />
+    </state>
+    <state x="187" y="-950" key="SettingsEditor/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1590996303739" />
+    <state x="397" y="270" key="com.intellij.ide.util.TipDialog" timestamp="1585365419392">
+      <screen x="0" y="23" width="1440" height="832" />
+    </state>
+    <state x="397" y="269" key="com.intellij.ide.util.TipDialog/0.23.1440.830/-282.-1177.1920.1177@0.23.1440.830" timestamp="1584353199648" />
+    <state x="247" y="-828" key="com.intellij.ide.util.TipDialog/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1585051798096" />
+    <state x="397" y="270" key="com.intellij.ide.util.TipDialog/0.23.1440.832@0.23.1440.832" timestamp="1585365419392" />
+    <state x="1" y="-881" width="1036" height="809" key="dock-window-1" timestamp="1584335930909">
+      <screen x="-282" y="-1177" width="1920" height="1177" />
+    </state>
+    <state x="1" y="-881" width="1036" height="809" key="dock-window-1/0.23.1440.831/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1584335930909" />
+    <state x="1" y="-881" width="1036" height="809" key="dock-window-1/0.23.1440.831/-282.-1177.1920.1177@0.23.1440.831" timestamp="1584326864303" />
+    <state x="97" y="57" key="new project wizard" timestamp="1584472267715">
+      <screen x="0" y="23" width="1440" height="831" />
+    </state>
+    <state x="97" y="57" key="new project wizard/0.23.1440.831@0.23.1440.831" timestamp="1584472267715" />
+    <state x="385" y="176" key="search.everywhere.popup" timestamp="1585551610023">
+      <screen x="0" y="23" width="1440" height="833" />
+    </state>
+    <state x="385" y="175" key="search.everywhere.popup/0.23.1440.828@0.23.1440.828" timestamp="1584553351597" />
+    <state x="385" y="176" width="670" height="676" key="search.everywhere.popup/0.23.1440.830/-282.-1177.1920.1177@0.23.1440.830" timestamp="1584338093993" />
+    <state x="385" y="176" width="670" height="676" key="search.everywhere.popup/0.23.1440.831/-282.-1177.1920.1177@0.23.1440.831" timestamp="1584326734525" />
+    <state x="385" y="176" key="search.everywhere.popup/0.23.1440.832@0.23.1440.832" timestamp="1585127296983" />
+    <state x="385" y="176" key="search.everywhere.popup/0.23.1440.833/-282.-1177.1920.1177@0.23.1440.833" timestamp="1585551610023" />
+  </component>
+</project>
