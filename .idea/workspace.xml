@@ -6,14 +6,16 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f1c7141f-c4ec-4cff-930a-80d948226ec7" name="Default Changelist" comment="" />
+    <list default="true" id="f1c7141f-c4ec-4cff-930a-80d948226ec7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rtm-server-sdk.iml" beforeDir="false" afterPath="$PROJECT_DIR$/rtm-server-sdk.iml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FavoritesManager">
-    <favorites_list name="rtm-server-sdk" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -39,7 +41,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -73,13 +75,13 @@
     </ignored-roots>
   </component>
   <component name="WindowStateProjectService">
-    <state x="145" y="-1064" key="#Project_Structure" timestamp="1585050711135">
+    <state x="145" y="-1064" key="#Project_Structure" timestamp="1592227152174">
       <screen x="-282" y="-1177" width="1920" height="1177" />
     </state>
     <state x="145" y="-1064" key="#Project_Structure/0.23.1440.831/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1584335928231" />
     <state x="320" y="103" key="#Project_Structure/0.23.1440.831/-282.-1177.1920.1177@0.23.1440.831" timestamp="1584325592591" />
     <state x="320" y="103" key="#Project_Structure/0.23.1440.831@0.23.1440.831" timestamp="1584471938693" />
-    <state x="145" y="-1064" key="#Project_Structure/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1585050711135" />
+    <state x="145" y="-1064" key="#Project_Structure/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1592227152174" />
     <state x="407" y="-893" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog" timestamp="1585050567806">
       <screen x="-282" y="-1177" width="1920" height="1177" />
     </state>
@@ -104,10 +106,10 @@
     </state>
     <state width="1398" height="215" key="GridCell.Tab.0.right/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1590996402740" />
     <state width="1398" height="215" key="GridCell.Tab.0.right/0.23.1440.832@0.23.1440.832" timestamp="1585365835822" />
-    <state x="187" y="-950" key="SettingsEditor" timestamp="1591005683766">
+    <state x="187" y="-950" key="SettingsEditor" timestamp="1592227180080">
       <screen x="-282" y="-1177" width="1920" height="1177" />
     </state>
-    <state x="187" y="-950" key="SettingsEditor/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1591005683766" />
+    <state x="187" y="-950" key="SettingsEditor/0.23.1440.832/-282.-1177.1920.1177@-282.-1177.1920.1177" timestamp="1592227180080" />
     <state x="397" y="270" key="com.intellij.ide.util.TipDialog" timestamp="1585365419392">
       <screen x="0" y="23" width="1440" height="832" />
     </state>

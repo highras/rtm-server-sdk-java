@@ -10,10 +10,10 @@ import java.util.Set;
 
 public class RTMServerClient extends RTMServerClientBase implements ChatAPI, DataAPI, FileAPI, FriendAPI,
         GroupAPI, ListeningAPI, MessageAPI, RoomAPI, TokenAPI, UserAPI, DeviceAPI, UtilitiesAPI, HistoryChatAPI,
-        HistoryMessageAPI {
+        HistoryMessageAPI, BlackAPI {
 
-    public static String SDKVersion = "2.0.2";
-    public static String InterfaceVersion = "2.0.2";
+    public static String SDKVersion = "2.0.3";
+    public static String InterfaceVersion = "2.1.0";
 
     private class RegressiveStats {
         public int currentFailedCount = 0;

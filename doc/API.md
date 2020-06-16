@@ -6,16 +6,16 @@
 
 ## Token Functions
 
-登陆Token相关接口.
+登陆Token相关接口
 
 具体请参见: [登陆Token相关接口](TokenAPI.md)
 
 
 ## Chat Functions
 
-聊天接口
+发送聊天消息接口
 
-具体请参见: [聊天接口](ChatAPI.md)
+具体请参见: [发送聊天消息接口](ChatAPI.md)
 
 
 ## Message Functions
@@ -44,6 +44,7 @@
 发送文件接口
 
 具体请参见: [发送文件接口](FileAPI.md)
+
 
 ## Friend Functions
 
@@ -99,3 +100,10 @@
 增值服务相关接口
 
 具体请参见: [增值服务相关接口](UtilitiesAPI.md)
+
+
+## Blacks Functions
+
+拉黑用户相关接口
+
+具体请参见: [拉黑用户相关接口](BlackAPI.md)
