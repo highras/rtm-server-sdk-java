@@ -20,7 +20,7 @@ Java 8
     <dependency>
         <groupId>com.github.highras</groupId>
         <artifactId>rtm-server-sdk</artifactId>
-        <version>2.0.3-RELEASE</version>
+        <version>2.1.0-RELEASE</version>
     </dependency>
     
 ### Import package
@@ -52,7 +52,7 @@ Please get your project params from RTM Console.
     **setAutoCleanup:** when client.setAutoCleanup(false); must call client.SDKCleanup() for clean up SDK, default is true.   
     **setAutoConnect:** means establishing the connection in implicit or explicit. NOT keep the connection, default is true.   
     **configureForMultipleSynchronousConcurrentAPIs:** Default max limitation is 4 threads.   
-    **setQuestTimeout:** default timeout for global quest is 5 seconds.
+    **setQuestTimeout:** default timeout for global quest is 30 seconds.
     
 * Set serverPush message monitor
 
@@ -65,7 +65,7 @@ Please get your project params from RTM Console.
         client.setRTMClientHasClosedCallback(RTMClientHasClosedCallback cb); 
         
         public interface RTMClientConnectCallback {
-            void connectResult(InetSocketAddress peerAddress, boolean connected, boolean reConnect, String reConnectInfo);
+            void connectResult(InetSocketAddress peerAddress, boolean connected, boolean reConnect, RTMServerClient.RegressiveStats connectState));
         }
         
         public interface RTMClientWillCloseCallback {
@@ -73,7 +73,7 @@ Please get your project params from RTM Console.
         }
         
         public interface RTMClientHasClosedCallback {
-            void connectionHasClosed(InetSocketAddress peerAddress, boolean causedByError, boolean reConnect, String reConnectInfo);
+            void connectionHasClosed(InetSocketAddress peerAddress, boolean causedByError, boolean reConnect, RTMServerClient.RegressiveStats connectState));
         }
         
 * Config encrypted connection
