@@ -14,27 +14,27 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public interface BlackAPI extends APIBase {
+public interface BlacklistAPI extends APIBase {
 
-    default void addBlacks(long uid, Set<Long> blackIds)
+    default void addBlacks(long userId, Set<Long> blacklistIds)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException {
-        addBlacks(uid, blackIds, 0);
+        addBlacks(userId, blacklistIds, 0);
     }
 
-    default void addBlacks(long uid, Set<Long> blackIds, int timeoutInseconds)
+    default void addBlacks(long userId, Set<Long> blacklistIds, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException {
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("addblacks");
-        quest.param("uid", uid);
-        quest.param("blacks", blackIds);
+        quest.param("uid", userId);
+        quest.param("blacks", blacklistIds);
         client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
     }
 
-    default void addBlacks(long uid, Set<Long> blackIds, APIBase.DoneLambdaCallback callback) {
-        addBlacks(uid, blackIds, callback, 0);
+    default void addBlacks(long userId, Set<Long> blacklistIds, APIBase.DoneLambdaCallback callback) {
+        addBlacks(userId, blacklistIds, callback, 0);
     }
 
-    default void addBlacks(long uid, Set<Long> blackIds, APIBase.DoneLambdaCallback callback, int timeoutInseconds){
+    default void addBlacks(long userId, Set<Long> blacklistIds, APIBase.DoneLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -44,31 +44,31 @@ public interface BlackAPI extends APIBase {
             callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate addblacks message sign exception.");
             return;
         }
-        quest.param("uid", uid);
-        quest.param("blacks", blackIds);
+        quest.param("uid", userId);
+        quest.param("blacks", blacklistIds);
         AnswerCallback answerCallback = new APIBase.FPNNDoneLambdaCallbackWrapper(callback);
         client.sendQuest(quest, answerCallback, timeoutInseconds);
     }
 
-    default void delBlacks(long uid, Set<Long> blackIds)
+    default void delBlacks(long userId, Set<Long> blacklistIds)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException {
-        delBlacks(uid, blackIds, 0);
+        delBlacks(userId, blacklistIds, 0);
     }
 
-    default void delBlacks(long uid, Set<Long> blackIds, int timeoutInseconds)
+    default void delBlacks(long userId, Set<Long> blacklistIds, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException {
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("delblacks");
-        quest.param("uid", uid);
-        quest.param("blacks", blackIds);
+        quest.param("uid", userId);
+        quest.param("blacks", blacklistIds);
         client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
     }
 
-    default void delBlacks(long uid, Set<Long> blackIds, APIBase.DoneLambdaCallback callback) {
-        delBlacks(uid, blackIds, callback, 0);
+    default void delBlacks(long userId, Set<Long> blacklistIds, APIBase.DoneLambdaCallback callback) {
+        delBlacks(userId, blacklistIds, callback, 0);
     }
 
-    default void delBlacks(long uid, Set<Long> blackIds, APIBase.DoneLambdaCallback callback, int timeoutInseconds){
+    default void delBlacks(long userId, Set<Long> blacklistIds, APIBase.DoneLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -78,26 +78,26 @@ public interface BlackAPI extends APIBase {
             callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate delblacks message sign exception.");
             return;
         }
-        quest.param("uid", uid);
-        quest.param("blacks", blackIds);
+        quest.param("uid", userId);
+        quest.param("blacks", blacklistIds);
         AnswerCallback answerCallback = new APIBase.FPNNDoneLambdaCallbackWrapper(callback);
         client.sendQuest(quest, answerCallback, timeoutInseconds);
     }
 
     interface GetBlacksLambdaCallBack{
-        void done(Set<Long> uids, int errorCode, String errorMessage);
+        void done(Set<Long> userIds, int errorCode, String errorMessage);
     }
 
-    default Set<Long> getBlacks(long uid)
+    default Set<Long> getBlacks(long userId)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException {
-        return getBlacks(uid,0);
+        return getBlacks(userId,0);
     }
 
-    default Set<Long> getBlacks(long uid, int timeoutInseconds)
+    default Set<Long> getBlacks(long userId, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException {
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("getblacks");
-        quest.param("uid", uid);
+        quest.param("uid", userId);
 
         Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
         Object object = answer.get("uids", null);
@@ -111,11 +111,11 @@ public interface BlackAPI extends APIBase {
         return result;
     }
 
-    default void getBlacks(long uid, GetBlacksLambdaCallBack callback) {
-        getBlacks(uid, callback, 0);
+    default void getBlacks(long userId, GetBlacksLambdaCallBack callback) {
+        getBlacks(userId, callback, 0);
     }
 
-    default void getBlacks(long uid, GetBlacksLambdaCallBack callback, int timeoutInseconds){
+    default void getBlacks(long userId, GetBlacksLambdaCallBack callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -125,7 +125,7 @@ public interface BlackAPI extends APIBase {
             callback.done(null, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate getblacks message sign exception.");
             return;
         }
-        quest.param("uid", uid);
+        quest.param("uid", userId);
         AnswerCallback answerCallback = new AnswerCallback() {
             @Override
             public void onAnswer(Answer answer) {
@@ -157,26 +157,26 @@ public interface BlackAPI extends APIBase {
         void done(boolean ok, int errorCode, String errorMessage);
     }
 
-    default boolean isBlack(long uid, long buid)
+    default boolean isBlack(long userId, long blackUserId)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException {
-        return isBlack(uid, buid,0);
+        return isBlack(userId, blackUserId,0);
     }
 
-    default boolean isBlack(long uid, long buid, int timeoutInseconds)
+    default boolean isBlack(long userId, long blackUserId, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException {
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("isblack");
-        quest.param("uid", uid);
-        quest.param("buid", buid);
+        quest.param("uid", userId);
+        quest.param("buid", blackUserId);
         Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
         return (boolean)answer.get("ok",false);
     }
 
-    default void isBlack(long uid, long buid, IsBlackLambdaCallBack callback) {
-        isBlack(uid, buid, callback, 0);
+    default void isBlack(long userId, long blackUserId, IsBlackLambdaCallBack callback) {
+        isBlack(userId, blackUserId, callback, 0);
     }
 
-    default void isBlack(long uid, long buid, IsBlackLambdaCallBack callback, int timeoutInseconds){
+    default void isBlack(long userId, long blackUserId, IsBlackLambdaCallBack callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -186,8 +186,8 @@ public interface BlackAPI extends APIBase {
             callback.done(false, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate isblack message sign exception.");
             return;
         }
-        quest.param("uid", uid);
-        quest.param("buid", buid);
+        quest.param("uid", userId);
+        quest.param("buid", blackUserId);
         AnswerCallback answerCallback = new AnswerCallback() {
             @Override
             public void onAnswer(Answer answer) {
@@ -208,20 +208,20 @@ public interface BlackAPI extends APIBase {
     }
 
     interface IsBlacksLambdaCallBack{
-        void done(Set<Long> buids, int errorCode, String errorMessage);
+        void done(Set<Long> blackUserIds, int errorCode, String errorMessage);
     }
 
-    default Set<Long> isBlacks(long uid, Set<Long> buids)
+    default Set<Long> isBlacks(long userId, Set<Long> blackUserIds)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException {
-        return isBlacks(uid, buids,0);
+        return isBlacks(userId, blackUserIds,0);
     }
 
-    default Set<Long> isBlacks(long uid, Set<Long> buids, int timeoutInseconds)
+    default Set<Long> isBlacks(long userId, Set<Long> blackUserIds, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException {
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("isblacks");
-        quest.param("uid", uid);
-        quest.param("buids", buids);
+        quest.param("uid", userId);
+        quest.param("buids", blackUserIds);
         Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
         Object object = answer.get("buids", null);
         Set<Long> result = new HashSet<>();
@@ -235,11 +235,11 @@ public interface BlackAPI extends APIBase {
     }
 
 
-    default void isBlacks(long uid, Set<Long> buids, IsBlacksLambdaCallBack callback) {
-        isBlacks(uid, buids, callback, 0);
+    default void isBlacks(long userId, Set<Long> blackUserIds, IsBlacksLambdaCallBack callback) {
+        isBlacks(userId, blackUserIds, callback, 0);
     }
 
-    default void isBlacks(long uid, Set<Long> buids, IsBlacksLambdaCallBack callback, int timeoutInseconds){
+    default void isBlacks(long userId, Set<Long> blackUserIds, IsBlacksLambdaCallBack callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -249,8 +249,8 @@ public interface BlackAPI extends APIBase {
             callback.done(null, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value( ), "Generate isblacks message sign exception.");
             return;
         }
-        quest.param("uid", uid);
-        quest.param("buids", buids);
+        quest.param("uid", userId);
+        quest.param("buids", blackUserIds);
         AnswerCallback answerCallback = new AnswerCallback() {
             @Override
             public void onAnswer(Answer answer) {

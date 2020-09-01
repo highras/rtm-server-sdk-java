@@ -33,20 +33,25 @@ public class ChatAPIFunctions {
         client.setAutoCleanup(false);
 
         //-- Optional when need process connect event or willClose event or closed event, maybe set these callback
-        RTMClientConnectCallback connectCallback = (peerAddress, connected, reConnect, reConnectInfo) -> {
+        RTMClientConnectCallback connectCallback = (peerAddress, connected, reConnect, regressiveState) -> {
             if(connected)
             {
                 System.out.println("rtm client connected " + peerAddress.toString());
             }
-            else{
-                System.out.println("rtm client not connected " + peerAddress.toString() + " ,can reconnet: " + reConnect + " ,reconnect infos: " +reConnectInfo);
+            else if(regressiveState != null){
+                String info = "RTMReconnect time at " + regressiveState.connectStartMilliseconds + " ,currentFailedCount = " + regressiveState.currentFailedCount;
+                System.out.println("rtm client not connected " + peerAddress.toString() + " ,can reconnet: " + reConnect + " ,reconnect infos: " +info);
             }
         };
 
         RTMClientWillCloseCallback willCloseCallback = (peerAddress, causedByError) -> System.out.println("rtm client will close " + "cause by error: " + causedByError);
 
-        RTMClientHasClosedCallback hasClosedCallback = (peerAddress, causedByError, reConnect, reConnectInfo) ->
-                System.out.println("rtm client has closed " + "cause by error: " + causedByError + " ,can reconnect: " + reConnect + " ,reconnect infos: " + reConnectInfo);
+        RTMClientHasClosedCallback hasClosedCallback = (peerAddress, causedByError, reConnect, regressiveState) ->{
+            if(regressiveState != null){
+                String info = "RTMReconnect time at " + regressiveState.connectStartMilliseconds + " ,currentFailedCount = " + regressiveState.currentFailedCount;
+                System.out.println("rtm client has closed " + "cause by error: " + causedByError + " ,can reconnect: " + reConnect + " ,reconnect infos: " + info);
+            }
+        };
 
         client.setRTMClientConnectedCallback(connectCallback);
         client.setRTMClientWillCloseCallback(willCloseCallback);
@@ -325,7 +330,7 @@ public class ChatAPIFunctions {
         try{
             // sync get chat
             long mid =123456789;
-            RTMServerClientBase.RTMRetrievedMessage message = client.getChat(mid, from, gid, APIBase.MessageType.MESSAGE_TYPE_GROUP);
+            RTMServerClientBase.RTMHistoryMessageUnit message = client.getChat(mid, from, gid, APIBase.MessageType.MESSAGE_TYPE_GROUP);
             System.out.println("sync return getChat success " + message.toString());
 
             // async get chat

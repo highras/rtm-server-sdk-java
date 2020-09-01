@@ -2,7 +2,7 @@ package com.fpnn.rtm.api;
 
 import com.fpnn.rtm.RTMErrorCode;
 import com.fpnn.rtm.RTMException;
-import com.fpnn.rtm.RTMServerClientBase.RTMRetrievedMessage;
+import com.fpnn.rtm.RTMServerClientBase.RTMHistoryMessageUnit;
 import com.fpnn.sdk.*;
 
 import java.io.IOException;
@@ -11,340 +11,485 @@ import java.util.Set;
 
 public interface MessageAPI extends MessageCoreAPI {
     //-----------------[ sendmsg ]-----------------//
-    default void internalSendMessage(long fromUid, long toUid, byte mType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        if (mType <= 50)
+    default void internalSendMessage(long fromUid, long toUid, byte messageType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        if (messageType <= 50)
         {
-            ErrorRecorder.record("MType MUST large than 50, current mType is " + mType);
-            callback.done(-1, RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "MType MUST large than 50, current mType is " + mType);
+            ErrorRecorder.record("RTMMessageType MUST large than 50, current messageType is " + messageType);
+            callback.done(-1, RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "RTMMessageType MUST large than 50, current messageType is " + messageType);
             return;
         }
 
-        internalCoreSendMessage(fromUid, toUid, mType, message, attrs, callback, timeoutInseconds);
+        internalCoreSendMessage(fromUid, toUid, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendMessage(long fromUid, long toUid, byte mType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalSendMessage(fromUid, toUid, mType, message, attrs, callback, timeoutInseconds);
+    default void sendMessage(long fromUid, long toUid, byte messageType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        internalSendMessage(fromUid, toUid, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendMessage(long fromUid, long toUid, byte mType, String message, String attrs, SendMessageLambdaCallback callback) {
-        internalSendMessage(fromUid, toUid, mType, message, attrs, callback, 0);
+    default void sendMessage(long fromUid, long toUid, byte messageType, String message, String attrs, SendMessageLambdaCallback callback) {
+        internalSendMessage(fromUid, toUid, messageType, message, attrs, callback, 0);
     }
 
-    default void sendMessage(long fromUid, long toUid, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalSendMessage(fromUid, toUid, mType, message, attrs, callback, timeoutInseconds);
+    default void sendMessage(long fromUid, long toUid, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        internalSendMessage(fromUid, toUid, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendMessage(long fromUid, long toUid, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback) {
-        internalSendMessage(fromUid, toUid, mType, message, attrs, callback, 0);
+    default void sendMessage(long fromUid, long toUid, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback) {
+        internalSendMessage(fromUid, toUid, messageType, message, attrs, callback, 0);
     }
 
-    default long internalSendMessage(long fromUid, long toUid, byte mType, Object message, String attrs, int timeoutInseconds)
+    default long internalSendMessage(long fromUid, long toUid, byte messageType, Object message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        if (mType <= 50)
-            throw new RTMException(RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "MType MUST large than 50, current mType is " + mType);
+        if (messageType <= 50)
+            throw new RTMException(RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "RTMMessageType MUST large than 50, current messageType is " + messageType);
 
-        return internalCoreSendMessage(fromUid, toUid, mType, message, attrs, timeoutInseconds);
+        return internalCoreSendMessage(fromUid, toUid, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendMessage(long fromUid, long toUid, byte mType, String message, String attrs, int timeoutInseconds)
+    default long sendMessage(long fromUid, long toUid, byte messageType, String message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        return internalSendMessage(fromUid, toUid, mType, message, attrs, timeoutInseconds);
+        return internalSendMessage(fromUid, toUid, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendMessage(long fromUid, long toUid, byte mType, String message, String attrs)
+    default long sendMessage(long fromUid, long toUid, byte messageType, String message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalSendMessage(fromUid, toUid, mType, message, attrs, 0);
+        return internalSendMessage(fromUid, toUid, messageType, message, attrs, 0);
     }
 
-    default long sendMessage(long fromUid, long toUid, byte mType, byte[] message, String attrs, int timeoutInseconds)
+    default long sendMessage(long fromUid, long toUid, byte messageType, byte[] message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        return internalSendMessage(fromUid, toUid, mType, message, attrs, timeoutInseconds);
+        return internalSendMessage(fromUid, toUid, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendMessage(long fromUid, long toUid, byte mType, byte[] message, String attrs)
+    default long sendMessage(long fromUid, long toUid, byte messageType, byte[] message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalSendMessage(fromUid, toUid, mType, message, attrs, 0);
+        return internalSendMessage(fromUid, toUid, messageType, message, attrs, 0);
     }
 
     //-----------------[ sendmsgs ]-----------------//
 
-    default void internalSendMessages(long fromUid, Set<Long> toUids, byte mType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        if (mType <= 50)
+    default void internalSendMessages(long fromUid, Set<Long> toUids, byte messageType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        if (messageType <= 50)
         {
-            ErrorRecorder.record("MType MUST large than 50, current mType is " + mType);
-            callback.done(-1, RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "MType MUST large than 50, current mType is " + mType);
+            ErrorRecorder.record("RTMMessageType MUST large than 50, current messageType is " + messageType);
+            callback.done(-1, RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "RTMMessageType MUST large than 50, current messageType is " + messageType);
             return;
         }
 
-        internalCoreSendMessages(fromUid, toUids, mType, message, attrs, callback, timeoutInseconds);
+        internalCoreSendMessages(fromUid, toUids, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendMessages(long fromUid, Set<Long> toUids, byte mType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalSendMessages(fromUid, toUids, mType, message, attrs, callback, timeoutInseconds);
+    default void sendMessages(long fromUid, Set<Long> toUids, byte messageType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        internalSendMessages(fromUid, toUids, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendMessages(long fromUid, Set<Long> toUids, byte mType, String message, String attrs, SendMessageLambdaCallback callback) {
-        internalSendMessages(fromUid, toUids, mType, message, attrs, callback, 0);
+    default void sendMessages(long fromUid, Set<Long> toUids, byte messageType, String message, String attrs, SendMessageLambdaCallback callback) {
+        internalSendMessages(fromUid, toUids, messageType, message, attrs, callback, 0);
     }
 
-    default void sendMessages(long fromUid, Set<Long> toUids, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalSendMessages(fromUid, toUids, mType, message, attrs, callback, timeoutInseconds);
+    default void sendMessages(long fromUid, Set<Long> toUids, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        internalSendMessages(fromUid, toUids, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendMessages(long fromUid, Set<Long> toUids, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback) {
-        internalSendMessages(fromUid, toUids, mType, message, attrs, callback, 0);
+    default void sendMessages(long fromUid, Set<Long> toUids, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback) {
+        internalSendMessages(fromUid, toUids, messageType, message, attrs, callback, 0);
     }
 
-    default long internalSendMessages(long fromUid, Set<Long> toUids, byte mType, Object message, String attrs, int timeoutInseconds)
+    default long internalSendMessages(long fromUid, Set<Long> toUids, byte messageType, Object message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        if (mType <= 50)
-            throw new RTMException(RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "MType MUST large than 50, current mType is " + mType);
+        if (messageType <= 50)
+            throw new RTMException(RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "RTMMessageType MUST large than 50, current messageType is " + messageType);
 
-        return internalCoreSendMessages(fromUid, toUids, mType, message, attrs, timeoutInseconds);
+        return internalCoreSendMessages(fromUid, toUids, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendMessages(long fromUid, Set<Long> toUids, byte mType, String message, String attrs, int timeoutInseconds)
+    default long sendMessages(long fromUid, Set<Long> toUids, byte messageType, String message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        return internalSendMessages(fromUid, toUids, mType, message, attrs, timeoutInseconds);
+        return internalSendMessages(fromUid, toUids, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendMessages(long fromUid, Set<Long> toUids, byte mType, String message, String attrs)
+    default long sendMessages(long fromUid, Set<Long> toUids, byte messageType, String message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalSendMessages(fromUid, toUids, mType, message, attrs, 0);
+        return internalSendMessages(fromUid, toUids, messageType, message, attrs, 0);
     }
 
-    default long sendMessages(long fromUid, Set<Long> toUids, byte mType, byte[] message, String attrs, int timeoutInseconds)
+    default long sendMessages(long fromUid, Set<Long> toUids, byte messageType, byte[] message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        return internalSendMessages(fromUid, toUids, mType, message, attrs, timeoutInseconds);
+        return internalSendMessages(fromUid, toUids, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendMessages(long fromUid, Set<Long> toUids, byte mType, byte[] message, String attrs)
+    default long sendMessages(long fromUid, Set<Long> toUids, byte messageType, byte[] message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalSendMessages(fromUid, toUids, mType, message, attrs, 0);
+        return internalSendMessages(fromUid, toUids, messageType, message, attrs, 0);
     }
 
     //-----------------[ sendgroupmsg ]-----------------//
 
-    default void internalSendGroupMessage(long fromUid, long groupId, byte mType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        if (mType <= 50)
+    default void internalSendGroupMessage(long fromUid, long groupId, byte messageType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        if (messageType <= 50)
         {
-            ErrorRecorder.record("MType MUST large than 50, current mType is " + mType);
-            callback.done(-1, RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "MType MUST large than 50, current mType is " + mType);
+            ErrorRecorder.record("RTMMessageType MUST large than 50, current messageType is " + messageType);
+            callback.done(-1, RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "RTMMessageType MUST large than 50, current messageType is " + messageType);
             return;
         }
 
-        internalCoreSendGroupMessage(fromUid, groupId, mType, message, attrs, callback, timeoutInseconds);
+        internalCoreSendGroupMessage(fromUid, groupId, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendGroupMessage(long fromUid, long groupId, byte mType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalSendGroupMessage(fromUid, groupId, mType, message, attrs, callback, timeoutInseconds);
+    default void sendGroupMessage(long fromUid, long groupId, byte messageType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        internalSendGroupMessage(fromUid, groupId, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendGroupMessage(long fromUid, long groupId, byte mType, String message, String attrs, SendMessageLambdaCallback callback) {
-        internalSendGroupMessage(fromUid, groupId, mType, message, attrs, callback, 0);
+    default void sendGroupMessage(long fromUid, long groupId, byte messageType, String message, String attrs, SendMessageLambdaCallback callback) {
+        internalSendGroupMessage(fromUid, groupId, messageType, message, attrs, callback, 0);
     }
 
-    default void sendGroupMessage(long fromUid, long groupId, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalSendGroupMessage(fromUid, groupId, mType, message, attrs, callback, timeoutInseconds);
+    default void sendGroupMessage(long fromUid, long groupId, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        internalSendGroupMessage(fromUid, groupId, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendGroupMessage(long fromUid, long groupId, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback) {
-        internalSendGroupMessage(fromUid, groupId, mType, message, attrs, callback, 0);
+    default void sendGroupMessage(long fromUid, long groupId, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback) {
+        internalSendGroupMessage(fromUid, groupId, messageType, message, attrs, callback, 0);
     }
 
-    default long internalSendGroupMessage(long fromUid, long groupId, byte mType, Object message, String attrs, int timeoutInseconds)
+    default long internalSendGroupMessage(long fromUid, long groupId, byte messageType, Object message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        if (mType <= 50)
-            throw new RTMException(RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "MType MUST large than 50, current mType is " + mType);
+        if (messageType <= 50)
+            throw new RTMException(RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "RTMMessageType MUST large than 50, current messageType is " + messageType);
 
-        return internalCoreSendGroupMessage(fromUid, groupId, mType, message, attrs, timeoutInseconds);
+        return internalCoreSendGroupMessage(fromUid, groupId, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendGroupMessage(long fromUid, long groupId, byte mType, String message, String attrs, int timeoutInseconds)
+    default long sendGroupMessage(long fromUid, long groupId, byte messageType, String message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        return internalSendGroupMessage(fromUid, groupId, mType, message, attrs, timeoutInseconds);
+        return internalSendGroupMessage(fromUid, groupId, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendGroupMessage(long fromUid, long groupId, byte mType, String message, String attrs)
+    default long sendGroupMessage(long fromUid, long groupId, byte messageType, String message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalSendGroupMessage(fromUid, groupId, mType, message, attrs, 0);
+        return internalSendGroupMessage(fromUid, groupId, messageType, message, attrs, 0);
     }
 
-    default long sendGroupMessage(long fromUid, long groupId, byte mType, byte[] message, String attrs, int timeoutInseconds)
+    default long sendGroupMessage(long fromUid, long groupId, byte messageType, byte[] message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        return internalSendGroupMessage(fromUid, groupId, mType, message, attrs, timeoutInseconds);
+        return internalSendGroupMessage(fromUid, groupId, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendGroupMessage(long fromUid, long groupId, byte mType, byte[] message, String attrs)
+    default long sendGroupMessage(long fromUid, long groupId, byte messageType, byte[] message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalSendGroupMessage(fromUid, groupId, mType, message, attrs, 0);
+        return internalSendGroupMessage(fromUid, groupId, messageType, message, attrs, 0);
     }
 
     //-----------------[ sendroommsg ]-----------------//
 
-    default void internalSendRoomMessage(long fromUid, long roomId, byte mType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        if (mType <= 50)
+    default void internalSendRoomMessage(long fromUid, long roomId, byte messageType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        if (messageType <= 50)
         {
-            ErrorRecorder.record("MType MUST large than 50, current mType is " + mType);
-            callback.done(-1, RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "MType MUST large than 50, current mType is " + mType);
+            ErrorRecorder.record("RTMMessageType MUST large than 50, current mType is " + messageType);
+            callback.done(-1, RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "RTMMessageType MUST large than 50, current mType is " + messageType);
             return;
         }
 
-        internalCoreSendRoomMessage(fromUid, roomId, mType, message, attrs, callback, timeoutInseconds);
+        internalCoreSendRoomMessage(fromUid, roomId, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendRoomMessage(long fromUid, long roomId, byte mType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalSendRoomMessage(fromUid, roomId, mType, message, attrs, callback, timeoutInseconds);
+    default void sendRoomMessage(long fromUid, long roomId, byte messageType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        internalSendRoomMessage(fromUid, roomId, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendRoomMessage(long fromUid, long roomId, byte mType, String message, String attrs, SendMessageLambdaCallback callback) {
-        internalSendRoomMessage(fromUid, roomId, mType, message, attrs, callback, 0);
+    default void sendRoomMessage(long fromUid, long roomId, byte messageType, String message, String attrs, SendMessageLambdaCallback callback) {
+        internalSendRoomMessage(fromUid, roomId, messageType, message, attrs, callback, 0);
     }
 
-    default void sendRoomMessage(long fromUid, long roomId, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalSendRoomMessage(fromUid, roomId, mType, message, attrs, callback, timeoutInseconds);
+    default void sendRoomMessage(long fromUid, long roomId, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        internalSendRoomMessage(fromUid, roomId, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendRoomMessage(long fromUid, long roomId, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback) {
-        internalSendRoomMessage(fromUid, roomId, mType, message, attrs, callback, 0);
+    default void sendRoomMessage(long fromUid, long roomId, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback) {
+        internalSendRoomMessage(fromUid, roomId, messageType, message, attrs, callback, 0);
     }
 
-    default long internalSendRoomMessage(long fromUid, long roomId, byte mType, Object message, String attrs, int timeoutInseconds)
+    default long internalSendRoomMessage(long fromUid, long roomId, byte messageType, Object message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        if (mType <= 50)
-            throw new RTMException(RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "MType MUST large than 50, current mType is " + mType);
+        if (messageType <= 50)
+            throw new RTMException(RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "RTMMessageType MUST large than 50, current messageType is " + messageType);
 
-        return internalCoreSendRoomMessage(fromUid, roomId, mType, message, attrs, timeoutInseconds);
+        return internalCoreSendRoomMessage(fromUid, roomId, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendRoomMessage(long fromUid, long roomId, byte mType, String message, String attrs, int timeoutInseconds)
+    default long sendRoomMessage(long fromUid, long roomId, byte messageType, String message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        return internalSendRoomMessage(fromUid, roomId, mType, message, attrs, timeoutInseconds);
+        return internalSendRoomMessage(fromUid, roomId, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendRoomMessage(long fromUid, long roomId, byte mType, String message, String attrs)
+    default long sendRoomMessage(long fromUid, long roomId, byte messageType, String message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalSendRoomMessage(fromUid, roomId, mType, message, attrs, 0);
+        return internalSendRoomMessage(fromUid, roomId, messageType, message, attrs, 0);
     }
 
-    default long sendRoomMessage(long fromUid, long roomId, byte mType, byte[] message, String attrs, int timeoutInseconds)
+    default long sendRoomMessage(long fromUid, long roomId, byte messageType, byte[] message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        return internalSendRoomMessage(fromUid, roomId, mType, message, attrs, timeoutInseconds);
+        return internalSendRoomMessage(fromUid, roomId, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendRoomMessage(long fromUid, long roomId, byte mType, byte[] message, String attrs)
+    default long sendRoomMessage(long fromUid, long roomId, byte messageType, byte[] message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalSendRoomMessage(fromUid, roomId, mType, message, attrs, 0);
+        return internalSendRoomMessage(fromUid, roomId, messageType, message, attrs, 0);
     }
 
     //-----------------[ broadcastmsg ]-----------------//
 
-    default void internalSendBroadcastMessage(long fromUid, byte mType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        if (mType <= 50)
+    default void internalSendBroadcastMessage(long fromUid, byte messageType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        if (messageType <= 50)
         {
-            ErrorRecorder.record("MType MUST large than 50, current mType is " + mType);
-            callback.done(-1, RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "MType MUST large than 50, current mType is " + mType);
+            ErrorRecorder.record("RTMMessageType MUST large than 50, current messageType is " + messageType);
+            callback.done(-1, RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "RTMMessageType MUST large than 50, current messageType is " + messageType);
             return;
         }
 
-        internalCoreSendBroadcastMessage(fromUid, mType, message, attrs, callback, timeoutInseconds);
+        internalCoreSendBroadcastMessage(fromUid, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendBroadcastMessage(long fromUid, byte mType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalSendBroadcastMessage(fromUid, mType, message, attrs, callback, timeoutInseconds);
+    default void sendBroadcastMessage(long fromUid, byte messageType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        internalSendBroadcastMessage(fromUid, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendBroadcastMessage(long fromUid, byte mType, String message, String attrs, SendMessageLambdaCallback callback) {
-        internalSendBroadcastMessage(fromUid, mType, message, attrs, callback, 0);
+    default void sendBroadcastMessage(long fromUid, byte messageType, String message, String attrs, SendMessageLambdaCallback callback) {
+        internalSendBroadcastMessage(fromUid, messageType, message, attrs, callback, 0);
     }
 
-    default void sendBroadcastMessage(long fromUid, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalSendBroadcastMessage(fromUid, mType, message, attrs, callback, timeoutInseconds);
+    default void sendBroadcastMessage(long fromUid, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+        internalSendBroadcastMessage(fromUid, messageType, message, attrs, callback, timeoutInseconds);
     }
 
-    default void sendBroadcastMessage(long fromUid, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback) {
-        internalSendBroadcastMessage(fromUid, mType, message, attrs, callback, 0);
+    default void sendBroadcastMessage(long fromUid, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback) {
+        internalSendBroadcastMessage(fromUid, messageType, message, attrs, callback, 0);
     }
 
-    default long internalSendBroadcastMessage(long fromUid, byte mType, Object message, String attrs, int timeoutInseconds)
+    default long internalSendBroadcastMessage(long fromUid, byte messageType, Object message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        if (mType <= 50)
-            throw new RTMException(RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "MType MUST large than 50, current mType is " + mType);
+        if (messageType <= 50)
+            throw new RTMException(RTMErrorCode.RTM_EC_INVALID_MTYPE.value(), "RTMMessageType MUST large than 50, current messageType is " + messageType);
 
-        return internalCoreSendBroadcastMessage(fromUid, mType, message, attrs, timeoutInseconds);
+        return internalCoreSendBroadcastMessage(fromUid, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendBroadcastMessage(long fromUid, byte mType, String message, String attrs, int timeoutInseconds)
+    default long sendBroadcastMessage(long fromUid, byte messageType, String message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        return internalSendBroadcastMessage(fromUid, mType, message, attrs, timeoutInseconds);
+        return internalSendBroadcastMessage(fromUid, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendBroadcastMessage(long fromUid, byte mType, String message, String attrs)
+    default long sendBroadcastMessage(long fromUid, byte messageType, String message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalSendBroadcastMessage(fromUid, mType, message, attrs, 0);
+        return internalSendBroadcastMessage(fromUid, messageType, message, attrs, 0);
     }
 
-    default long sendBroadcastMessage(long fromUid, byte mType, byte[] message, String attrs, int timeoutInseconds)
+    default long sendBroadcastMessage(long fromUid, byte messageType, byte[] message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
-        return internalSendBroadcastMessage(fromUid, mType, message, attrs, timeoutInseconds);
+        return internalSendBroadcastMessage(fromUid, messageType, message, attrs, timeoutInseconds);
     }
 
-    default long sendBroadcastMessage(long fromUid, byte mType, byte[] message, String attrs)
+    default long sendBroadcastMessage(long fromUid, byte messageType, byte[] message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalSendBroadcastMessage(fromUid, mType, message, attrs, 0);
+        return internalSendBroadcastMessage(fromUid, messageType, message, attrs, 0);
     }
 
     //----------------------deleteMsg-------------------------------
-    default void deleteMsg(long mid, long from, long xid, MessageType type)
+    default void deleteMsg(long messageId, long from, long xid, MessageType type)
             throws RTMException, GeneralSecurityException, IOException,InterruptedException{
-        deleteMsg(mid, from, xid, type, 0);
+        deleteMsg(messageId, from, xid, type, 0);
     }
 
-    default void deleteMsg(long mid, long from, long xid, MessageType type, int timeoutInseconds)
+    default void deleteMsg(long messageId, long from, long xid, MessageType type, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException,InterruptedException{
-        internalDelMsg(mid, from, xid, type, timeoutInseconds);
+        internalDelMsg(messageId, from, xid, type, timeoutInseconds);
     }
 
-    default void deleteMsg(long mid, long from, long xid, MessageType type, DoneLambdaCallback callback){
-        deleteMsg(mid, from, xid, type, callback,0);
+    default void deleteP2PMsg(long messageId, long fromUid, long toUid)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        deleteMsg(messageId, fromUid, toUid, MessageType.MESSAGE_TYPE_P2P);
     }
 
-    default void deleteMsg(long mid, long from, long xid, MessageType type, DoneLambdaCallback callback, int timeoutInseconds) {
-        internalDelMsg(mid, from, xid, type, callback, timeoutInseconds);
+    default void deleteP2PMsg(long messageId, long fromUid, long toUid, int timeInseconds)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        deleteMsg(messageId, fromUid, toUid, MessageType.MESSAGE_TYPE_P2P, timeInseconds);
     }
+
+    default void deleteGroupMsg(long messageId, long fromUid, long groupId)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        deleteMsg(messageId, fromUid, groupId, MessageType.MESSAGE_TYPE_GROUP);
+    }
+
+    default void deleteGroupMsg(long messageId, long fromUid, long groupId, int timeInseconds)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        deleteMsg(messageId, fromUid, groupId, MessageType.MESSAGE_TYPE_GROUP, timeInseconds);
+    }
+
+    default void deleteRoomMsg(long messageId, long fromUid, long roomId)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        deleteMsg(messageId, fromUid, roomId, MessageType.MESSAGE_TYPE_ROOM);
+    }
+
+    default void deleteRoomMsg(long messageId, long fromUid, long roomId, int timeInseconds)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        deleteMsg(messageId, fromUid, roomId, MessageType.MESSAGE_TYPE_ROOM, timeInseconds);
+    }
+
+    default void deleteBroadcastMsg(long messageId, long fromUid)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        deleteMsg(messageId, fromUid, 0, MessageType.MESSAGE_TYPE_BROADCAST);
+    }
+
+    default void deleteBroadcastMsg(long messageId, long fromUid, int timeInseconds)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        deleteMsg(messageId, fromUid, 0, MessageType.MESSAGE_TYPE_BROADCAST, timeInseconds);
+    }
+
+    default void deleteMsg(long messageId, long from, long xid, MessageType type, DoneLambdaCallback callback){
+        deleteMsg(messageId, from, xid, type, callback,0);
+    }
+
+    default void deleteMsg(long messageId, long from, long xid, MessageType type, DoneLambdaCallback callback, int timeoutInseconds) {
+        internalDelMsg(messageId, from, xid, type, callback, timeoutInseconds);
+    }
+
+    default void deleteP2PMsg(long messageId, long fromUid, long toUid, DoneLambdaCallback callback){
+        deleteMsg(messageId, fromUid, toUid, MessageType.MESSAGE_TYPE_P2P, callback);
+    }
+
+    default void deleteP2PMsg(long messageId, long fromUid, long toUid, DoneLambdaCallback callback, int timeInseconds){
+        deleteMsg(messageId, fromUid, toUid, MessageType.MESSAGE_TYPE_P2P, callback, timeInseconds);
+    }
+
+    default void deleteGroupMsg(long messageId, long fromUid, long groupId, DoneLambdaCallback callback){
+        deleteMsg(messageId, fromUid, groupId, MessageType.MESSAGE_TYPE_GROUP, callback);
+    }
+
+    default void deleteGroupMsg(long messageId, long fromUid, long groupId, DoneLambdaCallback callback, int timeInseconds){
+        deleteMsg(messageId, fromUid, groupId, MessageType.MESSAGE_TYPE_GROUP, callback, timeInseconds);
+    }
+
+    default void deleteRoomMsg(long messageId, long fromUid, long roomId, DoneLambdaCallback callback){
+        deleteMsg(messageId, fromUid, roomId, MessageType.MESSAGE_TYPE_ROOM, callback);
+    }
+
+    default void deleteRoomMsg(long messageId, long fromUid, long roomId, DoneLambdaCallback callback, int timeInseconds){
+        deleteMsg(messageId, fromUid, roomId, MessageType.MESSAGE_TYPE_ROOM, callback, timeInseconds);
+    }
+
+    default void deleteBroadcastMsg(long messageId, long fromUid, DoneLambdaCallback callback){
+        deleteMsg(messageId, fromUid, 0, MessageType.MESSAGE_TYPE_BROADCAST, callback);
+    }
+
+    default void deleteBroadcastMsg(long messageId, long fromUid, DoneLambdaCallback callback, int timeInseconds){
+        deleteMsg(messageId, fromUid, 0, MessageType.MESSAGE_TYPE_BROADCAST, callback, timeInseconds);
+    }
+
 
     //----------------------getMsg-------------------------------
-    default RTMRetrievedMessage getMsg(long mid, long from, long xid, MessageType type)
+    default RTMHistoryMessageUnit getMsg(long messageId, long from, long xid, MessageType type)
             throws RTMException, GeneralSecurityException, IOException,InterruptedException{
-        return getMsg(mid, from, xid, type, 0);
+        return getMsg(messageId, from, xid, type, 0);
     }
 
-    default RTMRetrievedMessage getMsg(long mid, long from, long xid, MessageType type, int timeoutInseconds)
+    default RTMHistoryMessageUnit getMsg(long messageId, long from, long xid, MessageType type, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException,InterruptedException{
-        return internalGetMsg(mid, from, xid, type, timeoutInseconds);
+        return internalGetMsg(messageId, from, xid, type, timeoutInseconds);
     }
 
-    default void getMsg(long mid, long from, long xid, MessageType type, GetRetrievedMessageLambdaCallback callback){
-        getMsg(mid, from, xid, type, callback,0);
+    default RTMHistoryMessageUnit getP2pMsg(long messageId, long fromUid, long toUid)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        return getMsg(messageId, fromUid, toUid, MessageType.MESSAGE_TYPE_P2P);
     }
 
-    default void getMsg(long mid, long from, long xid, MessageType type, GetRetrievedMessageLambdaCallback callback, int timeoutInseconds) {
-        internalGetMsg(mid, from, xid, type, callback, timeoutInseconds);
+    default RTMHistoryMessageUnit getP2pMsg(long messageId, long fromUid, long toUid, int timeInseconds)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        return getMsg(messageId, fromUid, toUid, MessageType.MESSAGE_TYPE_P2P, timeInseconds);
+    }
+
+    default RTMHistoryMessageUnit getGroupMsg(long messageId, long fromUid, long groupId)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        return getMsg(messageId, fromUid, groupId, MessageType.MESSAGE_TYPE_GROUP);
+    }
+
+    default RTMHistoryMessageUnit getGroupMsg(long messageId, long fromUid, long groupId, int timeInseconds)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        return getMsg(messageId, fromUid, groupId, MessageType.MESSAGE_TYPE_GROUP, timeInseconds);
+    }
+
+    default RTMHistoryMessageUnit getRoomMsg(long messageId, long fromUid, long roomId)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        return getMsg(messageId, fromUid, roomId, MessageType.MESSAGE_TYPE_ROOM);
+    }
+
+    default RTMHistoryMessageUnit getRoomMsg(long messageId, long fromUid, long roomId, int timeInseconds)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        return getMsg(messageId, fromUid, roomId, MessageType.MESSAGE_TYPE_ROOM, timeInseconds);
+    }
+
+    default RTMHistoryMessageUnit getBroadcastMsg(long messageId, long fromUid)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        return getMsg(messageId, fromUid, 0, MessageType.MESSAGE_TYPE_BROADCAST);
+    }
+
+    default RTMHistoryMessageUnit getBroadcastMsg(long messageId, long fromUid, int timeInseconds)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        return getMsg(messageId, fromUid, 0, MessageType.MESSAGE_TYPE_BROADCAST, timeInseconds);
+    }
+
+    default void getMsg(long messageId, long from, long xid, MessageType type, GetRetrievedMessageLambdaCallback callback){
+        getMsg(messageId, from, xid, type, callback,0);
+    }
+
+    default void getMsg(long messageId, long from, long xid, MessageType type, GetRetrievedMessageLambdaCallback callback, int timeoutInseconds) {
+        internalGetMsg(messageId, from, xid, type, callback, timeoutInseconds);
+    }
+
+    default void getP2PMsg(long messageId, long fromUid, long toUid, GetRetrievedMessageLambdaCallback callback){
+        getMsg(messageId, fromUid, toUid, MessageType.MESSAGE_TYPE_P2P, callback);
+    }
+
+    default void getP2PMsg(long messageId, long fromUid, long toUid, GetRetrievedMessageLambdaCallback callback, int timeInseconds){
+        getMsg(messageId, fromUid, toUid, MessageType.MESSAGE_TYPE_P2P, callback, timeInseconds);
+    }
+
+    default void getGroupMsg(long messageId, long fromUid, long groupId, GetRetrievedMessageLambdaCallback callback){
+        getMsg(messageId, fromUid, groupId, MessageType.MESSAGE_TYPE_GROUP, callback);
+    }
+
+    default void getGroupMsg(long messageId, long fromUid, long groupId, GetRetrievedMessageLambdaCallback callback, int timeInseconds){
+        getMsg(messageId, fromUid, groupId, MessageType.MESSAGE_TYPE_GROUP, callback, timeInseconds);
+    }
+
+    default void getRoomMsg(long messageId, long fromUid, long roomId, GetRetrievedMessageLambdaCallback callback){
+        getMsg(messageId, fromUid, roomId, MessageType.MESSAGE_TYPE_ROOM, callback);
+    }
+
+    default void getRoomMsg(long messageId, long fromUid, long roomId, GetRetrievedMessageLambdaCallback callback, int timeInseconds){
+        getMsg(messageId, fromUid, roomId, MessageType.MESSAGE_TYPE_ROOM, callback, timeInseconds);
+    }
+
+    default void getBroadcastMsg(long messageId, long fromUid, GetRetrievedMessageLambdaCallback callback){
+        getMsg(messageId, fromUid, 0, MessageType.MESSAGE_TYPE_BROADCAST, callback);
+    }
+
+    default void getBroadcastMsg(long messageId, long fromUid, GetRetrievedMessageLambdaCallback callback, int timeInseconds){
+        getMsg(messageId, fromUid, 0, MessageType.MESSAGE_TYPE_BROADCAST, callback, timeInseconds);
     }
 
 }

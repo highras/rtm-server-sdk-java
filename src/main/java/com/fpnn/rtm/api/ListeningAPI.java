@@ -14,19 +14,19 @@ import java.util.Set;
 
 public interface ListeningAPI extends APIBase {
 
-    default void addListen(Set<Long> gids, Set<Long> rids, Set<Long> uids, Set<String> events)
+    default void addListen(Set<Long> groupIds, Set<Long> roomIds, Set<Long> uids, Set<String> events)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        addListen(gids, rids, uids, events, 0);
+        addListen(groupIds, roomIds, uids, events, 0);
     }
 
-    default void addListen(Set<Long> gids, Set<Long> rids, Set<Long> uids, Set<String> events, int timeoutInseconds)
+    default void addListen(Set<Long> groupIds, Set<Long> roomIds, Set<Long> uids, Set<String> events, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase clientBase = getCoreClient();
         Quest quest = clientBase.genBasicQuest("addlisten");
-        if(gids != null && gids.size() > 0)
-            quest.param("gids", gids);
-        if(rids != null && rids.size() > 0)
-            quest.param("rids", rids);
+        if(groupIds != null && groupIds.size() > 0)
+            quest.param("gids", groupIds);
+        if(roomIds != null && roomIds.size() > 0)
+            quest.param("rids", roomIds);
         if(uids != null && uids.size() > 0)
             quest.param("uids", uids);
         if(events != null && events.size() > 0)
@@ -34,14 +34,14 @@ public interface ListeningAPI extends APIBase {
         clientBase.sendQuestAndCheckAnswer(quest, timeoutInseconds);
 
         RTMServerClient client = (RTMServerClient)clientBase;
-        client.addRTMListenCache(gids, rids, uids, events);
+        client.addRTMListenCache(groupIds, roomIds, uids, events);
     }
 
-    default void addListen(Set<Long> gids, Set<Long> rids, Set<Long> uids, Set<String> events, DoneLambdaCallback callback){
-        addListen(gids, rids, uids, events, callback,0);
+    default void addListen(Set<Long> groupIds, Set<Long> roomIds, Set<Long> uids, Set<String> events, DoneLambdaCallback callback){
+        addListen(groupIds, roomIds, uids, events, callback,0);
     }
 
-    default void addListen(Set<Long> gids, Set<Long> rids, Set<Long> uids, Set<String> events, DoneLambdaCallback callback, int timeoutInseconds){
+    default void addListen(Set<Long> groupIds, Set<Long> roomIds, Set<Long> uids, Set<String> events, DoneLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase clientBase = getCoreClient();
         Quest quest;
         try{
@@ -52,10 +52,10 @@ public interface ListeningAPI extends APIBase {
             return;
         }
 
-        if(gids != null && gids.size() > 0)
-            quest.param("gids", gids);
-        if(rids != null && rids.size() > 0)
-            quest.param("rids", rids);
+        if(groupIds != null && groupIds.size() > 0)
+            quest.param("gids", groupIds);
+        if(roomIds != null && roomIds.size() > 0)
+            quest.param("rids", roomIds);
         if(uids != null && uids.size() > 0)
             quest.param("uids", uids);
         if(events != null && events.size() > 0)
@@ -64,23 +64,23 @@ public interface ListeningAPI extends APIBase {
         clientBase.sendQuest(quest, answerCallback, timeoutInseconds);
 
         RTMServerClient client = (RTMServerClient)clientBase;
-        client.addRTMListenCache(gids, rids, uids, events);
+        client.addRTMListenCache(groupIds, roomIds, uids, events);
     }
 
-    default void removeListen(Set<Long> gids, Set<Long> rids, Set<Long> uids, Set<String> events)
+    default void removeListen(Set<Long> groupIds, Set<Long> roomIds, Set<Long> uids, Set<String> events)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        removeListen(gids, rids, uids, events, 0);
+        removeListen(groupIds, roomIds, uids, events, 0);
     }
 
-    default void removeListen(Set<Long> gids, Set<Long> rids, Set<Long> uids, Set<String> events, int timeoutInseconds)
+    default void removeListen(Set<Long> groupIds, Set<Long> roomIds, Set<Long> uids, Set<String> events, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase clientBase = getCoreClient();
 
         Quest quest = clientBase.genBasicQuest("removelisten");
-        if(gids != null && gids.size() > 0)
-            quest.param("gids", gids);
-        if(rids != null && rids.size() > 0)
-            quest.param("rids", rids);
+        if(groupIds != null && groupIds.size() > 0)
+            quest.param("gids", groupIds);
+        if(roomIds != null && roomIds.size() > 0)
+            quest.param("rids", roomIds);
         if(uids != null && uids.size() > 0)
             quest.param("uids", uids);
         if(events != null && events.size() > 0)
@@ -88,14 +88,14 @@ public interface ListeningAPI extends APIBase {
         clientBase.sendQuestAndCheckAnswer(quest, timeoutInseconds);
 
         RTMServerClient client = (RTMServerClient)clientBase;
-        client.removeRTMListenCache(gids, rids, uids, events);
+        client.removeRTMListenCache(groupIds, roomIds, uids, events);
     }
 
-    default void removeListen(Set<Long> gids, Set<Long> rids, Set<Long> uids, Set<String> events, DoneLambdaCallback callback){
-        removeListen(gids, rids, uids, events, callback,0);
+    default void removeListen(Set<Long> groupIds, Set<Long> roomIds, Set<Long> uids, Set<String> events, DoneLambdaCallback callback){
+        removeListen(groupIds, roomIds, uids, events, callback,0);
     }
 
-    default void removeListen(Set<Long> gids, Set<Long> rids, Set<Long> uids, Set<String> events, DoneLambdaCallback callback, int timeoutInseconds){
+    default void removeListen(Set<Long> groupIds, Set<Long> roomIds, Set<Long> uids, Set<String> events, DoneLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase clientBase = getCoreClient();
         Quest quest;
         try{
@@ -106,10 +106,10 @@ public interface ListeningAPI extends APIBase {
             return;
         }
 
-        if(gids != null && gids.size() > 0)
-            quest.param("gids", gids);
-        if(rids != null && rids.size() > 0)
-            quest.param("rids", rids);
+        if(groupIds != null && groupIds.size() > 0)
+            quest.param("gids", groupIds);
+        if(roomIds != null && roomIds.size() > 0)
+            quest.param("rids", roomIds);
         if(uids != null && uids.size() > 0)
             quest.param("uids", uids);
         if(events != null && events.size() > 0)
@@ -118,22 +118,22 @@ public interface ListeningAPI extends APIBase {
         clientBase.sendQuest(quest, answerCallback, timeoutInseconds);
 
         RTMServerClient client = (RTMServerClient)clientBase;
-        client.removeRTMListenCache(gids, rids, uids, events);
+        client.removeRTMListenCache(groupIds, roomIds, uids, events);
     }
 
-    default void setListen(Set<Long> gids, Set<Long> rids, Set<Long> uids, Set<String> events)
+    default void setListen(Set<Long> groupIds, Set<Long> roomIds, Set<Long> uids, Set<String> events)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        setListen(gids, rids, uids, events, 0);
+        setListen(groupIds, roomIds, uids, events, 0);
     }
 
-    default void setListen(Set<Long> gids, Set<Long> rids, Set<Long> uids, Set<String> events, int timeoutInseconds)
+    default void setListen(Set<Long> groupIds, Set<Long> roomIds, Set<Long> uids, Set<String> events, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase clientBase = getCoreClient();
         Quest quest = clientBase.genBasicQuest("setlisten");
-        if(gids != null)
-            quest.param("gids", gids);
-        if(rids != null)
-            quest.param("rids", rids);
+        if(groupIds != null)
+            quest.param("gids", groupIds);
+        if(roomIds != null)
+            quest.param("rids", roomIds);
         if(uids != null)
             quest.param("uids", uids);
         if(events != null)
@@ -141,14 +141,14 @@ public interface ListeningAPI extends APIBase {
         clientBase.sendQuestAndCheckAnswer(quest, timeoutInseconds);
 
         RTMServerClient client = (RTMServerClient)clientBase;
-        client.setRTMListenCache(gids, rids, uids, events);
+        client.setRTMListenCache(groupIds, roomIds, uids, events);
     }
 
-    default void setListen(Set<Long> gids, Set<Long> rids, Set<Long> uids, Set<String> events, DoneLambdaCallback callback){
-        setListen(gids, rids, uids, events, callback,0);
+    default void setListen(Set<Long> groupIds, Set<Long> roomIds, Set<Long> uids, Set<String> events, DoneLambdaCallback callback){
+        setListen(groupIds, roomIds, uids, events, callback,0);
     }
 
-    default void setListen(Set<Long> gids, Set<Long> rids, Set<Long> uids, Set<String> events, DoneLambdaCallback callback, int timeoutInseconds){
+    default void setListen(Set<Long> groupIds, Set<Long> roomIds, Set<Long> uids, Set<String> events, DoneLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase clientBase = getCoreClient();
         Quest quest;
         try{
@@ -159,10 +159,10 @@ public interface ListeningAPI extends APIBase {
             return;
         }
 
-        if(gids != null)
-            quest.param("gids", gids);
-        if(rids != null)
-            quest.param("rids", rids);
+        if(groupIds != null)
+            quest.param("gids", groupIds);
+        if(roomIds != null)
+            quest.param("rids", roomIds);
         if(uids != null)
             quest.param("uids", uids);
         if(events != null)
@@ -171,7 +171,7 @@ public interface ListeningAPI extends APIBase {
         clientBase.sendQuest(quest, answerCallback, timeoutInseconds);
 
         RTMServerClient client = (RTMServerClient)clientBase;
-        client.setRTMListenCache(gids, rids, uids, events);
+        client.setRTMListenCache(groupIds, roomIds, uids, events);
     }
 
     default void setListen(boolean allP2P, boolean allGroups, boolean allRooms, boolean allEvents)

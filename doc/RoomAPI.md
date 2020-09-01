@@ -9,12 +9,12 @@
 ### 添加房间成员
 
     // sync methods
-    void addRoomMember(long rid, long uid);
-    void addRoomMember(long rid, long uid, int timeoutInseconds);
+    void addRoomMember(long roomId, long uid);
+    void addRoomMember(long roomId, long uid, int timeoutInseconds);
     
     // async methods
-    void addRoomMember(long rid, long uid, DoneLambdaCallback callback);
-    void addRoomMember(long rid, long uid, DoneLambdaCallback callback, int timeoutInseconds);
+    void addRoomMember(long roomId, long uid, DoneLambdaCallback callback);
+    void addRoomMember(long roomId, long uid, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:   
 
@@ -36,12 +36,12 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 删除房间成员
 
     // sync methods
-    void delRoomMember(long rid, long uid);
-    void delRoomMember(long rid, long uid, int timeoutInseconds);
+    void delRoomMember(long roomId, long uid);
+    void delRoomMember(long roomId, long uid, int timeoutInseconds);
     
     // async methods
-    void delRoomMember(long rid, long uid, DoneLambdaCallback callback);
-    void delRoomMember(long rid, long uid, DoneLambdaCallback callback, int timeoutInseconds);
+    void delRoomMember(long roomId, long uid, DoneLambdaCallback callback);
+    void delRoomMember(long roomId, long uid, DoneLambdaCallback callback, int timeoutInseconds);
 
 参数说明:   
 
@@ -63,12 +63,12 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 禁止用户指定房间内发言
 
     // sync methods
-    void addRoomBan(long rid, long uid, int btime);
-    void addRoomBan(long rid, long uid, int btime, int timeoutInseconds);
+    void addRoomBan(long roomId, long uid, int btime);
+    void addRoomBan(long roomId, long uid, int btime, int timeoutInseconds);
     
     // async methods
-    void addRoomBan(long rid, long uid, int btime, DoneLambdaCallback callback);
-    void addRoomBan(long rid, long uid, int btime, DoneLambdaCallback callback, int timeoutInseconds);
+    void addRoomBan(long roomId, long uid, int btime, DoneLambdaCallback callback);
+    void addRoomBan(long roomId, long uid, int btime, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:  
 
@@ -92,12 +92,12 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 解除用户指定房间内禁言
 
     // sync methods
-    void removeRoomBan(long rid, long uid);
-    void removeRoomBan(long rid, long uid, int timeoutInseconds);
+    void removeRoomBan(long roomId, long uid);
+    void removeRoomBan(long roomId, long uid, int timeoutInseconds);
     
     // async methods
-    void removeRoomBan(long rid, long uid, DoneLambdaCallback callback);
-    void removeRoomBan(long rid, long uid, DoneLambdaCallback callback, int timeoutInseconds);
+    void removeRoomBan(long roomId, long uid, DoneLambdaCallback callback);
+    void removeRoomBan(long roomId, long uid, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:  
   
@@ -119,12 +119,12 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 判断用户是否在指定房间内禁言
 
     // sync methods
-    boolean isBanOfRoom(long rid, long uid);
-    boolean isBanOfRoom(long rid, long uid, int timeoutInseconds);
+    boolean isBanOfRoom(long roomId, long uid);
+    boolean isBanOfRoom(long roomId, long uid, int timeoutInseconds);
     
     // async methods
-    void isBanOfRoom(long rid, long uid, IsBanOfRoomCallBack callback);
-    void isBanOfRoom(long rid, long uid, IsBanOfRoomCallBack callback, int timeoutInseconds);
+    void isBanOfRoom(long roomId, long uid, IsBanOfRoomCallBack callback);
+    void isBanOfRoom(long roomId, long uid, IsBanOfRoomCallBack callback, int timeoutInseconds);
     
 参数说明:  
   
@@ -146,12 +146,12 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ###  设置房间公开信息和私有信息
     
     // sync methods
-    void setRoomInfo(long rid, String openInfo, String priInfo);
-    void setRoomInfo(long rid, String openInfo, String priInfo, int timeoutInseconds);
+    void setRoomInfo(long roomId, String openInfo, String priInfo);
+    void setRoomInfo(long roomId, String openInfo, String priInfo, int timeoutInseconds);
     
     // async methods
-    void setRoomInfo(long rid, String openInfo, String priInfo, DoneLambdaCallback callback);
-    void setRoomInfo(long rid, String openInfo, String priInfo, DoneLambdaCallback callback, int timeoutInseconds);
+    void setRoomInfo(long roomId, String openInfo, String priInfo, DoneLambdaCallback callback);
+    void setRoomInfo(long roomId, String openInfo, String priInfo, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:  
 
@@ -177,18 +177,18 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 获取房间公开信息和私有信息   
 
     // sync methods
-    void getRoomInfo(long rid, StringBuffer openInfo, StringBuffer priInfo);
-    void getRoomInfo(long rid, StringBuffer openInfo, StringBuffer priInfo, int timeoutInseconds);
+    void getRoomInfo(long roomId, StringBuffer openInfo, StringBuffer priInfo);
+    void getRoomInfo(long roomId, StringBuffer openInfo, StringBuffer priInfo, int timeoutInseconds);
     
     // async methods
-    void getRoomInfo(long rid, GetRoomInfoCallback callback);
-    void getRoomInfo(long rid, GetRoomInfoCallback callback, int timeoutInseconds);
+    void getRoomInfo(long roomId, GetRoomInfoCallback callback);
+    void getRoomInfo(long roomId, GetRoomInfoCallback callback, int timeoutInseconds);
     
 参数说明:  
 
-* `StringBuffer openInfo`: 返回rid的公开信息.
+* `StringBuffer openInfo`: 返回roomId的公开信息.
 
-* `StringBuffer priInfo`: 返回rid的私有信息.
+* `StringBuffer priInfo`: 返回roomId的私有信息.
   
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
   client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -201,9 +201,9 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
   
 返回值:       
   
-* **sync**: 同步接口正常时返回空，通过参数回传返回rid的公开信息、私有信息，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+* **sync**: 同步接口正常时返回空，通过参数回传返回roomId的公开信息、私有信息，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
   
-* **async**: 异步接口不会抛出异常，通过callback返回rid的公开信息、私有信息，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.     
+* **async**: 异步接口不会抛出异常，通过callback返回roomId的公开信息、私有信息，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.     
     
 
    

@@ -69,7 +69,7 @@ public class RTMResourceCenter extends Thread {
         }
     }
 
-    private static final int fileGateKeptMilliseconds = 10 * 60 * 1000;     //-- 10 minutes;
+    private static final int fileGateKeptMilliseconds = 150 * 1000;
     private HashMap<String, FileGateInfo> fileGateCache;
     private volatile boolean running;
 

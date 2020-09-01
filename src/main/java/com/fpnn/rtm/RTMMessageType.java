@@ -1,18 +1,18 @@
 package com.fpnn.rtm;
 
-public enum MType {
+public enum RTMMessageType {
 
     Chat((byte)30),
     AudioChat((byte)31),
     Cmd((byte)32),
-    Picture((byte)40),
-    Audio((byte)41),
-    Video((byte)42),
-    File((byte)50);
+    ImageFile((byte)40),
+    AudioFile((byte)41),
+    VideoFile((byte)42),
+    NormalFile((byte)50);
 
     private final byte value;
 
-    MType (byte value) {
+    RTMMessageType(byte value) {
         this.value = value;
     }
 

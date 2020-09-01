@@ -9,12 +9,12 @@
 ### 添加群组成员
 
     // sync methods
-    void addGroupMembers(long gid, Set<Long> uids);
-    void addGroupMembers(long gid, Set<Long> uids, int timeoutInseconds);
+    void addGroupMembers(long groupId, Set<Long> uids);
+    void addGroupMembers(long groupId, Set<Long> uids, int timeoutInseconds);
     
     // async methods
-    void addGroupMembers(long gid, Set<Long> uids, DoneLambdaCallback callback);
-    void addGroupMembers(long gid, Set<Long> uids, DoneLambdaCallback callback, int timeoutInseconds);
+    void addGroupMembers(long groupId, Set<Long> uids, DoneLambdaCallback callback);
+    void addGroupMembers(long groupId, Set<Long> uids, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:  
  
@@ -38,12 +38,12 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 删除群组成员
 
     // sync methods
-    void delGroupMembers(long gid, Set<Long> uids)
-    void delGroupMembers(long gid, Set<Long> uids, int timeoutInseconds);
+    void delGroupMembers(long groupId, Set<Long> uids)
+    void delGroupMembers(long groupId, Set<Long> uids, int timeoutInseconds);
     
     // async methods
-    void delGroupMembers(long gid, Set<Long> uids, DoneLambdaCallback callback);
-    void delGroupMembers(long gid, Set<Long> uids, DoneLambdaCallback callback, int timeoutInseconds);
+    void delGroupMembers(long groupId, Set<Long> uids, DoneLambdaCallback callback);
+    void delGroupMembers(long groupId, Set<Long> uids, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:  
  
@@ -67,12 +67,12 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 删除群组
  
     // sync methods
-    void delGroup(long gid);
-    void delGroup(long gid, int timeoutInseconds);
+    void delGroup(long groupId);
+    void delGroup(long groupId, int timeoutInseconds);
     
     // async methods
-    void delGroup(long gid, DoneLambdaCallback callback);
-    void delGroup(long gid, DoneLambdaCallback callback, int timeoutInseconds);
+    void delGroup(long groupId, DoneLambdaCallback callback);
+    void delGroup(long groupId, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:   
   
@@ -94,12 +94,12 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 获取群组成员
   
     // sync methods
-    Set<Long> getGroupMembers(long gid);
-    Set<Long> getGroupMembers(long gid, int timeoutInseconds);
+    Set<Long> getGroupMembers(long groupId);
+    Set<Long> getGroupMembers(long groupId, int timeoutInseconds);
     
     //async methods
-    void getGroupMembers(long gid, GetGroupMembersLambdaCallBack callback);
-    void getGroupMembers(long gid, GetGroupMembersLambdaCallBack callback, int timeoutInseconds);
+    void getGroupMembers(long groupId, GetGroupMembersLambdaCallBack callback);
+    void getGroupMembers(long groupId, GetGroupMembersLambdaCallBack callback, int timeoutInseconds);
     
 参数说明：   
 
@@ -114,19 +114,19 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 
 返回值: 
       
-* **sync**: 同步接口正常时返回gid的成员列表，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+* **sync**: 同步接口正常时返回groupId的成员列表，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
 
-* **async**: 异步接口不会抛出异常，通过callback返回gid的成员列表，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.
+* **async**: 异步接口不会抛出异常，通过callback返回groupId的成员列表，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.
 
 ### 是否群组成员
 
     // sync methods
-    boolean isGroupMember(long uid, long gid);
-    boolean isGroupMember(long uid, long gid, int timeoutInseconds);
+    boolean isGroupMember(long uid, long groupId);
+    boolean isGroupMember(long uid, long groupId, int timeoutInseconds);
     
     // async methods
-    void isGroupMember(long uid, long gid, IsGroupMemberCallBack callback);
-    void isGroupMember(long uid, long gid, IsGroupMemberCallBack callback, int timeoutInseconds);
+    void isGroupMember(long uid, long groupId, IsGroupMemberCallBack callback);
+    void isGroupMember(long uid, long groupId, IsGroupMemberCallBack callback, int timeoutInseconds);
     
 参数说明：   
  
@@ -163,7 +163,7 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 * `GetUserGroupsCallBack callback`: 为异步回调返回接口, 返回结果以及错误码和错误信息将通过callback返回
            
         public interface GetUserGroupsCallBack{
-            void done(Set<Long> gids, int errorCode, String errorMessage);
+            void done(Set<Long> groupIds, int errorCode, String errorMessage);
         }
    
 返回值:
@@ -175,12 +175,12 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 禁止用户指定群组内发言
 
     // sync methods
-    void addGroupBan(long gid, long uid, int btime);
-    void addGroupBan(long gid, long uid, int btime, int timeoutInseconds);
+    void addGroupBan(long groupId, long uid, int btime);
+    void addGroupBan(long groupId, long uid, int btime, int timeoutInseconds);
     
     // async methods
-    void addGroupBan(long gid, long uid, int btime, DoneLambdaCallback callback);
-    void addGroupBan(long gid, long uid, int btime, DoneLambdaCallback callback, int timeoutInseconds);
+    void addGroupBan(long groupId, long uid, int btime, DoneLambdaCallback callback);
+    void addGroupBan(long groupId, long uid, int btime, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:  
 
@@ -204,12 +204,12 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 解除用户指定群组内禁言
 
     // sync methods
-    void removeGroupBan(long gid, long uid);
-    void removeGroupBan(long gid, long uid, int timeoutInseconds);
+    void removeGroupBan(long groupId, long uid);
+    void removeGroupBan(long groupId, long uid, int timeoutInseconds);
     
     // async methods
-    void removeGroupBan(long gid, long uid, DoneLambdaCallback callback);
-    void removeGroupBan(long gid, long uid, DoneLambdaCallback callback, int timeoutInseconds);
+    void removeGroupBan(long groupId, long uid, DoneLambdaCallback callback);
+    void removeGroupBan(long groupId, long uid, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:  
   
@@ -231,12 +231,12 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 判断用户是否在指定群组中被禁言
 
     // sync methods
-    boolean isBanOfGroup(long uid, long gid);
-    boolean isBanOfGroup(long uid, long gid, int timeoutInseconds);
+    boolean isBanOfGroup(long uid, long groupId);
+    boolean isBanOfGroup(long uid, long groupId, int timeoutInseconds);
     
     // async methods
-    void isBanOfGroup(long uid, long gid, IsBanOfGroupCallBack callback);
-    void isBanOfGroup(long uid, long gid, IsBanOfGroupCallBack callback, int timeoutInseconds);
+    void isBanOfGroup(long uid, long groupId, IsBanOfGroupCallBack callback);
+    void isBanOfGroup(long uid, long groupId, IsBanOfGroupCallBack callback, int timeoutInseconds);
     
 参数说明:  
   
@@ -258,12 +258,12 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 设置群组公开信息和私有信息
 
     // sync methods
-    void setGroupInfo(long gid, String openInfo, String priInfo);
-    void setGroupInfo(long gid, String openInfo, String priInfo, int timeoutInseconds);
+    void setGroupInfo(long groupId, String openInfo, String priInfo);
+    void setGroupInfo(long groupId, String openInfo, String priInfo, int timeoutInseconds);
     
     // async methods
-    void setGroupInfo(long gid, String openInfo, String priInfo, DoneLambdaCallback callback);
-    void setGroupInfo(long gid, String openInfo, String priInfo, DoneLambdaCallback callback, int timeoutInseconds);
+    void setGroupInfo(long groupId, String openInfo, String priInfo, DoneLambdaCallback callback);
+    void setGroupInfo(long groupId, String openInfo, String priInfo, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:  
 
@@ -289,18 +289,18 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 获取群组公开信息和私有信息
 
     // sync methods
-    void getGroupInfo(long gid, StringBuffer openInfo, StringBuffer priInfo);
-    void getGroupInfo(long gid, StringBuffer openInfo, StringBuffer priInfo, int timeoutInseconds);
+    void getGroupInfo(long groupId, StringBuffer openInfo, StringBuffer priInfo);
+    void getGroupInfo(long groupId, StringBuffer openInfo, StringBuffer priInfo, int timeoutInseconds);
     
     // async methods
-    void getGroupInfo(long gid, GetGroupInfoCallback callback);
-    void getGroupInfo(long gid, GetGroupInfoCallback callback, int timeoutInseconds);
+    void getGroupInfo(long groupId, GetGroupInfoCallback callback);
+    void getGroupInfo(long groupId, GetGroupInfoCallback callback, int timeoutInseconds);
     
 参数说明:  
 
-* `StringBuffer openInfo`: 返回gid的公开信息.
+* `StringBuffer openInfo`: 返回groupId的公开信息.
 
-* `StringBuffer priInfo`: 返回gid的私有信息.
+* `StringBuffer priInfo`: 返回groupId的私有信息.
   
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
   client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -313,6 +313,6 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
   
 返回值:       
   
-* **sync**: 同步接口正常时返回空，通过参数回传返回gid的公开信息、私有信息，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+* **sync**: 同步接口正常时返回空，通过参数回传返回groupId的公开信息、私有信息，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
   
-* **async**: 异步接口不会抛出异常，通过callback返回gid的公开信息、私有信息，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.     
+* **async**: 异步接口不会抛出异常，通过callback返回groupId的公开信息、私有信息，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.     

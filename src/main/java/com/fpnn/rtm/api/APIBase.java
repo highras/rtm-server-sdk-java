@@ -22,7 +22,7 @@ public interface APIBase {
     }
 
     interface GetRetrievedMessageLambdaCallback{
-        void done(RTMServerClientBase.RTMRetrievedMessage result, int errorCode, String errorMessage);
+        void done(RTMServerClientBase.RTMHistoryMessageUnit result, int errorCode, String errorMessage);
     }
 
     enum MessageType{

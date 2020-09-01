@@ -10,12 +10,12 @@ import java.util.Set;
 
 public class RTMServerClient extends RTMServerClientBase implements ChatAPI, DataAPI, FileAPI, FriendAPI,
         GroupAPI, ListeningAPI, MessageAPI, RoomAPI, TokenAPI, UserAPI, DeviceAPI, UtilitiesAPI, HistoryChatAPI,
-        HistoryMessageAPI, BlackAPI {
+        HistoryMessageAPI, BlacklistAPI {
 
-    public static String SDKVersion = "2.0.3";
-    public static String InterfaceVersion = "2.1.0";
+    public static String SDKVersion = "2.1.0";
+    public static String InterfaceVersion = "2.2.0";
 
-    private class RegressiveStats {
+    public static class RegressiveState {
         public int currentFailedCount = 0;
         public long connectStartMilliseconds = 0;
     }
@@ -31,13 +31,8 @@ public class RTMServerClient extends RTMServerClientBase implements ChatAPI, Dat
 
         public void connectResult(InetSocketAddress peerAddress, boolean connected) {
             if (userCallback != null) {
-                if (!connected) {
-                    String info = "RTMReconnect time at " + regressiveStats.connectStartMilliseconds + " ,currentFailedCount = " + regressiveStats.currentFailedCount;
-                    userCallback.connectResult(peerAddress, false, client.canReconnect(), info);
-                } else {
-                    userCallback.connectResult(peerAddress, true, false, "");
-                }
-
+                RegressiveState state = client.regressiveState;
+                userCallback.connectResult(peerAddress, connected, client.canReconnect(), state);
             }
             if (!connected) {
                 ClientEngine.getThreadPool().execute(() -> {
@@ -50,6 +45,7 @@ public class RTMServerClient extends RTMServerClientBase implements ChatAPI, Dat
                 });
             }
             else{
+                client.regressiveState.currentFailedCount = 0;
                 client.sendListenCache();
             }
 
@@ -81,8 +77,8 @@ public class RTMServerClient extends RTMServerClientBase implements ChatAPI, Dat
 
         public void connectionHasClosed(InetSocketAddress peerAddress, boolean causedByError){
             if(userCallback != null){
-                String info = "RTMReconnect time at " + regressiveStats.connectStartMilliseconds + " ,currentFailedCount = " + regressiveStats.currentFailedCount;
-                userCallback.connectionHasClosed(peerAddress, causedByError, client.canReconnect(), info);
+                RegressiveState state = client.regressiveState;
+                userCallback.connectionHasClosed(peerAddress, causedByError, client.canReconnect(), state);
             }
             ClientEngine.getThreadPool().execute(() -> {
                 try {
@@ -98,7 +94,7 @@ public class RTMServerClient extends RTMServerClientBase implements ChatAPI, Dat
 
     private RTMRegressiveConnectStrategy defaultRegressiveConnectStrategy;
     private RTMRegressiveConnectStrategy regressiveConnectStrategy;
-    private RegressiveStats regressiveStats;
+    private RegressiveState regressiveState;
     private volatile boolean isClose;
 
     private class RTMListenCache {
@@ -257,7 +253,7 @@ public class RTMServerClient extends RTMServerClientBase implements ChatAPI, Dat
     public RTMServerClient(int pid, String secretKey, String host, int port) {
         super(pid, secretKey, host, port);
         isClose = false;
-        regressiveStats = new RegressiveStats();
+        regressiveState = new RegressiveState();
         listenCache = new RTMListenCache();
         cacheLocker = new byte[0];
         regressiveConnectStrategy = new RTMRegressiveConnectStrategy();
@@ -290,7 +286,7 @@ public class RTMServerClient extends RTMServerClientBase implements ChatAPI, Dat
     @Override
     public boolean connect(boolean synchronous) throws InterruptedException {
         isClose = false;
-        regressiveStats.connectStartMilliseconds = System.currentTimeMillis();
+        regressiveState.connectStartMilliseconds = System.currentTimeMillis();
         return super.connect(synchronous);
     }
 
@@ -322,21 +318,21 @@ public class RTMServerClient extends RTMServerClientBase implements ChatAPI, Dat
 
     private void regressiveReconnection() throws InterruptedException {
         long current = System.currentTimeMillis();
-        if (current - regressiveStats.connectStartMilliseconds > regressiveConnectStrategy.connectFailedMaxIntervalMilliseconds) {
-            regressiveStats.currentFailedCount = 0;
+        if (current - regressiveState.connectStartMilliseconds > regressiveConnectStrategy.connectFailedMaxIntervalMilliseconds) {
+            regressiveState.currentFailedCount = 0;
             reconnect(false);
             return;
         }
 
-        regressiveStats.currentFailedCount++;
-        if (regressiveStats.currentFailedCount <= regressiveConnectStrategy.startConnectFailedCount) {
+        regressiveState.currentFailedCount++;
+        if (regressiveState.currentFailedCount <= regressiveConnectStrategy.startConnectFailedCount) {
             reconnect(false);
             return;
         }
 
         int idleSeconds = regressiveConnectStrategy.maxIntervalSeconds - regressiveConnectStrategy.firstIntervalSeconds;
         int perIdleMilliseconds = idleSeconds * 1000 / regressiveConnectStrategy.linearRegressiveCount;
-        int currIdleMilliseconds = (regressiveStats.currentFailedCount - regressiveConnectStrategy.startConnectFailedCount)
+        int currIdleMilliseconds = (regressiveState.currentFailedCount - regressiveConnectStrategy.startConnectFailedCount)
                 * perIdleMilliseconds + regressiveConnectStrategy.firstIntervalSeconds * 1000;
         if (currIdleMilliseconds > regressiveConnectStrategy.maxIntervalSeconds * 1000) {
             currIdleMilliseconds = regressiveConnectStrategy.maxIntervalSeconds * 1000;

@@ -65,7 +65,7 @@ Please get your project params from RTM Console.
         client.setRTMClientHasClosedCallback(RTMClientHasClosedCallback cb); 
         
         public interface RTMClientConnectCallback {
-            void connectResult(InetSocketAddress peerAddress, boolean connected, boolean reConnect, RTMServerClient.RegressiveStats connectState));
+            void connectResult(InetSocketAddress peerAddress, boolean connected, boolean reConnect, RTMServerClient.RegressiveState connectState));
         }
         
         public interface RTMClientWillCloseCallback {
@@ -73,7 +73,7 @@ Please get your project params from RTM Console.
         }
         
         public interface RTMClientHasClosedCallback {
-            void connectionHasClosed(InetSocketAddress peerAddress, boolean causedByError, boolean reConnect, RTMServerClient.RegressiveStats connectState));
+            void connectionHasClosed(InetSocketAddress peerAddress, boolean causedByError, boolean reConnect, RTMServerClient.RegressiveState connectState));
         }
         
 * Config encrypted connection

@@ -16,25 +16,25 @@ import java.util.Set;
 
 public interface GroupAPI extends APIBase {
 
-    default void addGroupMembers(long gid, Set<Long> uids)
+    default void addGroupMembers(long groupId, Set<Long> uids)
         throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        addGroupMembers(gid, uids, 0);
+        addGroupMembers(groupId, uids, 0);
     }
 
-    default void addGroupMembers(long gid, Set<Long> uids, int timeoutInseconds)
+    default void addGroupMembers(long groupId, Set<Long> uids, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("addgroupmembers");
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("uids", uids);
         client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
     }
 
-    default void addGroupMembers(long gid, Set<Long> uids, DoneLambdaCallback callback) {
-        addGroupMembers(gid, uids, callback, 0);
+    default void addGroupMembers(long groupId, Set<Long> uids, DoneLambdaCallback callback) {
+        addGroupMembers(groupId, uids, callback, 0);
     }
 
-    default void addGroupMembers(long gid, Set<Long> uids, DoneLambdaCallback callback, int timeoutInseconds){
+    default void addGroupMembers(long groupId, Set<Long> uids, DoneLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -44,31 +44,31 @@ public interface GroupAPI extends APIBase {
             callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate addgroupmembers message sign exception.");
             return;
         }
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("uids", uids);
         AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
         client.sendQuest(quest, answerCallback, timeoutInseconds);
     }
 
-    default void delGroupMembers(long gid, Set<Long> uids)
+    default void delGroupMembers(long groupId, Set<Long> uids)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        delGroupMembers(gid, uids, 0);
+        delGroupMembers(groupId, uids, 0);
     }
 
-    default void delGroupMembers(long gid, Set<Long> uids, int timeoutInseconds)
+    default void delGroupMembers(long groupId, Set<Long> uids, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("delgroupmembers");
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("uids", uids);
         client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
     }
 
-    default void delGroupMembers(long gid, Set<Long> uids, DoneLambdaCallback callback) {
-        addGroupMembers(gid, uids, callback, 0);
+    default void delGroupMembers(long groupId, Set<Long> uids, DoneLambdaCallback callback) {
+        addGroupMembers(groupId, uids, callback, 0);
     }
 
-    default void delGroupMembers(long gid, Set<Long> uids, DoneLambdaCallback callback, int timeoutInseconds){
+    default void delGroupMembers(long groupId, Set<Long> uids, DoneLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -78,30 +78,30 @@ public interface GroupAPI extends APIBase {
             callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate delgroupmembers message sign exception.");
             return;
         }
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("uids", uids);
         AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
         client.sendQuest(quest, answerCallback, timeoutInseconds);
     }
 
-    default void delGroup(long gid)
+    default void delGroup(long groupId)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        delGroup(gid, 0);
+        delGroup(groupId, 0);
     }
 
-    default void delGroup(long gid, int timeoutInseconds)
+    default void delGroup(long groupId, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("delgroup");
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
     }
 
-    default void delGroup(long gid, DoneLambdaCallback callback) {
-        delGroup(gid, callback, 0);
+    default void delGroup(long groupId, DoneLambdaCallback callback) {
+        delGroup(groupId, callback, 0);
     }
 
-    default void delGroup(long gid, DoneLambdaCallback callback, int timeoutInseconds){
+    default void delGroup(long groupId, DoneLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -111,7 +111,7 @@ public interface GroupAPI extends APIBase {
             callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate delgroup message sign exception.");
             return;
         }
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
         client.sendQuest(quest, answerCallback, timeoutInseconds);
     }
@@ -120,16 +120,16 @@ public interface GroupAPI extends APIBase {
         void done(Set<Long> uids, int errorCode, String errorMessage);
     }
 
-    default Set<Long> getGroupMembers(long gid)
+    default Set<Long> getGroupMembers(long groupId)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return getGroupMembers(gid, 0);
+        return getGroupMembers(groupId, 0);
     }
 
-    default Set<Long> getGroupMembers(long gid, int timeoutInseconds)
+    default Set<Long> getGroupMembers(long groupId, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("getgroupmembers");
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
         Object object = answer.get("uids", null);
         Set<Long> result = new HashSet<>();
@@ -142,11 +142,11 @@ public interface GroupAPI extends APIBase {
         return result;
     }
 
-    default void getGroupMembers(long gid, GetGroupMembersLambdaCallBack callback) {
-        getGroupMembers(gid, callback, 0);
+    default void getGroupMembers(long groupId, GetGroupMembersLambdaCallBack callback) {
+        getGroupMembers(groupId, callback, 0);
     }
 
-    default void getGroupMembers(long gid, GetGroupMembersLambdaCallBack callback, int timeoutInseconds){
+    default void getGroupMembers(long groupId, GetGroupMembersLambdaCallBack callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -156,7 +156,7 @@ public interface GroupAPI extends APIBase {
             callback.done(null, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate getgroupmembers message sign exception.");
             return;
         }
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         AnswerCallback answerCallback = new AnswerCallback() {
             @Override
             public void onAnswer(Answer answer) {
@@ -192,11 +192,11 @@ public interface GroupAPI extends APIBase {
         return isGroupMember(uid, gid, 0);
     }
 
-    default boolean isGroupMember(long uid, long gid, int timeoutInseconds)
+    default boolean isGroupMember(long uid, long groupId, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("isgroupmember");
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("uid", uid);
         Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
         return (boolean)answer.get("ok", false);
@@ -206,7 +206,7 @@ public interface GroupAPI extends APIBase {
         isGroupMember(uid, gid, callback, 0);
     }
 
-    default void isGroupMember(long uid, long gid, IsGroupMemberCallBack callback, int timeoutInseconds){
+    default void isGroupMember(long uid, long groupId, IsGroupMemberCallBack callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -216,7 +216,7 @@ public interface GroupAPI extends APIBase {
             callback.done(false, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate isgroupmember message sign exception.");
             return;
         }
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("uid", uid);
         AnswerCallback answerCallback = new AnswerCallback() {
             @Override
@@ -303,26 +303,26 @@ public interface GroupAPI extends APIBase {
         client.sendQuest(quest, answerCallback, timeoutInseconds);
     }
 
-    default void addGroupBan(long gid, long uid, int btime)
+    default void addGroupBan(long groupId, long uid, int btime)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        addGroupBan(gid, uid, btime, 0);
+        addGroupBan(groupId, uid, btime, 0);
     }
 
-    default void addGroupBan(long gid, long uid, int btime, int timeoutInseconds)
+    default void addGroupBan(long groupId, long uid, int btime, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("addgroupban");
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("uid", uid);
         quest.param("btime", btime);
         client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
     }
 
-    default void addGroupBan(long gid, long uid, int btime, DoneLambdaCallback callback) {
-        addGroupBan(gid, uid, btime, callback,0);
+    default void addGroupBan(long groupId, long uid, int btime, DoneLambdaCallback callback) {
+        addGroupBan(groupId, uid, btime, callback,0);
     }
 
-    default void addGroupBan(long gid, long uid, int btime, DoneLambdaCallback callback, int timeoutInseconds){
+    default void addGroupBan(long groupId, long uid, int btime, DoneLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -332,32 +332,32 @@ public interface GroupAPI extends APIBase {
             callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate addgroupban message sign exception.");
             return;
         }
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("uid", uid);
         quest.param("btime", btime);
         AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
         client.sendQuest(quest, answerCallback, timeoutInseconds);
     }
 
-    default void removeGroupBan(long gid, long uid)
+    default void removeGroupBan(long groupId, long uid)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        removeGroupBan(gid, uid,0);
+        removeGroupBan(groupId, uid,0);
     }
 
-    default void removeGroupBan(long gid, long uid, int timeoutInseconds)
+    default void removeGroupBan(long groupId, long uid, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("removegroupban");
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("uid", uid);
         client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
     }
 
-    default void removeGroupBan(long gid, long uid, DoneLambdaCallback callback) {
-        removeGroupBan(gid, uid, callback,0);
+    default void removeGroupBan(long groupId, long uid, DoneLambdaCallback callback) {
+        removeGroupBan(groupId, uid, callback,0);
     }
 
-    default void removeGroupBan(long gid, long uid, DoneLambdaCallback callback, int timeoutInseconds){
+    default void removeGroupBan(long groupId, long uid, DoneLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -367,7 +367,7 @@ public interface GroupAPI extends APIBase {
             callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate removegroupban message sign exception.");
             return;
         }
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("uid", uid);
         AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
         client.sendQuest(quest, answerCallback, timeoutInseconds);
@@ -382,11 +382,11 @@ public interface GroupAPI extends APIBase {
         return isBanOfGroup(uid, gid, 0);
     }
 
-    default boolean isBanOfGroup(long uid, long gid, int timeoutInseconds)
+    default boolean isBanOfGroup(long uid, long groupId, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("isgroupmember");
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("uid", uid);
         Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
         return (boolean)answer.get("ok", false);
@@ -396,7 +396,7 @@ public interface GroupAPI extends APIBase {
         isBanOfGroup(uid, gid, callback, 0);
     }
 
-    default void isBanOfGroup(long uid, long gid, IsBanOfGroupCallBack callback, int timeoutInseconds){
+    default void isBanOfGroup(long uid, long groupId, IsBanOfGroupCallBack callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -406,7 +406,7 @@ public interface GroupAPI extends APIBase {
             callback.done(false, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate isgroupmember message sign exception.");
             return;
         }
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("uid", uid);
         AnswerCallback answerCallback = new AnswerCallback() {
             @Override
@@ -426,16 +426,16 @@ public interface GroupAPI extends APIBase {
         client.sendQuest(quest, answerCallback, timeoutInseconds);
     }
 
-    default void setGroupInfo(long gid, String openInfo, String priInfo)
+    default void setGroupInfo(long groupId, String openInfo, String priInfo)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        setGroupInfo(gid, openInfo, priInfo, 0);
+        setGroupInfo(groupId, openInfo, priInfo, 0);
     }
 
-    default void setGroupInfo(long gid, String openInfo, String priInfo, int timeoutInseconds)
+    default void setGroupInfo(long groupId, String openInfo, String priInfo, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("setgroupinfo");
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         if(openInfo != null && openInfo.length() > 0)
             quest.param("oinfo", openInfo);
         if(priInfo != null && priInfo.length() > 0)
@@ -443,11 +443,11 @@ public interface GroupAPI extends APIBase {
         client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
     }
 
-    default void setGroupInfo(long gid, String openInfo, String priInfo, DoneLambdaCallback callback) {
-        setGroupInfo(gid, openInfo, priInfo, callback,0);
+    default void setGroupInfo(long groupId, String openInfo, String priInfo, DoneLambdaCallback callback) {
+        setGroupInfo(groupId, openInfo, priInfo, callback,0);
     }
 
-    default void setGroupInfo(long gid, String openInfo, String priInfo, DoneLambdaCallback callback, int timeoutInseconds){
+    default void setGroupInfo(long groupId, String openInfo, String priInfo, DoneLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -457,7 +457,7 @@ public interface GroupAPI extends APIBase {
             callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate setgroupinfo message sign exception.");
             return;
         }
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         if(openInfo != null && openInfo.length() > 0)
             quest.param("oinfo", openInfo);
         if(priInfo != null && priInfo.length() > 0)
@@ -470,16 +470,16 @@ public interface GroupAPI extends APIBase {
         void done(String openInfo, String priInfo, int errorCode, String errorMessage);
     }
 
-    default void getGroupInfo(long gid, StringBuffer openInfo, StringBuffer priInfo)
+    default void getGroupInfo(long groupId, StringBuffer openInfo, StringBuffer priInfo)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        getGroupInfo(gid, openInfo, priInfo, 0);
+        getGroupInfo(groupId, openInfo, priInfo, 0);
     }
 
-    default void getGroupInfo(long gid, StringBuffer openInfo, StringBuffer priInfo, int timeoutInseconds)
+    default void getGroupInfo(long groupId, StringBuffer openInfo, StringBuffer priInfo, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("getgroupinfo");
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
         openInfo.setLength(0);
         priInfo.setLength(0);
@@ -487,11 +487,11 @@ public interface GroupAPI extends APIBase {
         priInfo.append((String)answer.get("pinfo", ""));
     }
 
-    default void getGroupInfo(long gid, GetGroupInfoCallback callback) {
-        getGroupInfo(gid, callback,0);
+    default void getGroupInfo(long groupId, GetGroupInfoCallback callback) {
+        getGroupInfo(groupId, callback,0);
     }
 
-    default void getGroupInfo(long gid, GetGroupInfoCallback callback, int timeoutInseconds){
+    default void getGroupInfo(long groupId, GetGroupInfoCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -501,7 +501,7 @@ public interface GroupAPI extends APIBase {
             callback.done("", "", ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate getgroupinfo message sign exception.");
             return;
         }
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         AnswerCallback answerCallback = new AnswerCallback() {
             @Override
             public void onAnswer(Answer answer) {

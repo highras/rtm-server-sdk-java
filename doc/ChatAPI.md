@@ -415,83 +415,102 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 * **sync**: 同步接口正常时返回mtime，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
 
 * **async**: 异步接口不会抛出异常，通过callback返回mtime，或者error信息，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.
-
-### 聊天的类型
-   
-    enum MessageType{
-        MESSAGE_TYPE_P2P((byte)1),
-        MESSAGE_TYPE_ROOM((byte)2),
-        MESSAGE_TYPE_GROUP((byte)3),
-        MESSAGE_TYPE_BROADCAST((byte)4);
-    
-        private final int value;
-        MessageType(byte type) {value = type;}
-    
-        public int value() {
-            return value;
-        }
-    } 
+ 
     
 ### 获取聊天
 
     // sync methods
-    RTMRetrievedMessage getChat(long mid, long from, long xid, MessageType type);
-    RTMRetrievedMessage getChat(long mid, long from, long xid, MessageType type, int timeoutInseconds);
+    RTMHistoryMessageUnit getP2pChat(long messageId, long fromUid, long toUid);
+    RTMHistoryMessageUnit getP2pChat(long messageId, long fromUid, long toUid, int timeInseconds);
+    RTMHistoryMessageUnit getGroupChat(long messageId, long fromUid, long groupId);
+    RTMHistoryMessageUnit getGroupChat(long messageId, long fromUid, long groupId, int timeInseconds);
+    RTMHistoryMessageUnit getRoomChat(long messageId, long fromUid, long roomId);
+    RTMHistoryMessageUnit getRoomChat(long messageId, long fromUid, long roomId, int timeInseconds);
+    RTMHistoryMessageUnit getBroadcastChat(long messageId, long fromUid);
+    RTMHistoryMessageUnit getBroadcastChat(long messageId, long fromUid, int timeInseconds);
     
     // async methods
-    void getChat(long mid, long from, long xid, MessageType type, GetRetrievedMessageLambdaCallback callback);
-    void getChat(long mid, long from, long xid, MessageType type, GetRetrievedMessageLambdaCallback callback, int timeoutInseconds);
+    void getP2PChat(long messageId, long fromUid, long toUid, GetRetrievedMessageLambdaCallback callback);
+    void getP2PChat(long messageId, long fromUid, long toUid, GetRetrievedMessageLambdaCallback callback, int timeInseconds);
+    void getGroupChat(long messageId, long fromUid, long groupId, GetRetrievedMessageLambdaCallback callback);
+    void getGroupChat(long messageId, long fromUid, long groupId, GetRetrievedMessageLambdaCallback callback, int timeInseconds);
+    void getRoomChat(long messageId, long fromUid, long roomId, GetRetrievedMessageLambdaCallback callback);
+    void getRoomChat(long messageId, long fromUid, long roomId, GetRetrievedMessageLambdaCallback callback, int timeInseconds);
+    void getBroadcastChat(long messageId, long fromUid, GetRetrievedMessageLambdaCallback callback);
+    void getBroadcastChat(long messageId, long fromUid, GetRetrievedMessageLambdaCallback callback, int timeInseconds);
 
 参数说明:   
-
-* `MessageType type`: 当type为MessageType.MESSAGE_TYPE_P2P时, xid为接收方uid, type为MessageType.MESSAGE_TYPE_ROOM, xid为房间rid, 
-type为MessageType.MESSAGE_TYPE_GROUP时, xid为群组gid, type为MessageType.MESSAGE_TYPE_BROADCAST时, xid为0
-            
+       
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
 
 * `GetRetrievedMessageLambdaCallback callback`: 为异步回调返回接口
         
         public interface GetRetrievedMessageLambdaCallback{
-            void done(RTMServerClientBase.RTMRetrievedMessage result, int errorCode, String errorMessage);
+            void done(RTMServerClientBase.RTMHistoryMessageUnit result, int errorCode, String errorMessage);
         }
         
-        public static class RTMRetrievedMessage {
-            public byte mtype;
-            public long mtime;
-            public long id;
+        public static class RTMMessage{
+            public byte messageType;
+            public long toId;     // for serverpush
+            public long fromUid;
+            public long modifiedTime;
+            public long messageId;
             public String stringMessage;
             public byte[] binaryMessage;
             public String attrs;
+            public AudioInfo audioInfo = null;  //for serverpush
     
             @Override
             public String toString(){
-                return "[RTMRetrievedMessage] message id = " + id + " ,mtype = " + mtype + " ,msg = " + stringMessage + " ,binary message " + binaryMessage
-                        + " ,mtime = " + mtime + " ,attrs = " + attrs;
+                return " ,[One RTMMessage: mtype = " + messageType + " ,fromuid = " + fromUid + " ,mtime = " + modifiedTime
+                        + " ,mid = " + messageId + " ,message = " + stringMessage + " ,binaryMessage = " + binaryMessage + " ,attrs = " + attrs + "]";
+            }
+        }
+    
+        public static class  RTMHistoryMessageUnit{
+            public long cursorId;
+            public RTMMessage message = null;
+    
+            @Override
+            public String toString(){
+                if(message != null){
+                    return cursorId + message.toString();
+                }
+                return "";
             }
         }
 
 返回值:     
   
-* **sync**: 同步接口正常时返回获取到的RTMRetrievedMessage对象，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+* **sync**: 同步接口正常时返回获取到的HistoryMessage对象，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
 
-* **async**: 异步接口不会抛出异常，通过callback返回获取到的RTMRetrievedMessage对象，或者error信息, 当errorCode不等于ErrorCode.FPNN_EC_OK.value(),则为error返回，可查看message错误信息.
+* **async**: 异步接口不会抛出异常，通过callback返回获取到的HistoryMessage对象，或者error信息, 当errorCode不等于ErrorCode.FPNN_EC_OK.value(),则为error返回，可查看message错误信息.
 
 
 ### 删除聊天
 
     // sync methods
-    void deleteChat(long mid, long from, long xid, MessageType type);
-    void deleteChat(long mid, long from, long xid, MessageType type, int timeoutInseconds);
+    void deleteP2PChat(long messageId, long fromUid, long toUid);
+    void deleteP2PChat(long messageId, long fromUid, long toUid, int timeInseconds);
+    void deleteGroupChat(long messageId, long fromUid, long groupId);
+    void deleteGroupChat(long messageId, long fromUid, long groupId, int timeInseconds);
+    void deleteRoomChat(long messageId, long fromUid, long roomId);
+    void deleteRoomChat(long messageId, long fromUid, long roomId, int timeInseconds);
+    void deleteBroadcastChat(long messageId, long fromUid);
+    void deleteBroadcastChat(long messageId, long fromUid, int timeInseconds);
     
     // async methods
-    void deleteChat(long mid, long from, long xid, MessageType type, DoneLambdaCallback callback);
-    void deleteChat(long mid, long from, long xid, MessageType type, DoneLambdaCallback callback, int timeoutInseconds);
+    void deleteP2PChat(long messageId, long fromUid, long toUid, DoneLambdaCallback callback);
+    void deleteP2PChat(long messageId, long fromUid, long toUid, DoneLambdaCallback callback, int timeInseconds);
+    void deleteGroupChat(long messageId, long fromUid, long groupId, DoneLambdaCallback callback);
+    void deleteGroupChat(long messageId, long fromUid, long groupId, DoneLambdaCallback callback, int timeInseconds);
+    void deleteRoomChat(long messageId, long fromUid, long roomId, DoneLambdaCallback callback);
+    void deleteRoomChat(long messageId, long fromUid, long roomId, DoneLambdaCallback callback, int timeInseconds);
+    void deleteBroadcastChat(long messageId, long fromUid, DoneLambdaCallback callback);
+    void deleteBroadcastChat(long messageId, long fromUid, DoneLambdaCallback callback, int timeInseconds);
     
 参数说明:   
-
-* `MessageType type`: 当type为MessageType.MESSAGE_TYPE_P2P时, xid为接收方uid, type为MessageType.MESSAGE_TYPE_ROOM, xid为房间rid, 
-type为MessageType.MESSAGE_TYPE_GROUP时, xid为群组gid, type为MessageType.MESSAGE_TYPE_BROADCAST时, xid为0
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.

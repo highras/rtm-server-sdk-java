@@ -1,10 +1,13 @@
 package com.fpnn.rtm.api;
 
-import com.fpnn.rtm.MType;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpnn.rtm.RTMException;
-import com.fpnn.rtm.RTMServerClientBase.RTMHistoryMessageUnit;
+import com.fpnn.rtm.RTMMessageType;
 import com.fpnn.rtm.RTMServerClientBase.RTMHistoryMessage;
-import com.fpnn.rtm.RTMServerClientBase.RTMRetrievedMessage;
+import com.fpnn.rtm.RTMServerClientBase.RTMHistoryMessageUnit;
+import com.fpnn.rtm.RTMServerClientBase.RTMMessage;
+import com.fpnn.rtm.RTMServerClientBase.AudioInfo;
 import com.fpnn.rtm.RTMServerClientBase;
 import com.fpnn.sdk.AnswerCallback;
 import com.fpnn.sdk.ErrorCode;
@@ -18,10 +21,11 @@ import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Set;
 
+
 interface MessageCoreAPI extends APIBase {
 
     //-----------------[ sendmsg ]-----------------//
-    default void internalCoreSendMessage(long fromUid, long toUid, byte mType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+    default void internalCoreSendMessage(long fromUid, long toUid, byte messageType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
 
         RTMServerClientBase client = getCoreClient();
 
@@ -37,7 +41,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("from", fromUid);
         quest.param("to", toUid);
         quest.param("mid", genMid());
-        quest.param("mtype", mType);
+        quest.param("mtype", messageType);
         quest.param("msg", message);
         quest.param("attrs", attrs);
 
@@ -60,7 +64,7 @@ interface MessageCoreAPI extends APIBase {
         client.sendQuest(quest, internalCallback, timeoutInseconds);
     }
 
-    default long internalCoreSendMessage(long fromUid, long toUid, byte mType, Object message, String attrs, int timeoutInseconds)
+    default long internalCoreSendMessage(long fromUid, long toUid, byte messageType, Object message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
         RTMServerClientBase client = getCoreClient();
@@ -69,7 +73,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("from", fromUid);
         quest.param("to", toUid);
         quest.param("mid", genMid());
-        quest.param("mtype", mType);
+        quest.param("mtype", messageType);
         quest.param("msg", message);
         quest.param("attrs", attrs);
 
@@ -79,7 +83,7 @@ interface MessageCoreAPI extends APIBase {
 
     //-----------------[ sendmsgs ]-----------------//
 
-    default void internalCoreSendMessages(long fromUid, Set<Long> toUids, byte mType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+    default void internalCoreSendMessages(long fromUid, Set<Long> toUids, byte messageType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
 
         RTMServerClientBase client = getCoreClient();
 
@@ -95,7 +99,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("from", fromUid);
         quest.param("tos", toUids);
         quest.param("mid", genMid());
-        quest.param("mtype", mType);
+        quest.param("mtype", messageType);
         quest.param("msg", message);
         quest.param("attrs", attrs);
 
@@ -118,7 +122,7 @@ interface MessageCoreAPI extends APIBase {
         client.sendQuest(quest, internalCallback, timeoutInseconds);
     }
 
-    default long internalCoreSendMessages(long fromUid, Set<Long> toUids, byte mType, Object message, String attrs, int timeoutInseconds)
+    default long internalCoreSendMessages(long fromUid, Set<Long> toUids, byte messageType, Object message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
         RTMServerClientBase client = getCoreClient();
@@ -127,7 +131,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("from", fromUid);
         quest.param("tos", toUids);
         quest.param("mid", genMid());
-        quest.param("mtype", mType);
+        quest.param("mtype", messageType);
         quest.param("msg", message);
         quest.param("attrs", attrs);
 
@@ -137,7 +141,7 @@ interface MessageCoreAPI extends APIBase {
 
     //-----------------[ sendgroupmsg ]-----------------//
 
-    default void internalCoreSendGroupMessage(long fromUid, long groupId, byte mType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+    default void internalCoreSendGroupMessage(long fromUid, long groupId, byte messageType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
 
         RTMServerClientBase client = getCoreClient();
 
@@ -153,7 +157,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("from", fromUid);
         quest.param("gid", groupId);
         quest.param("mid", genMid());
-        quest.param("mtype", mType);
+        quest.param("mtype", messageType);
         quest.param("msg", message);
         quest.param("attrs", attrs);
 
@@ -176,7 +180,7 @@ interface MessageCoreAPI extends APIBase {
         client.sendQuest(quest, internalCallback, timeoutInseconds);
     }
 
-    default long internalCoreSendGroupMessage(long fromUid, long groupId, byte mType, Object message, String attrs, int timeoutInseconds)
+    default long internalCoreSendGroupMessage(long fromUid, long groupId, byte messageType, Object message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
         RTMServerClientBase client = getCoreClient();
@@ -185,7 +189,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("from", fromUid);
         quest.param("gid", groupId);
         quest.param("mid", genMid());
-        quest.param("mtype", mType);
+        quest.param("mtype", messageType);
         quest.param("msg", message);
         quest.param("attrs", attrs);
 
@@ -195,7 +199,7 @@ interface MessageCoreAPI extends APIBase {
 
     //-----------------[ sendroommsg ]-----------------//
 
-    default void internalCoreSendRoomMessage(long fromUid, long roomId, byte mType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+    default void internalCoreSendRoomMessage(long fromUid, long roomId, byte messageType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
 
         RTMServerClientBase client = getCoreClient();
 
@@ -211,7 +215,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("from", fromUid);
         quest.param("rid", roomId);
         quest.param("mid", genMid());
-        quest.param("mtype", mType);
+        quest.param("mtype", messageType);
         quest.param("msg", message);
         quest.param("attrs", attrs);
 
@@ -234,7 +238,7 @@ interface MessageCoreAPI extends APIBase {
         client.sendQuest(quest, internalCallback, timeoutInseconds);
     }
 
-    default long internalCoreSendRoomMessage(long fromUid, long roomId, byte mType, Object message, String attrs, int timeoutInseconds)
+    default long internalCoreSendRoomMessage(long fromUid, long roomId, byte messageType, Object message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
         RTMServerClientBase client = getCoreClient();
@@ -243,7 +247,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("from", fromUid);
         quest.param("rid", roomId);
         quest.param("mid", genMid());
-        quest.param("mtype", mType);
+        quest.param("mtype", messageType);
         quest.param("msg", message);
         quest.param("attrs", attrs);
 
@@ -253,7 +257,7 @@ interface MessageCoreAPI extends APIBase {
 
     //-----------------[ broadcastmsg ]-----------------//
 
-    default void internalCoreSendBroadcastMessage(long fromUid, byte mType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
+    default void internalCoreSendBroadcastMessage(long fromUid, byte messageType, Object message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
 
         RTMServerClientBase client = getCoreClient();
 
@@ -268,7 +272,7 @@ interface MessageCoreAPI extends APIBase {
 
         quest.param("from", fromUid);
         quest.param("mid", genMid());
-        quest.param("mtype", mType);
+        quest.param("mtype", messageType);
         quest.param("msg", message);
         quest.param("attrs", attrs);
 
@@ -291,7 +295,7 @@ interface MessageCoreAPI extends APIBase {
         client.sendQuest(quest, internalCallback, timeoutInseconds);
     }
 
-    default long internalCoreSendBroadcastMessage(long fromUid, byte mType, Object message, String attrs, int timeoutInseconds)
+    default long internalCoreSendBroadcastMessage(long fromUid, byte messageType, Object message, String attrs, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
 
         RTMServerClientBase client = getCoreClient();
@@ -299,7 +303,7 @@ interface MessageCoreAPI extends APIBase {
         Quest quest = client.genBasicQuest("broadcastmsg");
         quest.param("from", fromUid);
         quest.param("mid", genMid());
-        quest.param("mtype", mType);
+        quest.param("mtype", messageType);
         quest.param("msg", message);
         quest.param("attrs", attrs);
 
@@ -313,7 +317,7 @@ interface MessageCoreAPI extends APIBase {
         if(messages == null)
             return result;
         result.count = answer.getInt("num", 0);
-        result.lastId = answer.getLong("lastid", 0);
+        result.lastCursorId = answer.getLong("lastid", 0);
         result.beginMsec = answer.getLong("begin", 0);
         result.endMsec = answer.getLong("end", 0);
         for (int i = 0; i < messages.size(); i++) {
@@ -323,32 +327,51 @@ interface MessageCoreAPI extends APIBase {
             if(delete)
                 continue;
 
-            unitMsg.id = Long.valueOf(String.valueOf(data.get(0)));
-            unitMsg.fromUid = Long.valueOf(String.valueOf(data.get(1)));
-            unitMsg.mtype = Byte.valueOf(String.valueOf(data.get(2)));
-            unitMsg.mid = Long.valueOf(String.valueOf(data.get(3)));
+            unitMsg.cursorId = Long.valueOf(String.valueOf(data.get(0)));
+            RTMMessage info = new RTMMessage();
+            info.fromUid = Long.valueOf(String.valueOf(data.get(1)));
+            info.messageType = Byte.valueOf(String.valueOf(data.get(2)));
+            info.messageId = Long.valueOf(String.valueOf(data.get(3)));
             //jump delete
-            unitMsg.attrs = String.valueOf(data.get(6));
-            unitMsg.mtime = Long.valueOf(String.valueOf(data.get(7)));
+            info.attrs = String.valueOf(data.get(6));
+            info.modifiedTime = Long.valueOf(String.valueOf(data.get(7)));
             Object obj = data.get(5);
-            if(unitMsg.mtype == MType.AudioChat.value()){
-                try{
-                    if(obj instanceof byte[]){
-                        unitMsg.binaryMessage = (byte[])obj;
+            if(info.messageType == RTMMessageType.AudioChat.value()){
+                if(obj instanceof byte[]){
+                    byte[] bytes = (byte[])obj;
+                    info.binaryMessage = bytes;
+                } else {
+                    try{
+                        String audioInfo = String.valueOf(obj);
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        JsonNode jsonNode = objectMapper.readValue(audioInfo, JsonNode.class);
+                        String sl = jsonNode.get("sl").asText();
+                        String rl = jsonNode.get("rl").asText();
+                        String rt = jsonNode.get("rt").asText();
+                        int duration = jsonNode.get("du").asInt();
+                        AudioInfo audio = new AudioInfo();
+                        audio.duration = duration;
+                        audio.recognizedText = rt;
+                        audio.recognizedLanguage = rl;
+                        audio.sourceLanguage = sl;
+                        info.audioInfo = audio;
+                        info.stringMessage = audio.recognizedText;
+
+                    }catch (IOException ex){
+                        ex.printStackTrace();
+                        ErrorRecorder.record("audio string parse failed", ex);
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                        ErrorRecorder.record("unknown error audio string parse failed", ex);
                     }
-                    else{
-                        unitMsg.binaryMessage = (String.valueOf(obj)).getBytes("UTF-8");
-                    }
-                }catch (UnsupportedEncodingException ex){
-                    System.out.println("string to binary failed, ex ");
-                    ex.printStackTrace();
-                    ErrorRecorder.record("string to binary failed", ex);
                 }
+
 
             }
             else{
-                unitMsg.stringMessage = String.valueOf(obj);
+                info.stringMessage = String.valueOf(obj);
             }
+            unitMsg.message = info;
             result.messageList.add(unitMsg);
         }
         result.count = result.messageList.size();
@@ -356,18 +379,18 @@ interface MessageCoreAPI extends APIBase {
     }
 
     //-----------------getGroupHistoryMessage-----------------
-    default RTMHistoryMessage internalCoreGetGroupHistoryMsg(long uid, long gid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, int timeoutInseconds)
+    default RTMHistoryMessage internalCoreGetGroupHistoryMsg(long uid, long groupId, boolean desc, int count, long begin, long end, long lastCursorId, List<Byte> mtypes, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
         RTMServerClientBase client = getCoreClient();
 
         Quest quest = client.genBasicQuest("getgroupmsg");
         quest.param("uid", uid);
-        quest.param("gid", gid);
+        quest.param("gid", groupId);
         quest.param("desc", desc);
         quest.param("num", count);
         quest.param("begin", begin);
         quest.param("end", end);
-        quest.param("lastid", lastId);
+        quest.param("lastid", lastCursorId);
         if(mtypes != null && mtypes.size() > 0)
             quest.param("mtypes", mtypes);
 
@@ -375,7 +398,7 @@ interface MessageCoreAPI extends APIBase {
         return buildHistoryMessages(answer);
     }
 
-    default void internalCoreGetGroupHistoryMsg(long uid, long gid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds){
+    default void internalCoreGetGroupHistoryMsg(long uid, long gid, boolean desc, int count, long begin, long end, long lastCursorId, List<Byte> mtypes, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -392,7 +415,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("num", count);
         quest.param("begin", begin);
         quest.param("end", end);
-        quest.param("lastid", lastId);
+        quest.param("lastid", lastCursorId);
         if(mtypes != null && mtypes.size() > 0)
             quest.param("mtypes", mtypes);
         AnswerCallback answerCallback = new AnswerCallback() {
@@ -417,7 +440,7 @@ interface MessageCoreAPI extends APIBase {
     }
 
     //-----------------getRoomHistoryMessage-----------------
-    default RTMHistoryMessage internalCoreGetRoomHistoryMsg(long uid, long rid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, int timeoutInseconds)
+    default RTMHistoryMessage internalCoreGetRoomHistoryMsg(long uid, long rid, boolean desc, int count, long begin, long end, long lastCursorId, List<Byte> mtypes, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
         RTMServerClientBase client = getCoreClient();
 
@@ -428,7 +451,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("num", count);
         quest.param("begin", begin);
         quest.param("end", end);
-        quest.param("lastid", lastId);
+        quest.param("lastid", lastCursorId);
         if(mtypes != null && mtypes.size() > 0)
             quest.param("mtypes", mtypes);
 
@@ -436,7 +459,7 @@ interface MessageCoreAPI extends APIBase {
         return buildHistoryMessages(answer);
     }
 
-    default void internalCoreGetRoomHistoryMsg(long uid, long rid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds){
+    default void internalCoreGetRoomHistoryMsg(long uid, long rid, boolean desc, int count, long begin, long end, long lastCursorId, List<Byte> mtypes, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -453,7 +476,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("num", count);
         quest.param("begin", begin);
         quest.param("end", end);
-        quest.param("lastid", lastId);
+        quest.param("lastid", lastCursorId);
         if(mtypes != null && mtypes.size() > 0)
             quest.param("mtypes", mtypes);
         AnswerCallback answerCallback = new AnswerCallback() {
@@ -478,7 +501,7 @@ interface MessageCoreAPI extends APIBase {
     }
 
     //-----------------getBroadCastHistoryMessage-----------------
-    default RTMHistoryMessage internalCoreGetBroadCastHistoryMsg(long uid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, int timeoutInseconds)
+    default RTMHistoryMessage internalCoreGetBroadCastHistoryMsg(long uid, boolean desc, int count, long begin, long end, long lastCursorId, List<Byte> mtypes, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
         RTMServerClientBase client = getCoreClient();
 
@@ -488,7 +511,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("num", count);
         quest.param("begin", begin);
         quest.param("end", end);
-        quest.param("lastid", lastId);
+        quest.param("lastid", lastCursorId);
         if(mtypes != null && mtypes.size() > 0)
             quest.param("mtypes", mtypes);
 
@@ -496,7 +519,7 @@ interface MessageCoreAPI extends APIBase {
         return buildHistoryMessages(answer);
     }
 
-    default void internalCoreGetBroadCastHistoryMsg(long uid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds){
+    default void internalCoreGetBroadCastHistoryMsg(long uid, boolean desc, int count, long begin, long end, long lastCursorId, List<Byte> mtypes, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -512,7 +535,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("num", count);
         quest.param("begin", begin);
         quest.param("end", end);
-        quest.param("lastid", lastId);
+        quest.param("lastid", lastCursorId);
         if(mtypes != null && mtypes.size() > 0)
             quest.param("mtypes", mtypes);
         AnswerCallback answerCallback = new AnswerCallback() {
@@ -538,17 +561,19 @@ interface MessageCoreAPI extends APIBase {
 
     default void adjustHistoryMessageForP2P(RTMHistoryMessage message, long from, long peer){
         for (RTMHistoryMessageUnit unit: message.messageList) {
-                if(unit.fromUid == 1){
-                    unit.fromUid = from;
+            if(unit.message != null){
+                if(unit.message.fromUid == 1){
+                    unit.message.fromUid = from;
                 }
-                else if(unit.fromUid == 2){
-                    unit.fromUid = peer;
+                else if(unit.message.fromUid == 2){
+                    unit.message.fromUid = peer;
                 }
+            }
         }
     }
 
     //-----------------getP2PHistoryMessage-----------------
-    default RTMHistoryMessage internalCoreGetP2PHistoryMsg(long uid, long peerUid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, int timeoutInseconds)
+    default RTMHistoryMessage internalCoreGetP2PHistoryMsg(long uid, long peerUid, boolean desc, int count, long begin, long end, long lastCursorId, List<Byte> mtypes, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
         RTMServerClientBase client = getCoreClient();
 
@@ -559,7 +584,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("num", count);
         quest.param("begin", begin);
         quest.param("end", end);
-        quest.param("lastid", lastId);
+        quest.param("lastid", lastCursorId);
         if(mtypes != null && mtypes.size() > 0)
             quest.param("mtypes", mtypes);
 
@@ -569,7 +594,7 @@ interface MessageCoreAPI extends APIBase {
         return result;
     }
 
-    default void internalCoreGetP2PHistoryMsg(long uid, long peerUid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds){
+    default void internalCoreGetP2PHistoryMsg(long uid, long peerUid, boolean desc, int count, long begin, long end, long lastCursorId, List<Byte> mtypes, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -586,7 +611,7 @@ interface MessageCoreAPI extends APIBase {
         quest.param("num", count);
         quest.param("begin", begin);
         quest.param("end", end);
-        quest.param("lastid", lastId);
+        quest.param("lastid", lastCursorId);
         if(mtypes != null && mtypes.size() > 0)
             quest.param("mtypes", mtypes);
         AnswerCallback answerCallback = new AnswerCallback() {
@@ -645,29 +670,30 @@ interface MessageCoreAPI extends APIBase {
 
     //----------------------getMsg------------------
 
-    default RTMRetrievedMessage buildRetrievedMessage(Answer answer){
-        RTMRetrievedMessage message = new RTMRetrievedMessage();
-        message.id = answer.getLong("id", 0);
-        message.mtype = ((Integer)answer.getInt("mtype", 0)).byteValue();
-        message.attrs = (String)answer.get("attrs", "");
-        message.mtime = answer.getLong("mtime", 0);
+    default RTMHistoryMessageUnit buildRetrievedMessage(Answer answer){
+        RTMHistoryMessageUnit message = new RTMHistoryMessageUnit();
+        RTMMessage info = new RTMMessage();
+        message.cursorId = answer.getLong("id", 0);
+        info.messageType = ((Integer)answer.getInt("mtype", 0)).byteValue();
+        info.attrs = (String)answer.get("attrs", "");
+        info.modifiedTime = answer.getLong("mtime", 0);
         String msg = (String)answer.get("msg", "");
-        if(message.mtype == MType.AudioChat.value()){
+        if(info.messageType == RTMMessageType.AudioChat.value()){
             try{
-                message.binaryMessage = msg.getBytes("UTF-8");
+                info.binaryMessage = msg.getBytes("UTF-8");
             }catch (UnsupportedEncodingException ex){
-                System.out.println("string to binary failed, ex ");
                 ex.printStackTrace();
-                ErrorRecorder.record("string to binary failed", ex);
+                ErrorRecorder.record("audio string to binary failed", ex);
             }
         }
         else{
-            message.stringMessage = msg;
+            info.stringMessage = msg;
         }
+        message.message = info;
         return  message;
     }
 
-    default RTMRetrievedMessage internalGetMsg(long mid, long from, long xid, MessageType type, int timeoutInseconds)
+    default RTMHistoryMessageUnit internalGetMsg(long mid, long from, long xid, MessageType type, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException,InterruptedException {
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("getmsg");
@@ -700,7 +726,7 @@ interface MessageCoreAPI extends APIBase {
             public void onAnswer(Answer answer) {
                 if(answer != null)
                 {
-                    RTMRetrievedMessage message = buildRetrievedMessage(answer);
+                    RTMHistoryMessageUnit message = buildRetrievedMessage(answer);
                     callback.done(message, ErrorCode.FPNN_EC_OK.value(), "");
                 }
             }

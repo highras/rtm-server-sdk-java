@@ -8,6 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="rtm-server-sdk" exported="" />
-    <orderEntry type="library" name="Maven: com.github.highras:fpnn:2.0.2-RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: com.github.highras:fpnn:2.0.3-RELEASE" level="project" />
   </component>
 </module>

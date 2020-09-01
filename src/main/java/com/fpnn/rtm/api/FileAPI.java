@@ -1,7 +1,7 @@
 package com.fpnn.rtm.api;
 
-import com.fpnn.rtm.MType;
 import com.fpnn.rtm.RTMException;
+import com.fpnn.rtm.RTMMessageType;
 import com.fpnn.rtm.RTMResourceCenter;
 import com.fpnn.rtm.RTMServerClientBase;
 import com.fpnn.rtm.RTMServerClientBase.FileInfo;
@@ -32,27 +32,27 @@ public interface FileAPI extends APIBase {
 
     default long sendFile(long fromUid, long toUid, String filePath, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendFile(fromUid, toUid, MType.File.value(), filePath, timeoutInseconds);
+        return sendFile(fromUid, toUid, RTMMessageType.NormalFile.value(), filePath, timeoutInseconds);
     }
 
-    default long sendFile(long fromUid, long toUid, byte mType, String filePath)
+    default long sendFile(long fromUid, long toUid, byte messageType, String filePath)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendFile(fromUid, toUid, mType, filePath, 0);
+        return sendFile(fromUid, toUid, messageType, filePath, 0);
     }
 
-    default long sendFile(long fromUid, long toUid, byte mType, String filePath, int timeoutInseconds)
+    default long sendFile(long fromUid, long toUid, byte messageType, String filePath, int timeoutInseconds)
         throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         FileInfo info = client.readFileForSendAPI(filePath);
-        return sendFile(fromUid, toUid, mType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
+        return sendFile(fromUid, toUid, messageType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
     }
 
-    default long sendFile(long fromUid, long toUid, byte mType, byte[] fileContent, String filename, String filenameExtension)
+    default long sendFile(long fromUid, long toUid, byte messageType, byte[] fileContent, String filename, String filenameExtension)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
-        return sendFile(fromUid, toUid, mType, fileContent, filename, filenameExtension, 0);
+        return sendFile(fromUid, toUid, messageType, fileContent, filename, filenameExtension, 0);
     }
 
-    default long sendFile(long fromUid, long toUid, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
+    default long sendFile(long fromUid, long toUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
 
         String token;
@@ -93,7 +93,7 @@ public interface FileAPI extends APIBase {
             Quest quest = new Quest("sendfile");
             quest.param("pid", client.getPid());
             quest.param("token", token);
-            quest.param("mtype", mType);
+            quest.param("mtype", messageType);
             quest.param("from", fromUid);
 
             quest.param("to", toUid);
@@ -119,29 +119,29 @@ public interface FileAPI extends APIBase {
     }
 
     default void sendFile(long fromUid, long toUid, String filePath, SendFileLambdaCallback callback, int timeoutInseconds){
-        sendFile(fromUid, toUid, MType.File.value(), filePath, callback, timeoutInseconds);
+        sendFile(fromUid, toUid, RTMMessageType.NormalFile.value(), filePath, callback, timeoutInseconds);
     }
 
-    default void sendFile(long fromUid, long toUid, byte mType, String filePath, SendFileLambdaCallback callback){
-        sendFile(fromUid, toUid, mType, filePath, callback,0);
+    default void sendFile(long fromUid, long toUid, byte messageType, String filePath, SendFileLambdaCallback callback){
+        sendFile(fromUid, toUid, messageType, filePath, callback,0);
     }
 
-    default void sendFile(long fromUid, long toUid, byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
+    default void sendFile(long fromUid, long toUid, byte messageType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
         RTMServerClientBase client = getCoreClient();
         try{
             FileInfo info = client.readFileForSendAPI(filePath);
-            sendFile(fromUid, toUid, mType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
+            sendFile(fromUid, toUid, messageType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
         }catch (Exception ex){
             ErrorRecorder.record("send file by read fileinfo exception.", ex);
             callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "send file by read fileinfo exception.");
         }
     }
 
-    default void sendFile(long fromUid, long toUid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
-        sendFile(fromUid, toUid, mType, fileContent, filename, filenameExtension, callback,0);
+    default void sendFile(long fromUid, long toUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
+        sendFile(fromUid, toUid, messageType, fileContent, filename, filenameExtension, callback,0);
     }
 
-    default void sendFile(long fromUid, long toUid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
+    default void sendFile(long fromUid, long toUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest fileTokenQuest;
         try {
@@ -202,7 +202,7 @@ public interface FileAPI extends APIBase {
                 Quest quest = new Quest("sendfile");
                 quest.param("pid", client.getPid());
                 quest.param("token", token);
-                quest.param("mtype", mType);
+                quest.param("mtype", messageType);
                 quest.param("from", fromUid);
 
                 quest.param("to", toUid);
@@ -242,27 +242,27 @@ public interface FileAPI extends APIBase {
 
     default long sendFiles(long fromUid, Set<Long> toUids, String filePath, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendFiles(fromUid, toUids, MType.File.value(), filePath, timeoutInseconds);
+        return sendFiles(fromUid, toUids, RTMMessageType.NormalFile.value(), filePath, timeoutInseconds);
     }
 
-    default long sendFiles(long fromUid, Set<Long> toUids, byte mType, String filePath)
+    default long sendFiles(long fromUid, Set<Long> toUids, byte messageType, String filePath)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendFiles(fromUid, toUids, mType, filePath, 0);
+        return sendFiles(fromUid, toUids, messageType, filePath, 0);
     }
 
-    default long sendFiles(long fromUid, Set<Long> toUids, byte mType, String filePath, int timeoutInseconds)
+    default long sendFiles(long fromUid, Set<Long> toUids, byte messageType, String filePath, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         FileInfo info = client.readFileForSendAPI(filePath);
-        return sendFiles(fromUid, toUids, mType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
+        return sendFiles(fromUid, toUids, messageType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
     }
 
-    default long sendFiles(long fromUid, Set<Long> toUids, byte mType, byte[] fileContent, String filename, String filenameExtension)
+    default long sendFiles(long fromUid, Set<Long> toUids, byte messageType, byte[] fileContent, String filename, String filenameExtension)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
-        return sendFiles(fromUid, toUids, mType, fileContent, filename, filenameExtension, 0);
+        return sendFiles(fromUid, toUids, messageType, fileContent, filename, filenameExtension, 0);
     }
 
-    default long sendFiles(long fromUid, Set<Long> toUids, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
+    default long sendFiles(long fromUid, Set<Long> toUids, byte messageType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
 
         String token;
@@ -303,7 +303,7 @@ public interface FileAPI extends APIBase {
             Quest quest = new Quest("sendfiles");
             quest.param("pid", client.getPid());
             quest.param("token", token);
-            quest.param("mtype", mType);
+            quest.param("mtype", messageType);
             quest.param("from", fromUid);
 
             quest.param("tos", toUids);
@@ -329,29 +329,29 @@ public interface FileAPI extends APIBase {
     }
 
     default void sendFiles(long fromUid, Set<Long> toUids, String filePath, SendFileLambdaCallback callback, int timeoutInseconds){
-        sendFiles(fromUid, toUids, MType.File.value(), filePath, callback, timeoutInseconds);
+        sendFiles(fromUid, toUids, RTMMessageType.NormalFile.value(), filePath, callback, timeoutInseconds);
     }
 
-    default void sendFiles(long fromUid, Set<Long> toUids, byte mType, String filePath, SendFileLambdaCallback callback){
-        sendFiles(fromUid, toUids, mType, filePath, callback,0);
+    default void sendFiles(long fromUid, Set<Long> toUids, byte messageType, String filePath, SendFileLambdaCallback callback){
+        sendFiles(fromUid, toUids, messageType, filePath, callback,0);
     }
 
-    default void sendFiles(long fromUid, Set<Long> toUids, byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
+    default void sendFiles(long fromUid, Set<Long> toUids, byte messageType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
         RTMServerClientBase client = getCoreClient();
         try{
             FileInfo info = client.readFileForSendAPI(filePath);
-            sendFiles(fromUid, toUids, mType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
+            sendFiles(fromUid, toUids, messageType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
         }catch (Exception ex){
             ErrorRecorder.record("send files by read fileinfo exception.", ex);
             callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "send files by read fileinfo exception.");
         }
     }
 
-    default void sendFiles(long fromUid, Set<Long> toUids, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
-        sendFiles(fromUid, toUids, mType, fileContent, filename, filenameExtension, callback,0);
+    default void sendFiles(long fromUid, Set<Long> toUids, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
+        sendFiles(fromUid, toUids, messageType, fileContent, filename, filenameExtension, callback,0);
     }
 
-    default void sendFiles(long fromUid, Set<Long> toUids, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
+    default void sendFiles(long fromUid, Set<Long> toUids, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest fileTokenQuest;
         try {
@@ -413,7 +413,7 @@ public interface FileAPI extends APIBase {
                 Quest quest = new Quest("sendfiles");
                 quest.param("pid", client.getPid());
                 quest.param("token", token);
-                quest.param("mtype", mType);
+                quest.param("mtype", messageType);
                 quest.param("from", fromUid);
 
                 quest.param("tos", toUids);
@@ -447,34 +447,34 @@ public interface FileAPI extends APIBase {
     }
 
     //---------------send group file--------------------
-    default long sendGroupFile(long fromUid, long gid, String filePath)
+    default long sendGroupFile(long fromUid, long groupId, String filePath)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendGroupFile(fromUid, gid, filePath, 0);
+        return sendGroupFile(fromUid, groupId, filePath, 0);
     }
 
-    default long sendGroupFile(long fromUid, long gid, String filePath, int timeoutInseconds)
+    default long sendGroupFile(long fromUid, long groupId, String filePath, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendGroupFile(fromUid, gid, MType.File.value(), filePath, timeoutInseconds);
+        return sendGroupFile(fromUid, groupId, RTMMessageType.NormalFile.value(), filePath, timeoutInseconds);
     }
 
-    default long sendGroupFile(long fromUid, long gid, byte mType, String filePath)
+    default long sendGroupFile(long fromUid, long groupId, byte messageType, String filePath)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendGroupFile(fromUid, gid, mType, filePath, 0);
+        return sendGroupFile(fromUid, groupId, messageType, filePath, 0);
     }
 
-    default long sendGroupFile(long fromUid, long gid, byte mType, String filePath, int timeoutInseconds)
+    default long sendGroupFile(long fromUid, long groupId, byte messageType, String filePath, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         FileInfo info = client.readFileForSendAPI(filePath);
-        return sendGroupFile(fromUid, gid, mType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
+        return sendGroupFile(fromUid, groupId, messageType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
     }
 
-    default long sendGroupFile(long fromUid, long gid, byte mType, byte[] fileContent, String filename, String filenameExtension)
+    default long sendGroupFile(long fromUid, long groupId, byte messageType, byte[] fileContent, String filename, String filenameExtension)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
-        return sendGroupFile(fromUid, gid, mType, fileContent, filename, filenameExtension, 0);
+        return sendGroupFile(fromUid, groupId, messageType, fileContent, filename, filenameExtension, 0);
     }
 
-    default long sendGroupFile(long fromUid, long gid, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
+    default long sendGroupFile(long fromUid, long groupId, byte messageType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
 
         String token;
@@ -486,7 +486,7 @@ public interface FileAPI extends APIBase {
             Quest quest = client.genBasicQuest("filetoken");
             quest.param("from", fromUid);
             quest.param("cmd", "sendgroupfile");
-            quest.param("gid", gid);
+            quest.param("gid", groupId);
 
             Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
             token = (String) answer.get("token");
@@ -515,10 +515,10 @@ public interface FileAPI extends APIBase {
             Quest quest = new Quest("sendgroupfile");
             quest.param("pid", client.getPid());
             quest.param("token", token);
-            quest.param("mtype", mType);
+            quest.param("mtype", messageType);
             quest.param("from", fromUid);
 
-            quest.param("gid", gid);
+            quest.param("gid", groupId);
             quest.param("mid", genMid());
             quest.param("file", fileContent);
             quest.param("attrs", attrs);
@@ -536,34 +536,34 @@ public interface FileAPI extends APIBase {
         }
     }
 
-    default void sendGroupFile(long fromUid, long gid, String filePath, SendFileLambdaCallback callback){
-        sendGroupFile(fromUid, gid, filePath, callback,0);
+    default void sendGroupFile(long fromUid, long groupId, String filePath, SendFileLambdaCallback callback){
+        sendGroupFile(fromUid, groupId, filePath, callback,0);
     }
 
-    default void sendGroupFile(long fromUid, long gid, String filePath, SendFileLambdaCallback callback, int timeoutInseconds){
-        sendGroupFile(fromUid, gid, MType.File.value(), filePath, callback, timeoutInseconds);
+    default void sendGroupFile(long fromUid, long groupId, String filePath, SendFileLambdaCallback callback, int timeoutInseconds){
+        sendGroupFile(fromUid, groupId, RTMMessageType.NormalFile.value(), filePath, callback, timeoutInseconds);
     }
 
-    default void sendGroupFile(long fromUid, long gid, byte mType, String filePath, SendFileLambdaCallback callback){
-        sendGroupFile(fromUid, gid, mType, filePath, callback,0);
+    default void sendGroupFile(long fromUid, long groupId, byte messageType, String filePath, SendFileLambdaCallback callback){
+        sendGroupFile(fromUid, groupId, messageType, filePath, callback,0);
     }
 
-    default void sendGroupFile(long fromUid, long gid, byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
+    default void sendGroupFile(long fromUid, long groupId, byte messageType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
         RTMServerClientBase client = getCoreClient();
         try{
             FileInfo info = client.readFileForSendAPI(filePath);
-            sendGroupFile(fromUid, gid, mType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
+            sendGroupFile(fromUid, groupId, messageType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
         }catch (Exception ex){
             ErrorRecorder.record("send file by read fileinfo exception.", ex);
             callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "send file by read fileinfo exception.");
         }
     }
 
-    default void sendGroupFile(long fromUid, long gid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
-        sendGroupFile(fromUid, gid, mType, fileContent, filename, filenameExtension, callback,0);
+    default void sendGroupFile(long fromUid, long groupId, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
+        sendGroupFile(fromUid, groupId, messageType, fileContent, filename, filenameExtension, callback,0);
     }
 
-    default void sendGroupFile(long fromUid, long gid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
+    default void sendGroupFile(long fromUid, long groupId, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest fileTokenQuest;
         try {
@@ -577,7 +577,7 @@ public interface FileAPI extends APIBase {
 
         fileTokenQuest.param("from", fromUid);
         fileTokenQuest.param("cmd", "sendgroupfile");
-        fileTokenQuest.param("gid", gid);
+        fileTokenQuest.param("gid", groupId);
 
         long adjustedTimeout = System.currentTimeMillis();
 
@@ -625,10 +625,10 @@ public interface FileAPI extends APIBase {
                 Quest quest = new Quest("sendgroupfile");
                 quest.param("pid", client.getPid());
                 quest.param("token", token);
-                quest.param("mtype", mType);
+                quest.param("mtype", messageType);
                 quest.param("from", fromUid);
 
-                quest.param("gid", gid);
+                quest.param("gid", groupId);
                 quest.param("mid", genMid());
                 quest.param("file", fileContent);
                 quest.param("attrs", attrs);
@@ -658,34 +658,34 @@ public interface FileAPI extends APIBase {
     }
 
     //---------------send Room file--------------------
-    default long sendRoomFile(long fromUid, long rid, String filePath)
+    default long sendRoomFile(long fromUid, long roomId, String filePath)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendRoomFile(fromUid, rid, filePath, 0);
+        return sendRoomFile(fromUid, roomId, filePath, 0);
     }
 
-    default long sendRoomFile(long fromUid, long rid, String filePath, int timeoutInseconds)
+    default long sendRoomFile(long fromUid, long roomId, String filePath, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendRoomFile(fromUid, rid, MType.File.value(), filePath, timeoutInseconds);
+        return sendRoomFile(fromUid, roomId, RTMMessageType.NormalFile.value(), filePath, timeoutInseconds);
     }
 
-    default long sendRoomFile(long fromUid, long rid, byte mType, String filePath)
+    default long sendRoomFile(long fromUid, long roomId, byte messageType, String filePath)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendRoomFile(fromUid, rid, mType, filePath, 0);
+        return sendRoomFile(fromUid, roomId, messageType, filePath, 0);
     }
 
-    default long sendRoomFile(long fromUid, long rid, byte mType, String filePath, int timeoutInseconds)
+    default long sendRoomFile(long fromUid, long roomId, byte messageType, String filePath, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         FileInfo info = client.readFileForSendAPI(filePath);
-        return sendRoomFile(fromUid, rid, mType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
+        return sendRoomFile(fromUid, roomId, messageType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
     }
 
-    default long sendRoomFile(long fromUid, long rid, byte mType, byte[] fileContent, String filename, String filenameExtension)
+    default long sendRoomFile(long fromUid, long roomId, byte messageType, byte[] fileContent, String filename, String filenameExtension)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
-        return sendRoomFile(fromUid, rid, mType, fileContent, filename, filenameExtension, 0);
+        return sendRoomFile(fromUid, roomId, messageType, fileContent, filename, filenameExtension, 0);
     }
 
-    default long sendRoomFile(long fromUid, long rid, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
+    default long sendRoomFile(long fromUid, long roomId, byte messageType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
 
         String token;
@@ -697,7 +697,7 @@ public interface FileAPI extends APIBase {
             Quest quest = client.genBasicQuest("filetoken");
             quest.param("from", fromUid);
             quest.param("cmd", "sendroomfile");
-            quest.param("rid", rid);
+            quest.param("rid", roomId);
 
             Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
             token = (String) answer.get("token");
@@ -726,10 +726,10 @@ public interface FileAPI extends APIBase {
             Quest quest = new Quest("sendroomfile");
             quest.param("pid", client.getPid());
             quest.param("token", token);
-            quest.param("mtype", mType);
+            quest.param("mtype", messageType);
             quest.param("from", fromUid);
 
-            quest.param("rid", rid);
+            quest.param("rid", roomId);
             quest.param("mid", genMid());
             quest.param("file", fileContent);
             quest.param("attrs", attrs);
@@ -747,34 +747,34 @@ public interface FileAPI extends APIBase {
         }
     }
 
-    default void sendRoomFile(long fromUid, long rid, String filePath, SendFileLambdaCallback callback){
-        sendRoomFile(fromUid, rid, filePath, callback,0);
+    default void sendRoomFile(long fromUid, long roomId, String filePath, SendFileLambdaCallback callback){
+        sendRoomFile(fromUid, roomId, filePath, callback,0);
     }
 
-    default void sendRoomFile(long fromUid, long rid, String filePath, SendFileLambdaCallback callback, int timeoutInseconds){
-        sendRoomFile(fromUid, rid, MType.File.value(), filePath, callback, timeoutInseconds);
+    default void sendRoomFile(long fromUid, long roomId, String filePath, SendFileLambdaCallback callback, int timeoutInseconds){
+        sendRoomFile(fromUid, roomId, RTMMessageType.NormalFile.value(), filePath, callback, timeoutInseconds);
     }
 
-    default void sendRoomFile(long fromUid, long rid, byte mType, String filePath, SendFileLambdaCallback callback){
-        sendRoomFile(fromUid, rid, mType, filePath, callback,0);
+    default void sendRoomFile(long fromUid, long roomId, byte messageType, String filePath, SendFileLambdaCallback callback){
+        sendRoomFile(fromUid, roomId, messageType, filePath, callback,0);
     }
 
-    default void sendRoomFile(long fromUid, long rid, byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
+    default void sendRoomFile(long fromUid, long roomId, byte messageType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
         RTMServerClientBase client = getCoreClient();
         try{
             FileInfo info = client.readFileForSendAPI(filePath);
-            sendRoomFile(fromUid, rid, mType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
+            sendRoomFile(fromUid, roomId, messageType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
         }catch (Exception ex){
             ErrorRecorder.record("send room file by read fileinfo exception.", ex);
             callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "send room file by read fileinfo exception.");
         }
     }
 
-    default void sendRoomFile(long fromUid, long rid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
-        sendRoomFile(fromUid, rid, mType, fileContent, filename, filenameExtension, callback,0);
+    default void sendRoomFile(long fromUid, long roomId, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
+        sendRoomFile(fromUid, roomId, messageType, fileContent, filename, filenameExtension, callback,0);
     }
 
-    default void sendRoomFile(long fromUid, long rid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
+    default void sendRoomFile(long fromUid, long roomId, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest fileTokenQuest;
         try {
@@ -788,7 +788,7 @@ public interface FileAPI extends APIBase {
 
         fileTokenQuest.param("from", fromUid);
         fileTokenQuest.param("cmd", "sendroomfile");
-        fileTokenQuest.param("rid", rid);
+        fileTokenQuest.param("rid", roomId);
 
         long adjustedTimeout = System.currentTimeMillis();
 
@@ -836,10 +836,10 @@ public interface FileAPI extends APIBase {
                 Quest quest = new Quest("sendroomfile");
                 quest.param("pid", client.getPid());
                 quest.param("token", token);
-                quest.param("mtype", mType);
+                quest.param("mtype", messageType);
                 quest.param("from", fromUid);
 
-                quest.param("rid", rid);
+                quest.param("rid", roomId);
                 quest.param("mid", genMid());
                 quest.param("file", fileContent);
                 quest.param("attrs", attrs);
@@ -876,27 +876,27 @@ public interface FileAPI extends APIBase {
 
     default long sendBroadcastFile(long fromUid, String filePath, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendBroadcastFile(fromUid, MType.File.value(), filePath, timeoutInseconds);
+        return sendBroadcastFile(fromUid, RTMMessageType.NormalFile.value(), filePath, timeoutInseconds);
     }
 
-    default long sendBroadcastFile(long fromUid, byte mType, String filePath)
+    default long sendBroadcastFile(long fromUid, byte messageType, String filePath)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendBroadcastFile(fromUid, mType, filePath, 0);
+        return sendBroadcastFile(fromUid, messageType, filePath, 0);
     }
 
-    default long sendBroadcastFile(long fromUid, byte mType, String filePath, int timeoutInseconds)
+    default long sendBroadcastFile(long fromUid, byte messageType, String filePath, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         FileInfo info = client.readFileForSendAPI(filePath);
-        return sendBroadcastFile(fromUid, mType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
+        return sendBroadcastFile(fromUid, messageType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
     }
 
-    default long sendBroadcastFile(long fromUid, byte mType, byte[] fileContent, String filename, String filenameExtension)
+    default long sendBroadcastFile(long fromUid, byte messageType, byte[] fileContent, String filename, String filenameExtension)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
-        return sendBroadcastFile(fromUid, mType, fileContent, filename, filenameExtension, 0);
+        return sendBroadcastFile(fromUid, messageType, fileContent, filename, filenameExtension, 0);
     }
 
-    default long sendBroadcastFile(long fromUid, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
+    default long sendBroadcastFile(long fromUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
 
         String token;
@@ -936,7 +936,7 @@ public interface FileAPI extends APIBase {
             Quest quest = new Quest("broadcastfile");
             quest.param("pid", client.getPid());
             quest.param("token", token);
-            quest.param("mtype", mType);
+            quest.param("mtype", messageType);
             quest.param("from", fromUid);
 
             quest.param("mid", genMid());
@@ -961,29 +961,29 @@ public interface FileAPI extends APIBase {
     }
 
     default void sendBroadcastFile(long fromUid, String filePath, SendFileLambdaCallback callback, int timeoutInseconds){
-        sendBroadcastFile(fromUid, MType.File.value(), filePath, callback, timeoutInseconds);
+        sendBroadcastFile(fromUid, RTMMessageType.NormalFile.value(), filePath, callback, timeoutInseconds);
     }
 
-    default void sendBroadcastFile(long fromUid, byte mType, String filePath, SendFileLambdaCallback callback){
-        sendBroadcastFile(fromUid, mType, filePath, callback,0);
+    default void sendBroadcastFile(long fromUid, byte messageType, String filePath, SendFileLambdaCallback callback){
+        sendBroadcastFile(fromUid, messageType, filePath, callback,0);
     }
 
-    default void sendBroadcastFile(long fromUid,byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
+    default void sendBroadcastFile(long fromUid,byte messageType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
         RTMServerClientBase client = getCoreClient();
         try{
             FileInfo info = client.readFileForSendAPI(filePath);
-            sendBroadcastFile(fromUid, mType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
+            sendBroadcastFile(fromUid, messageType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
         }catch (Exception ex){
             ErrorRecorder.record("send broadcast file by read fileinfo exception.", ex);
             callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "send broadcast file by read fileinfo exception.");
         }
     }
 
-    default void sendBroadcastFile(long fromUid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
-        sendBroadcastFile(fromUid, mType, fileContent, filename, filenameExtension, callback, 0);
+    default void sendBroadcastFile(long fromUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
+        sendBroadcastFile(fromUid, messageType, fileContent, filename, filenameExtension, callback, 0);
     }
 
-    default void sendBroadcastFile(long fromUid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
+    default void sendBroadcastFile(long fromUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest fileTokenQuest;
         try {
@@ -1044,7 +1044,7 @@ public interface FileAPI extends APIBase {
                 Quest quest = new Quest("broadcastfile");
                 quest.param("pid", client.getPid());
                 quest.param("token", token);
-                quest.param("mtype", mType);
+                quest.param("mtype", messageType);
                 quest.param("from", fromUid);
 
                 quest.param("mid", genMid());

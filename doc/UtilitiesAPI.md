@@ -31,20 +31,68 @@
             return "[RTMTranslateMessage] source = " + source + " ,target = " + target + " ,sourceText = " + sourceText + " ,targetText " + targetText;
         }
     }
+    
+    public enum RTMTranslateLanguage {
+        AR("ar"),
+        NL("nl"),
+        EN("en"),
+        FR("fr"),
+        DE("de"),
+        EL("el"),
+        ID("id"),
+        IT("it"),
+        JA("ja"),
+        KO("ko"),
+        NO("no"),
+        PL("pl"),
+        PT("pt"),
+        RU("ru"),
+        ES("es"),
+        SV("sv"),
+        TL("tl"),
+        TH("th"),
+        TR("tr"),
+        VI("vi"),
+        ZH_CN("zh_cn"),
+        ZH_TW("zh_tw");
+    
+        private final String value;
+    
+        RTMTranslateLanguage(String lang){
+            this.value = lang;
+        }
+    
+        @Override
+        public String toString(){
+            return this.value;
+        }
+    
+    }
         
 ### 翻译聊天消息
 
-    // sync methods
+    // old sync methods,please use new version
     RTMTranslateMessage translate(String text, String dst);
     RTMTranslateMessage translate(String text, String dst, int timeoutInsecond);
     RTMTranslateMessage translate(String text, String src, String dst, TranslateType type, ProfanityType profanity, long uid);
     RTMTranslateMessage translate(String text, String src, String dst, TranslateType type, ProfanityType profanity, long uid, int timeoutInsecond);
+    // new version after 2.1.0(include)
+    RTMTranslateMessage translate(String text, RTMTranslateLanguage dstLanguage, int timeoutInsecond);
+    RTMTranslateMessage translate(String text, RTMTranslateLanguage dstLanguage);
+    RTMTranslateMessage translate(String text, RTMTranslateLanguage sourceLanguage, RTMTranslateLanguage dstLanguage, TranslateType type, ProfanityType profanity, long uid);
+    RTMTranslateMessage translate(String text, RTMTranslateLanguage sourceLanguage, RTMTranslateLanguage dstLanguage, TranslateType type, ProfanityType profanity, long uid, int timeoutInseconds);
     
-    // async methods
+    
+    // old async methods  please use new version
     void translate(String text, String dst, TranslateMessageLambdaCallback callback);
     void translate(String text, String dst, TranslateMessageLambdaCallback callback, int timeoutInsecond);
     void translate(String text, String src, String dst, TranslateType type, ProfanityType profanity, long uid, TranslateMessageLambdaCallback callback);
     void translate(String text, String src, String dst, TranslateType type, ProfanityType profanity, long uid, TranslateMessageLambdaCallback callback, int timeoutInsecond);
+    // new version after 2.1.0(include)
+    void translate(String text, RTMTranslateLanguage dstLanguage, TranslateMessageLambdaCallback callback);
+    void translate(String text, RTMTranslateLanguage dstLanguage, TranslateMessageLambdaCallback callback, int timeoutInsecond);
+    void translate(String text, RTMTranslateLanguage sourceLanguage, RTMTranslateLanguage dstLanguage, TranslateType type, ProfanityType profanity, long uid, TranslateMessageLambdaCallback callback);
+    void translate(String text, RTMTranslateLanguage sourceLanguage, RTMTranslateLanguage dstLanguage, TranslateType type, ProfanityType profanity, long uid, TranslateMessageLambdaCallback callback, int timeoutInsecond);
     
 参数说明:  
 
@@ -53,6 +101,10 @@
 * `String dst`: 目标语言 ISO 639-1 代码.
 
 * `String src`: 源语言 ISO 639-1 代码可选参数. 如果为null或者空串，则系统将自动检测源语言种类.
+
+* `RTMTranslateLanguage sourceLanguage`: 原始语言枚举值.
+
+* `RTMTranslateLanguage dstLanguage`: 目标语言枚举值
 
 * `TranslateType type`: 源数据类型，默认为TranslateType.TRANSLATE_TYPE_CHAT.   
     - 对于chat类型: '\t'、'\n'、' ' 在输出文本中可能被修改
@@ -146,8 +198,7 @@
     
 * `long uid`: 用户id，可选    
   
-* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
-  client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
+* `int timeoutInseconds`: 该接口需要将超时时间设置到120s.
   
 * `TranscribeLambdaCallback callback`: 为异步回调返回接口, 调用结果以及错误码和错误信息将通过callback返回
           
@@ -159,5 +210,67 @@
   
 * **sync**: 同步接口正常时通过参数回传的方式返回语音识别的文本和语言，通过参数回传返回uid的公开信息、私有信息，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
   
-* **async**: 异步接口不会抛出异常，通过callback返回语音识别的文本和语言，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.    
+* **async**: 异步接口不会抛出异常，通过callback返回语音识别的文本和语言，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.
+
+
+### 语音识别 只支持rtm发送的语音消息，无需把原始语音发一遍，节省流量
+
+    // sync method
+    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, boolean profanityFilter, StringBuffer text, StringBuffer lang);
+    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, StringBuffer text, StringBuffer lang);
+    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, StringBuffer text, StringBuffer lang, int timeoutInsecond);
+    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond);
+    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, boolean profanityFilter, StringBuffer text, StringBuffer lang);
+    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, StringBuffer text, StringBuffer lang);
+    void stranscribeGroupAudio(long from, long messageId, long groupId, StringBuffer text, StringBuffer lang, int timeoutInsecond);
+    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond);
+    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, boolean profanityFilter, StringBuffer text, StringBuffer lang);
+    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, StringBuffer text, StringBuffer lang);
+    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, StringBuffer text, StringBuffer lang, int timeoutInsecond);
+    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond);
+    void stranscribeBroadcastAudio(long fromUid, long messageId, boolean profanityFilter, StringBuffer text, StringBuffer lang);
+    void stranscribeBroadcastAudio(long fromUid, long messageId, StringBuffer text, StringBuffer lang);
+    void stranscribeBroadcastAudio(long fromUid, long messageId, StringBuffer text, StringBuffer lang, int timeoutInsecond);
+    void stranscribeBroadcastAudio(long fromUid, long messageId, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond);
+    
+    // async method
+    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond);
+    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, boolean profanityFilter, TranscribeLambdaCallback callback);
+    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, TranscribeLambdaCallback callback, int timeoutInsecond);
+    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, TranscribeLambdaCallback callback);
+    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond);
+    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, boolean profanityFilter, TranscribeLambdaCallback callback);
+    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, TranscribeLambdaCallback callback, int timeoutInsecond);
+    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, TranscribeLambdaCallback callback);
+    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond);
+    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, boolean profanityFilter, TranscribeLambdaCallback callback);
+    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, TranscribeLambdaCallback callback, int timeoutInsecond);
+    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, TranscribeLambdaCallback callback);
+    void stranscribeBroadcastAudio(long fromUid, long messageId, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond);
+    void stranscribeBroadcastAudio(long fromUid, long messageId, boolean profanityFilter, TranscribeLambdaCallback callback);
+    void stranscribeBroadcastAudio(long fromUid, long messageId, TranscribeLambdaCallback callback, int timeoutInsecond);
+    void stranscribeBroadcastAudio(long fromUid, long messageId, TranscribeLambdaCallback callback);
+    
+参数说明:  
+
+* `StringBuffer text`: 语音识别后的文本.
+
+* `StringBuffer lang`: 语音识别后的语言.
+
+* `boolean profanityFilter`: 是否进行敏感词过滤，默认为 false.
+  
+* `int timeoutInseconds`: 该接口需要将超时时间设置到120s.
+  
+* `TranscribeLambdaCallback callback`: 为异步回调返回接口, 调用结果以及错误码和错误信息将通过callback返回
+          
+        public interface TranscribeLambdaCallback{
+            void done(String text, String lang, int errorCode, String errorMessage);
+        }
+  
+返回值:       
+  
+* **sync**: 同步接口正常时通过参数回传的方式返回语音识别的文本和语言，通过参数回传返回uid的公开信息、私有信息，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+  
+* **async**: 异步接口不会抛出异常，通过callback返回语音识别的文本和语言，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息. 
+    
  

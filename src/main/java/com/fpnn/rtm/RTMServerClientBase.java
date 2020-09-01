@@ -20,12 +20,14 @@ public class RTMServerClientBase extends TCPClient {
     private int pid;
     private String basicToken;
     private RTMServerQuestProcessor processor;
+    private static int questTimeout = 30;
 
     public RTMServerClientBase(int pid, String secretKey, String host, int port) {
         super(host, port);
         this.pid = pid;
         basicToken = pid + ":" + secretKey + ":";
         processor = new RTMServerQuestProcessor();
+        setQuestTimeout(questTimeout);
         setQuestProcessor(processor, "com.fpnn.rtm.RTMServerQuestProcessor");
         Random random = new Random(System.currentTimeMillis());
         MidGenerator.randId = random.nextInt(255) + 1;
@@ -172,59 +174,65 @@ public class RTMServerClientBase extends TCPClient {
         return sb.toString();
     }
 
-    // for get history msg
-    public static class RTMHistoryMessageUnit{
-        public byte mtype;
-        public long id;
+    public static class AudioInfo{
+        public String sourceLanguage;
+        public String recognizedLanguage;
+        public String recognizedText;
+        public int duration;
+
+    }
+
+    // for rtmmessage
+    public static class RTMMessage{
+        public byte messageType;
+        public long toId;     // for serverpush
         public long fromUid;
-        public long mtime;
-        public long mid;
+        public long modifiedTime;
+        public long messageId;
         public String stringMessage;
         public byte[] binaryMessage;
         public String attrs;
+        public AudioInfo audioInfo = null;   //for serverpush and history
 
         @Override
         public String toString(){
-            return " ,[RTMHistoryMessageUnit mtype = " + mtype + " ,id = " + id + " ,fromuid = " + fromUid + " ,mtime = " + mtime
-                    + " ,mid = " + mid + " ,message = " + stringMessage + " ,binaryMessage = " + binaryMessage + " ,attrs = " + attrs + "]";
+            return " ,[One RTMMessage: mtype = " + messageType + " ,fromuid = " + fromUid + ", to = " + toId + " ,mtime = " + modifiedTime
+                    + " ,mid = " + messageId + " ,message = " + stringMessage + " ,binaryMessage = " + binaryMessage + " ,attrs = " + attrs + "]";
+        }
+    }
+
+    public static class RTMHistoryMessageUnit{
+        public long cursorId;
+        public RTMMessage message = null;
+
+        @Override
+        public String toString(){
+            if(message != null){
+                return cursorId + message.toString();
+            }
+            return "";
         }
     }
 
     public static class RTMHistoryMessage {
 
         public int count;            // 实际返回的条目数量
-        public long lastId;          // 继续轮询时，下次调用使用的 lastId 参数的值
+        public long lastCursorId;    // 继续轮询时，下次调用使用的 lastId 参数的值
         public long beginMsec;       // 继续轮询时，下次调用使用的 begin 参数的值
         public long endMsec;         // 继续轮询时，下次调用使用的 end 参数的值
-        public List<RTMHistoryMessageUnit> messageList = new ArrayList<RTMHistoryMessageUnit>();
+        public List<RTMHistoryMessageUnit> messageList = new ArrayList<>();
 
         @Override
         public String toString(){
-            String ss = "[RTMHistoryMessage] count = " + count + " ,lastId = " + lastId + " ,beginMsec = " + beginMsec + " ,endMsec = " + endMsec;
+            String ss = "[HistoryMessage] count = " + count + " ,lastId = " + lastCursorId + " ,beginMsec = " + beginMsec + " ,endMsec = " + endMsec;
             if(!messageList.isEmpty()){
-                ss += messageList.get(0).toString();
+                ss += " , one message info: " + messageList.get(0).toString();
             }
             else{
-                ss += " ,[RTMHistoryMessageUnit empty]";
+                ss += " ,[HistoryMessage empty]";
             }
             return ss;
 
-        }
-    }
-
-    // for get msg
-    public static class RTMRetrievedMessage {
-        public byte mtype;
-        public long mtime;
-        public long id;
-        public String stringMessage;
-        public byte[] binaryMessage;
-        public String attrs;
-
-        @Override
-        public String toString(){
-            return "[RTMRetrievedMessage] message id = " + id + " ,mtype = " + mtype + " ,msg = " + stringMessage + " ,binary message " + binaryMessage
-                    + " ,mtime = " + mtime + " ,attrs = " + attrs;
         }
     }
 

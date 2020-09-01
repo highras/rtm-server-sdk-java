@@ -9,21 +9,21 @@
 ### 发送 P2P 消息
 
     // sync methods
-    long sendMessage(long fromUid, long toUid, byte mType, String message, String attrs);
-    long sendMessage(long fromUid, long toUid, byte mType, String message, String attrs, int timeoutInseconds);
-    long sendMessage(long fromUid, long toUid, byte mType, byte[] message, String attrs);
-    long sendMessage(long fromUid, long toUid, byte mType, byte[] message, String attrs, int timeoutInseconds);
+    long sendMessage(long fromUid, long toUid, byte messageType, String message, String attrs);
+    long sendMessage(long fromUid, long toUid, byte messageType, String message, String attrs, int timeoutInseconds);
+    long sendMessage(long fromUid, long toUid, byte messageType, byte[] message, String attrs);
+    long sendMessage(long fromUid, long toUid, byte messageType, byte[] message, String attrs, int timeoutInseconds);
     
     // async methods
-    void sendMessage(long fromUid, long toUid, byte mType, String message, String attrs, SendMessageLambdaCallback callback);
-    void sendMessage(long fromUid, long toUid, byte mType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
-    void sendMessage(long fromUid, long toUid, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback);
-    void sendMessage(long fromUid, long toUid, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
+    void sendMessage(long fromUid, long toUid, byte messageType, String message, String attrs, SendMessageLambdaCallback callback);
+    void sendMessage(long fromUid, long toUid, byte messageType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
+    void sendMessage(long fromUid, long toUid, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback);
+    void sendMessage(long fromUid, long toUid, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
     
 参数说明：   
 * `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
 
-* `byte mType`: 消息类型 **mType请使用51-127**
+* `byte messageType`: 消息类型 **messageType请使用51-127**
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -42,21 +42,21 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 发送多人 P2P 消息
 
     // sync methods
-    long sendMessages(long fromUid, Set<Long> toUids, byte mType, String message, String attrs);
-    long sendMessages(long fromUid, Set<Long> toUids, byte mType, String message, String attrs, int timeoutInseconds);
-    long sendMessages(long fromUid, Set<Long> toUids, byte mType, byte[] message, String attrs);
-    long sendMessages(long fromUid, Set<Long> toUids, byte mType, byte[] message, String attrs, int timeoutInseconds);
+    long sendMessages(long fromUid, Set<Long> toUids, byte messageType, String message, String attrs);
+    long sendMessages(long fromUid, Set<Long> toUids, byte messageType, String message, String attrs, int timeoutInseconds);
+    long sendMessages(long fromUid, Set<Long> toUids, byte messageType, byte[] message, String attrs);
+    long sendMessages(long fromUid, Set<Long> toUids, byte messageType, byte[] message, String attrs, int timeoutInseconds);
     
     // async methods
-    void sendMessages(long fromUid, Set<Long> toUids, byte mType, String message, String attrs, SendMessageLambdaCallback callback);
-    void sendMessages(long fromUid, Set<Long> toUids, byte mType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
-    void sendMessages(long fromUid, Set<Long> toUids, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback);
-    void sendMessages(long fromUid, Set<Long> toUids, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
+    void sendMessages(long fromUid, Set<Long> toUids, byte messageType, String message, String attrs, SendMessageLambdaCallback callback);
+    void sendMessages(long fromUid, Set<Long> toUids, byte messageType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
+    void sendMessages(long fromUid, Set<Long> toUids, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback);
+    void sendMessages(long fromUid, Set<Long> toUids, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
     
 参数说明：   
 * `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
 
-* `byte mType`: 消息类型 **mType请使用51-127**
+* `byte messageType`: 消息类型 **messageType请使用51-127**
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -75,21 +75,21 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 发送 Group 消息
 
     // sync methods
-    long sendGroupMessage(long fromUid, long groupId, byte mType, String message, String attrs);
-    long sendGroupMessage(long fromUid, long groupId, byte mType, String message, String attrs, int timeoutInseconds);
-    long sendGroupMessage(long fromUid, long groupId, byte mType, byte[] message, String attrs);
-    long sendGroupMessage(long fromUid, long groupId, byte mType, byte[] message, String attrs, int timeoutInseconds);
+    long sendGroupMessage(long fromUid, long groupId, byte messageType, String message, String attrs);
+    long sendGroupMessage(long fromUid, long groupId, byte messageType, String message, String attrs, int timeoutInseconds);
+    long sendGroupMessage(long fromUid, long groupId, byte messageType, byte[] message, String attrs);
+    long sendGroupMessage(long fromUid, long groupId, byte messageType, byte[] message, String attrs, int timeoutInseconds);
     
     // async methods
-    void sendGroupMessage(long fromUid, long groupId, byte mType, String message, String attrs, SendMessageLambdaCallback callback);
-    void sendGroupMessage(long fromUid, long groupId, byte mType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
-    void sendGroupMessage(long fromUid, long groupId, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback);
-    void sendGroupMessage(long fromUid, long groupId, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
+    void sendGroupMessage(long fromUid, long groupId, byte messageType, String message, String attrs, SendMessageLambdaCallback callback);
+    void sendGroupMessage(long fromUid, long groupId, byte messageType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
+    void sendGroupMessage(long fromUid, long groupId, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback);
+    void sendGroupMessage(long fromUid, long groupId, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
     
 参数说明：   
 * `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
 
-* `byte mType`: 消息类型 **mType请使用51-127**
+* `byte messageType`: 消息类型 **messageType请使用51-127**
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -108,21 +108,21 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 发送 Room 消息
 
     // sync methods
-    long sendRoomMessage(long fromUid, long roomId, byte mType, String message, String attrs);
-    long sendRoomMessage(long fromUid, long roomId, byte mType, String message, String attrs, int timeoutInseconds);
-    long sendRoomMessage(long fromUid, long roomId, byte mType, byte[] message, String attrs);
-    long sendRoomMessage(long fromUid, long roomId, byte mType, byte[] message, String attrs, int timeoutInseconds);
+    long sendRoomMessage(long fromUid, long roomId, byte messageType, String message, String attrs);
+    long sendRoomMessage(long fromUid, long roomId, byte messageType, String message, String attrs, int timeoutInseconds);
+    long sendRoomMessage(long fromUid, long roomId, byte messageType, byte[] message, String attrs);
+    long sendRoomMessage(long fromUid, long roomId, byte messageType, byte[] message, String attrs, int timeoutInseconds);
     
     // async methods
-    void sendRoomMessage(long fromUid, long roomId, byte mType, String message, String attrs, SendMessageLambdaCallback callback);
-    void sendRoomMessage(long fromUid, long roomId, byte mType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
-    void sendRoomMessage(long fromUid, long roomId, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback);
-    void sendRoomMessage(long fromUid, long roomId, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
+    void sendRoomMessage(long fromUid, long roomId, byte messageType, String message, String attrs, SendMessageLambdaCallback callback);
+    void sendRoomMessage(long fromUid, long roomId, byte messageType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
+    void sendRoomMessage(long fromUid, long roomId, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback);
+    void sendRoomMessage(long fromUid, long roomId, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
     
 参数说明：   
 * `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
 
-* `byte mType`: 消息类型 **mType请使用51-127**
+* `byte messageType`: 消息类型 **messageType请使用51-127**
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -141,21 +141,21 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 发送 Broadcast 消息
 
     // sync methods
-    long sendBroadcastMessage(long fromUid, byte mType, String message, String attrs);
-    long sendBroadcastMessage(long fromUid, byte mType, String message, String attrs, int timeoutInseconds);
-    long sendBroadcastMessage(long fromUid, byte mType, byte[] message, String attrs);
-    long sendBroadcastMessage(long fromUid, byte mType, byte[] message, String attrs, int timeoutInseconds);
+    long sendBroadcastMessage(long fromUid, byte messageType, String message, String attrs);
+    long sendBroadcastMessage(long fromUid, byte messageType, String message, String attrs, int timeoutInseconds);
+    long sendBroadcastMessage(long fromUid, byte messageType, byte[] message, String attrs);
+    long sendBroadcastMessage(long fromUid, byte messageType, byte[] message, String attrs, int timeoutInseconds);
     
     // async methods
-    void sendBroadcastMessage(long fromUid, byte mType, String message, String attrs, SendMessageLambdaCallback callback);
-    void sendBroadcastMessage(long fromUid, byte mType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
-    void sendBroadcastMessage(long fromUid, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback);
-    void sendBroadcastMessage(long fromUid, byte mType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
+    void sendBroadcastMessage(long fromUid, byte messageType, String message, String attrs, SendMessageLambdaCallback callback);
+    void sendBroadcastMessage(long fromUid, byte messageType, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
+    void sendBroadcastMessage(long fromUid, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback);
+    void sendBroadcastMessage(long fromUid, byte messageType, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
  
 参数说明：   
 * `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
 
-* `byte mType`: 消息类型 **mType请使用51-127**
+* `byte messageType`: 消息类型 **messageType请使用51-127**
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -170,82 +170,101 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 * **sync**: 同步接口正常时返回mtime，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
 
 * **async**: 异步接口不会抛出异常，通过callback返回mtime，或者error信息, 当errorCode不等于ErrorCode.FPNN_EC_OK.value(),则为error返回，可查看message错误信息.    
-
-### 消息的类型
-
-    enum MessageType{
-        MESSAGE_TYPE_P2P((byte)1),
-        MESSAGE_TYPE_ROOM((byte)2),
-        MESSAGE_TYPE_GROUP((byte)3),
-        MESSAGE_TYPE_BROADCAST((byte)4);
-    
-        private final int value;
-        MessageType(byte type) {value = type;}
-    
-        public int value() {
-            return value;
-        }
-    }
     
 ### 获取消息
 
     // sync methods
-    RTMRetrievedMessage getMsg(long mid, long from, long xid, MessageType type);
-    RTMRetrievedMessage getMsg(long mid, long from, long xid, MessageType type, int timeoutInseconds);
+    RTMHistoryMessageUnit getP2pMsg(long messageId, long fromUid, long toUid);
+    RTMHistoryMessageUnit getP2pMsg(long messageId, long fromUid, long toUid, int timeInseconds);
+    RTMHistoryMessageUnit getGroupMsg(long messageId, long fromUid, long groupId);
+    RTMHistoryMessageUnit getGroupMsg(long messageId, long fromUid, long groupId, int timeInseconds);
+    RTMHistoryMessageUnit getRoomMsg(long messageId, long fromUid, long roomId);
+    RTMHistoryMessageUnit getRoomMsg(long messageId, long fromUid, long roomId, int timeInseconds);
+    RTMHistoryMessageUnit getBroadcastMsg(long messageId, long fromUid);
+    RTMHistoryMessageUnit getBroadcastMsg(long messageId, long fromUid, int timeInseconds);
     
     // async methods
-    void getMsg(long mid, long from, long xid, MessageType type, GetRetrievedMessageLambdaCallback callback);
-    void getMsg(long mid, long from, long xid, MessageType type, GetRetrievedMessageLambdaCallback callback, int timeoutInseconds);
+    void getP2PMsg(long messageId, long fromUid, long toUid, GetRetrievedMessageLambdaCallback callback);
+    void getP2PMsg(long messageId, long fromUid, long toUid, GetRetrievedMessageLambdaCallback callback, int timeInseconds);
+    void getGroupMsg(long messageId, long fromUid, long groupId, GetRetrievedMessageLambdaCallback callback);
+    void getGroupMsg(long messageId, long fromUid, long groupId, GetRetrievedMessageLambdaCallback callback, int timeInseconds);
+    void getRoomMsg(long messageId, long fromUid, long roomId, GetRetrievedMessageLambdaCallback callback);
+    void getRoomMsg(long messageId, long fromUid, long roomId, GetRetrievedMessageLambdaCallback callback, int timeInseconds);
+    void getBroadcastMsg(long messageId, long fromUid, GetRetrievedMessageLambdaCallback callback);
+    void getBroadcastMsg(long messageId, long fromUid, GetRetrievedMessageLambdaCallback callback, int timeInseconds);
+    
     
 参数说明:   
-
-* `MessageType type`: 当type为MessageType.MESSAGE_TYPE_P2P时, xid为接收方uid, type为MessageType.MESSAGE_TYPE_ROOM, xid为房间rid, 
-type为MessageType.MESSAGE_TYPE_GROUP时, xid为群组gid, type为MessageType.MESSAGE_TYPE_BROADCAST时, xid为0
-            
+         
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
 
 * `GetRetrievedMessageLambdaCallback callback`: 为异步回调返回接口
         
         public interface GetRetrievedMessageLambdaCallback{
-            void done(RTMServerClientBase.RTMRetrievedMessage result, int errorCode, String errorMessage);
+            void done(RTMServerClientBase.HistoryMessage result, int errorCode, String errorMessage);
         }
         
-        public static class RTMRetrievedMessage {
-            public byte mtype;
-            public long mtime;
-            public long id;
+        public static class RTMMessage{
+            public byte messageType;
+            public long toId;     // for serverpush
+            public long fromUid;
+            public long modifiedTime;
+            public long messageId;
             public String stringMessage;
             public byte[] binaryMessage;
             public String attrs;
+            public AudioInfo audioInfo = null;   //for serverpush and history
     
             @Override
             public String toString(){
-                return "[RTMRetrievedMessage] message id = " + id + " ,mtype = " + mtype + " ,msg = " + stringMessage + " ,binary message " + binaryMessage
-                        + " ,mtime = " + mtime + " ,attrs = " + attrs;
+                return " ,[One RTMMessage: mtype = " + messageType + " ,fromuid = " + fromUid + " ,mtime = " + modifiedTime
+                        + " ,mid = " + messageId + " ,message = " + stringMessage + " ,binaryMessage = " + binaryMessage + " ,attrs = " + attrs + "]";
+            }
+        }
+    
+        public static class RTMHistoryMessageUnit{
+            public long cursorId;
+            public RTMMessage message = null;
+    
+            @Override
+            public String toString(){
+                if(message != null){
+                    return cursorId + message.toString();
+                }
+                return "";
             }
         }
 
 返回值:     
   
-* **sync**: 同步接口正常时返回获取到的RTMRetrievedMessage对象，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+* **sync**: 同步接口正常时返回获取到的HistoryMessage对象，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
 
-* **async**: 异步接口不会抛出异常，通过callback返回获取到的RTMRetrievedMessage对象，或者error信息, 当errorCode不等于ErrorCode.FPNN_EC_OK.value(),则为error返回，可查看message错误信息.  
+* **async**: 异步接口不会抛出异常，通过callback返回获取到的HistoryMessage对象，或者error信息, 当errorCode不等于ErrorCode.FPNN_EC_OK.value(),则为error返回，可查看message错误信息.  
 
 ### 删除消息
 
     // sync methods
-    void deleteMsg(long mid, long from, long xid, MessageType type);
-    void deleteMsg(long mid, long from, long xid, MessageType type, int timeoutInseconds);
+    void deleteP2PMsg(long messageId, long fromUid, long toUid);
+    void deleteP2PMsg(long messageId, long fromUid, long toUid, int timeInseconds);
+    void deleteGroupMsg(long messageId, long fromUid, long groupId);
+    void deleteGroupMsg(long messageId, long fromUid, long groupId, int timeInseconds);
+    void deleteRoomMsg(long messageId, long fromUid, long roomId);
+    void deleteRoomMsg(long messageId, long fromUid, long roomId, int timeInseconds);
+    void deleteBroadcastMsg(long messageId, long fromUid);
+    void deleteBroadcastMsg(long messageId, long fromUid, int timeInseconds);
     
     // async methods
-    void deleteMsg(long mid, long from, long xid, MessageType type, DoneLambdaCallback callback);
-    void deleteMsg(long mid, long from, long xid, MessageType type, DoneLambdaCallback callback, int timeoutInseconds);
+    void deleteP2PMsg(long messageId, long fromUid, long toUid, DoneLambdaCallback callback);
+    void deleteP2PMsg(long messageId, long fromUid, long toUid, DoneLambdaCallback callback, int timeInseconds);
+    void deleteGroupMsg(long messageId, long fromUid, long groupId, DoneLambdaCallback callback);
+    void deleteGroupMsg(long messageId, long fromUid, long groupId, DoneLambdaCallback callback, int timeInseconds);
+    void deleteRoomMsg(long messageId, long fromUid, long roomId, DoneLambdaCallback callback);
+    void deleteRoomMsg(long messageId, long fromUid, long roomId, DoneLambdaCallback callback, int timeInseconds);
+    void deleteBroadcastMsg(long messageId, long fromUid, DoneLambdaCallback callback);
+    void deleteBroadcastMsg(long messageId, long fromUid, DoneLambdaCallback callback, int timeInseconds);
     
 参数说明:   
-
-* `MessageType type`: 当type为MessageType.MESSAGE_TYPE_P2P时, xid为接收方uid, type为MessageType.MESSAGE_TYPE_ROOM, xid为房间rid, 
-type为MessageType.MESSAGE_TYPE_GROUP时, xid为群组gid, type为MessageType.MESSAGE_TYPE_BROADCAST时, xid为0
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.

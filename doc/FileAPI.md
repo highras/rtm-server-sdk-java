@@ -95,20 +95,20 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 发送 Group 文件
 
     // sync methods
-    long sendGroupFile(long fromUid, long gid, String filePath);
-    long sendGroupFile(long fromUid, long gid, String filePath, int timeoutInseconds);
-    long sendGroupFile(long fromUid, long gid, byte mType, String filePath);
-    long sendGroupFile(long fromUid, long gid, byte mType, String filePath, int timeoutInseconds);
-    long sendGroupFile(long fromUid, long gid, byte mType, byte[] fileContent, String filename, String filenameExtension);
-    long sendGroupFile(long fromUid, long gid, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds);
+    long sendGroupFile(long fromUid, long groupId, String filePath);
+    long sendGroupFile(long fromUid, long groupId, String filePath, int timeoutInseconds);
+    long sendGroupFile(long fromUid, long groupId, byte mType, String filePath);
+    long sendGroupFile(long fromUid, long groupId, byte mType, String filePath, int timeoutInseconds);
+    long sendGroupFile(long fromUid, long groupId, byte mType, byte[] fileContent, String filename, String filenameExtension);
+    long sendGroupFile(long fromUid, long groupId, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds);
   
     // async methods
-    void sendGroupFile(long fromUid, long gid, String filePath, SendFileLambdaCallback callback);
-    void sendGroupFile(long fromUid, long gid, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendGroupFile(long fromUid, long gid, byte mType, String filePath, SendFileLambdaCallback callback);
-    void sendGroupFile(long fromUid, long gid, byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendGroupFile(long fromUid, long gid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback);
-    void sendGroupFile(long fromUid, long gid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendGroupFile(long fromUid, long groupId, String filePath, SendFileLambdaCallback callback);
+    void sendGroupFile(long fromUid, long groupId, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendGroupFile(long fromUid, long groupId, byte mType, String filePath, SendFileLambdaCallback callback);
+    void sendGroupFile(long fromUid, long groupId, byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendGroupFile(long fromUid, long groupId, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback);
+    void sendGroupFile(long fromUid, long groupId, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds);
     
 参数说明：   
 
@@ -138,20 +138,20 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 发送 Room 文件
 
     // sync methods
-    long sendRoomFile(long fromUid, long rid, String filePath);
-    long sendRoomFile(long fromUid, long rid, String filePath, int timeoutInseconds);
-    long sendRoomFile(long fromUid, long rid, byte mType, String filePath);
-    long sendRoomFile(long fromUid, long rid, byte mType, String filePath, int timeoutInseconds);
-    long sendRoomFile(long fromUid, long rid, byte mType, byte[] fileContent, String filename, String filenameExtension);
-    long sendRoomFile(long fromUid, long rid, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds);
+    long sendRoomFile(long fromUid, long roomId, String filePath);
+    long sendRoomFile(long fromUid, long roomId, String filePath, int timeoutInseconds);
+    long sendRoomFile(long fromUid, long roomId, byte mType, String filePath);
+    long sendRoomFile(long fromUid, long roomId, byte mType, String filePath, int timeoutInseconds);
+    long sendRoomFile(long fromUid, long roomId, byte mType, byte[] fileContent, String filename, String filenameExtension);
+    long sendRoomFile(long fromUid, long roomId, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds);
     
     // async methods
-    void sendRoomFile(long fromUid, long rid, String filePath, SendFileLambdaCallback callback);
-    void sendRoomFile(long fromUid, long rid, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendRoomFile(long fromUid, long rid, byte mType, String filePath, SendFileLambdaCallback callback);
-    void sendRoomFile(long fromUid, long rid, byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendRoomFile(long fromUid, long rid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback);
-    void sendRoomFile(long fromUid, long rid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds);      
+    void sendRoomFile(long fromUid, long roomId, String filePath, SendFileLambdaCallback callback);
+    void sendRoomFile(long fromUid, long roomId, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendRoomFile(long fromUid, long roomId, byte mType, String filePath, SendFileLambdaCallback callback);
+    void sendRoomFile(long fromUid, long roomId, byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendRoomFile(long fromUid, long roomId, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback);
+    void sendRoomFile(long fromUid, long roomId, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds);      
    
  参数说明：   
  

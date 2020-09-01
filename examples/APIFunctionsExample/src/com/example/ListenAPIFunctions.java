@@ -30,104 +30,31 @@ public class ListenAPIFunctions {
         client.setAutoCleanup(false);
 
         //-- Optional when need process connect event or willClose event or closed event, maybe set these callback
-        RTMClientConnectCallback connectCallback = (peerAddress, connected, reConnect, reConnectInfo) -> {
+        RTMClientConnectCallback connectCallback = (peerAddress, connected, reConnect, regressiveState) -> {
             if(connected)
             {
                 System.out.println("rtm client connected " + peerAddress.toString());
             }
-            else{
-                System.out.println("rtm client not connected " + peerAddress.toString() + " ,can reconnet: " + reConnect + " ,reconnect infos: " +reConnectInfo);
+            else if(regressiveState != null){
+                String info = "RTMReconnect time at " + regressiveState.connectStartMilliseconds + " ,currentFailedCount = " + regressiveState.currentFailedCount;
+                System.out.println("rtm client not connected " + peerAddress.toString() + " ,can reconnet: " + reConnect + " ,reconnect infos: " +info);
             }
         };
 
         RTMClientWillCloseCallback willCloseCallback = (peerAddress, causedByError) -> System.out.println("rtm client will close " + "cause by error: " + causedByError);
 
-        RTMClientHasClosedCallback hasClosedCallback = (peerAddress, causedByError, reConnect, reConnectInfo) ->
-                System.out.println("rtm client has closed " + "cause by error: " + causedByError + " ,can reconnect: " + reConnect + " ,reconnect infos: " + reConnectInfo);
+        RTMClientHasClosedCallback hasClosedCallback = (peerAddress, causedByError, reConnect, regressiveState) ->{
+            if(regressiveState != null){
+                String info = "RTMReconnect time at " + regressiveState.connectStartMilliseconds + " ,currentFailedCount = " + regressiveState.currentFailedCount;
+                System.out.println("rtm client has closed " + "cause by error: " + causedByError + " ,can reconnect: " + reConnect + " ,reconnect infos: " + info);
+            }
+        };
+
         client.setRTMClientConnectedCallback(connectCallback);
         client.setRTMClientWillCloseCallback(willCloseCallback);
         client.setRTMClientHasClosedCallback(hasClosedCallback);
 
         ServerPushMonitorAPI pushMonitorAPI = new ServerPushMonitorAPI() {
-            @Override
-            public void pushP2PMessage(long fromUid, long toUid, byte mtype, long mid, String msg, String attr, long mtime) {
-                System.out.println("receive push p2p message from "+ fromUid + " ,to " + toUid + " ,mtype " + mtype + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushGroupMessage(long fromUid, long gId, byte mtype, long mid, String msg, String attr, long mtime) {
-                System.out.println("receive push group message from "+ fromUid + " ,gid " + gId + " ,mtype " + mtype + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushRoomMessage(long fromUid, long rId, byte mtype, long mid, String msg, String attr, long mtime) {
-                System.out.println("receive push room message from "+ fromUid + " ,rid " + rId + " ,mtype " + mtype + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushEvent(int pid, String event, long uid, int time, String endpoint, String data) {
-                System.out.println("receive push event pid "+ pid + " ,event " + event + " ,uid " + uid + " ,endpoint " + endpoint + " ,time" + time);
-            }
-
-            @Override
-            public void pushP2PChat(long fromUid, long toUid, long mid, String msg, String attr, long mtime) {
-                System.out.println("receive push p2p chat from "+ fromUid + " ,to " + toUid + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushGroupChat(long fromUid, long gId, long mid, String msg, String attr, long mtime) {
-                System.out.println("receive push group chat from "+ fromUid + " ,gid " + gId + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushRoomChat(long fromUid, long rId, long mid, String msg, String attr, long mtime) {
-                System.out.println("receive push room chat from "+ fromUid + " ,rid " + rId + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushP2PAudio(long fromUid, long toUid, long mid, byte[] msg, String attr, long mtime) {
-                System.out.println("receive push p2p audio from "+ fromUid + " ,to " + toUid + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushGroupAudio(long fromUid, long gId, long mid, byte[] msg, String attr, long mtime) {
-                System.out.println("receive push group audio from "+ fromUid + " ,gid " + gId + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushRoomAudio(long fromUid, long rId, long mid, byte[] msg, String attr, long mtime) {
-                System.out.println("receive push room audio from "+ fromUid + " ,rid " + rId + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushP2PCmd(long fromUid, long toUid, long mid, String msg, String attr, long mtime) {
-                System.out.println("receive push p2p cmd from "+ fromUid + " ,to " + toUid + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushGroupCmd(long fromUid, long gId, long mid, String msg, String attr, long mtime) {
-                System.out.println("receive push group cmd from "+ fromUid + " ,gid " + gId + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushRoomCmd(long fromUid, long rId, long mid, String msg, String attr, long mtime) {
-                System.out.println("receive push room cmd from "+ fromUid + " ,rid " + rId + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushP2PFile(long fromUid, long toUid, byte mtype, long mid, String msg, String attr, long mtime) {
-                System.out.println("receive push p2p file from "+ fromUid + " ,to " + toUid + " ,mtype " + mtype + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushGroupFile(long fromUid, long gId, byte mtype, long mid, String msg, String attr, long mtime) {
-                System.out.println("receive push group file from "+ fromUid + " ,gid " + gId + " ,mtype " + mtype + " ,msg " + msg);
-            }
-
-            @Override
-            public void pushRoomFile(long fromUid, long rId, byte mtype, long mid, String msg, String attr, long mtime) {
-                System.out.println("receive push room file from "+ fromUid + " ,rid " + rId + " ,mtype " + mtype + " ,msg " + msg);
-            }
         };
         client.setServerPushMonitor(pushMonitorAPI);
 
