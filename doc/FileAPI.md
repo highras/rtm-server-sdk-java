@@ -9,20 +9,20 @@
 ### 发送 P2P 文件
 
     // sync methods
-    long sendFile(long fromUid, long toUid, String filePath);
-    long sendFile(long fromUid, long toUid, String filePath, int timeoutInseconds);
-    long sendFile(long fromUid, long toUid, byte mType, String filePath);
-    long sendFile(long fromUid, long toUid, byte mType, String filePath, int timeoutInseconds);
-    long sendFile(long fromUid, long toUid, byte mType, byte[] fileContent, String filename, String filenameExtension);
-    long sendFile(long fromUid, long toUid, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds);
+    long sendFile(long fromUid, long toUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendFile(long fromUid, long toUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
+    long sendFile(long fromUid, long toUid, byte mType, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, String filePath);
+    long sendFile(long fromUid, long toUid, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
+    long sendFile(long fromUid, long toUid, byte mType, byte[] fileContent, String filename, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, String filenameExtension);
+    long sendFile(long fromUid, long toUid, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
     
     // async methods
-    void sendFile(long fromUid, long toUid, String filePath, SendFileLambdaCallback callback);
-    void sendFile(long fromUid, long toUid, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendFile(long fromUid, long toUid, byte mType, String filePath, SendFileLambdaCallback callback);
-    void sendFile(long fromUid, long toUid, byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendFile(long fromUid, long toUid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback);
-    void sendFile(long fromUid, long toUid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendFile(long fromUid, long toUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendFile(long fromUid, long toUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendFile(long fromUid, long toUid, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendFile(long fromUid, long toUid, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendFile(long fromUid, long toUid, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendFile(long fromUid, long toUid, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
     
 参数说明：   
 
@@ -33,6 +33,10 @@
 * `String filename`: 文件名，建议不为空
 
 * `String filenameExtension`: 文件扩展名 建议不为空
+
+*  `String attrs`: 自定义属性 **不为空时必须为json字符串**
+
+* `RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo`: rtm语音消息参数，结构内容参见：[RTMAudioFileInfo](HistoryMessageAPI.md#历史消息数据单元)
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -52,20 +56,20 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 发送多人 P2P 文件
 
     // sync methods
-    long sendFiles(long fromUid, Set<Long> toUids, String filePath);
-    long sendFiles(long fromUid, Set<Long> toUids, String filePath, int timeoutInseconds);
-    long sendFiles(long fromUid, Set<Long> toUids, byte mType, String filePath);
-    long sendFiles(long fromUid, Set<Long> toUids, byte mType, String filePath, int timeoutInseconds);
-    long sendFiles(long fromUid, Set<Long> toUids, byte mType, byte[] fileContent, String filename, String filenameExtension);
-    long sendFiles(long fromUid, Set<Long> toUids, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds);
+    long sendFiles(long fromUid, Set<Long> toUids, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendFiles(long fromUid, Set<Long> toUids, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
+    long sendFiles(long fromUid, Set<Long> toUids, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendFiles(long fromUid, Set<Long> toUids, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
+    long sendFiles(long fromUid, Set<Long> toUids, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendFiles(long fromUid, Set<Long> toUids, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
     
     // async methods
-    void sendFiles(long fromUid, Set<Long> toUids, String filePath, SendFileLambdaCallback callback);
-    void sendFiles(long fromUid, Set<Long> toUids, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendFiles(long fromUid, Set<Long> toUids, byte mType, String filePath, SendFileLambdaCallback callback);
-    void sendFiles(long fromUid, Set<Long> toUids, byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendFiles(long fromUid, Set<Long> toUids, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback);
-    void sendFiles(long fromUid, Set<Long> toUids, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendFiles(long fromUid, Set<Long> toUids, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendFiles(long fromUid, Set<Long> toUids, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendFiles(long fromUid, Set<Long> toUids, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendFiles(long fromUid, Set<Long> toUids, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendFiles(long fromUid, Set<Long> toUids, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendFiles(long fromUid, Set<Long> toUids, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
     
 参数说明：   
 
@@ -76,6 +80,10 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 * `String filename`: 文件名，建议不为空
 
 * `String filenameExtension`: 文件扩展名 建议不为空
+
+*  `String attrs`: 自定义属性 **不为空时必须为json字符串**
+
+* `RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo`: rtm语音消息参数，结构内容参见：[RTMAudioFileInfo](HistoryMessageAPI.md#历史消息数据单元)
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -95,20 +103,20 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 发送 Group 文件
 
     // sync methods
-    long sendGroupFile(long fromUid, long groupId, String filePath);
-    long sendGroupFile(long fromUid, long groupId, String filePath, int timeoutInseconds);
-    long sendGroupFile(long fromUid, long groupId, byte mType, String filePath);
-    long sendGroupFile(long fromUid, long groupId, byte mType, String filePath, int timeoutInseconds);
-    long sendGroupFile(long fromUid, long groupId, byte mType, byte[] fileContent, String filename, String filenameExtension);
-    long sendGroupFile(long fromUid, long groupId, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds);
+    long sendGroupFile(long fromUid, long groupId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendGroupFile(long fromUid, long groupId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
+    long sendGroupFile(long fromUid, long groupId, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendGroupFile(long fromUid, long groupId, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
+    long sendGroupFile(long fromUid, long groupId, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendGroupFile(long fromUid, long groupId, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
   
     // async methods
-    void sendGroupFile(long fromUid, long groupId, String filePath, SendFileLambdaCallback callback);
-    void sendGroupFile(long fromUid, long groupId, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendGroupFile(long fromUid, long groupId, byte mType, String filePath, SendFileLambdaCallback callback);
-    void sendGroupFile(long fromUid, long groupId, byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendGroupFile(long fromUid, long groupId, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback);
-    void sendGroupFile(long fromUid, long groupId, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendGroupFile(long fromUid, long groupId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendGroupFile(long fromUid, long groupId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendGroupFile(long fromUid, long groupId, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendGroupFile(long fromUid, long groupId, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendGroupFile(long fromUid, long groupId, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendGroupFile(long fromUid, long groupId, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
     
 参数说明：   
 
@@ -119,6 +127,10 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 * `String filename`: 文件名，建议不为空
 
 * `String filenameExtension`: 文件扩展名 建议不为空
+
+*  `String attrs`: 自定义属性 **不为空时必须为json字符串**
+
+* `RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo`: rtm语音消息参数，结构内容参见：[RTMAudioFileInfo](HistoryMessageAPI.md#历史消息数据单元)
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -138,20 +150,20 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 ### 发送 Room 文件
 
     // sync methods
-    long sendRoomFile(long fromUid, long roomId, String filePath);
-    long sendRoomFile(long fromUid, long roomId, String filePath, int timeoutInseconds);
-    long sendRoomFile(long fromUid, long roomId, byte mType, String filePath);
-    long sendRoomFile(long fromUid, long roomId, byte mType, String filePath, int timeoutInseconds);
-    long sendRoomFile(long fromUid, long roomId, byte mType, byte[] fileContent, String filename, String filenameExtension);
-    long sendRoomFile(long fromUid, long roomId, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds);
+    long sendRoomFile(long fromUid, long roomId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendRoomFile(long fromUid, long roomId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
+    long sendRoomFile(long fromUid, long roomId, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendRoomFile(long fromUid, long roomId, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
+    long sendRoomFile(long fromUid, long roomId, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendRoomFile(long fromUid, long roomId, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
     
     // async methods
-    void sendRoomFile(long fromUid, long roomId, String filePath, SendFileLambdaCallback callback);
-    void sendRoomFile(long fromUid, long roomId, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendRoomFile(long fromUid, long roomId, byte mType, String filePath, SendFileLambdaCallback callback);
-    void sendRoomFile(long fromUid, long roomId, byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendRoomFile(long fromUid, long roomId, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback);
-    void sendRoomFile(long fromUid, long roomId, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds);      
+    void sendRoomFile(long fromUid, long roomId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendRoomFile(long fromUid, long roomId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendRoomFile(long fromUid, long roomId, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendRoomFile(long fromUid, long roomId, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendRoomFile(long fromUid, long roomId, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendRoomFile(long fromUid, long roomId, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);      
    
  参数说明：   
  
@@ -162,6 +174,10 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
  * `String filename`: 文件名，建议不为空
  
  * `String filenameExtension`: 文件扩展名 建议不为空
+ 
+ *  `String attrs`: 自定义属性 **不为空时必须为json字符串**
+ 
+ * `RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo`: rtm语音消息参数，结构内容参见：[RTMAudioFileInfo](HistoryMessageAPI.md#历史消息数据单元)
  
  * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
  client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -181,20 +197,20 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
  ### 发送 Broadcast 文件
  
     // sync methods 
-    long sendBroadcastFile(long fromUid, String filePath);
-    long sendBroadcastFile(long fromUid, String filePath, int timeoutInseconds);
-    long sendBroadcastFile(long fromUid, byte mType, String filePath);
-    long sendBroadcastFile(long fromUid, byte mType, String filePath, int timeoutInseconds);
-    long sendBroadcastFile(long fromUid, byte mType, byte[] fileContent, String filename, String filenameExtension);
-    long sendBroadcastFile(long fromUid, byte mType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds);
+    long sendBroadcastFile(long fromUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendBroadcastFile(long fromUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
+    long sendBroadcastFile(long fromUid, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendBroadcastFile(long fromUid, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
+    long sendBroadcastFile(long fromUid, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo);
+    long sendBroadcastFile(long fromUid, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds);
     
     // async methods
-    void sendBroadcastFile(long fromUid, String filePath, SendFileLambdaCallback callback);
-    void sendBroadcastFile(long fromUid, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendBroadcastFile(long fromUid, byte mType, String filePath, SendFileLambdaCallback callback);
-    void sendBroadcastFile(long fromUid,byte mType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds);
-    void sendBroadcastFile(long fromUid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback);
-    void sendBroadcastFile(long fromUid, byte mType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendBroadcastFile(long fromUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendBroadcastFile(long fromUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendBroadcastFile(long fromUid, byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendBroadcastFile(long fromUid,byte mType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
+    void sendBroadcastFile(long fromUid, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback);
+    void sendBroadcastFile(long fromUid, byte mType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds);
    
   参数说明：  
    
@@ -205,6 +221,10 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
   * `String filename`: 文件名，建议不为空
   
   * `String filenameExtension`: 文件扩展名 建议不为空
+  
+  *  `String attrs`: 自定义属性 **不为空时必须为json字符串**
+  
+  * `RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo`: rtm语音消息参数，结构内容参见：[RTMAudioFileInfo](HistoryMessageAPI.md#历史消息数据单元)
   
   * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
   client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.

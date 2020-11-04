@@ -25,34 +25,34 @@ public interface FileAPI extends APIBase {
     }
 
     //---------------send file--------------------
-    default long sendFile(long fromUid, long toUid, String filePath)
+    default long sendFile(long fromUid, long toUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendFile(fromUid, toUid, filePath, 0);
+        return sendFile(fromUid, toUid, filePath, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendFile(long fromUid, long toUid, String filePath, int timeoutInseconds)
+    default long sendFile(long fromUid, long toUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendFile(fromUid, toUid, RTMMessageType.NormalFile.value(), filePath, timeoutInseconds);
+        return sendFile(fromUid, toUid, RTMMessageType.NormalFile.value(), filePath, attrs, rtmAudioFileInfo, timeoutInseconds);
     }
 
-    default long sendFile(long fromUid, long toUid, byte messageType, String filePath)
+    default long sendFile(long fromUid, long toUid, byte messageType, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, String filePath)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendFile(fromUid, toUid, messageType, filePath, 0);
+        return sendFile(fromUid, toUid, messageType, filePath, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendFile(long fromUid, long toUid, byte messageType, String filePath, int timeoutInseconds)
+    default long sendFile(long fromUid, long toUid, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
         throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         FileInfo info = client.readFileForSendAPI(filePath);
-        return sendFile(fromUid, toUid, messageType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
+        return sendFile(fromUid, toUid, messageType, info.fileContent, info.fileName, info.filenameExtensiion, attrs, rtmAudioFileInfo, timeoutInseconds);
     }
 
-    default long sendFile(long fromUid, long toUid, byte messageType, byte[] fileContent, String filename, String filenameExtension)
+    default long sendFile(long fromUid, long toUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
-        return sendFile(fromUid, toUid, messageType, fileContent, filename, filenameExtension, 0);
+        return sendFile(fromUid, toUid, messageType, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendFile(long fromUid, long toUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
+    default long sendFile(long fromUid, long toUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
 
         String token;
@@ -71,7 +71,7 @@ public interface FileAPI extends APIBase {
             endpoint = (String) answer.get("endpoint");
         }
 
-        String attrs = client.buildFileAttrs(token, fileContent, filename, filenameExtension);
+        String realAttr = client.buildFileAttrs(token, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo);
 
         //-- Recalculate the timeout.
         {
@@ -99,7 +99,7 @@ public interface FileAPI extends APIBase {
             quest.param("to", toUid);
             quest.param("mid", genMid());
             quest.param("file", fileContent);
-            quest.param("attrs", attrs);
+            quest.param("attrs", realAttr);
 
             Answer answer = fileGate.sendQuest(quest, timeoutInseconds);
             if (answer.isErrorAnswer()) {
@@ -114,34 +114,34 @@ public interface FileAPI extends APIBase {
         }
     }
 
-    default void sendFile(long fromUid, long toUid, String filePath, SendFileLambdaCallback callback){
-        sendFile(fromUid, toUid, filePath, callback,0);
+    default void sendFile(long fromUid, long toUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendFile(fromUid, toUid, filePath, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendFile(long fromUid, long toUid, String filePath, SendFileLambdaCallback callback, int timeoutInseconds){
-        sendFile(fromUid, toUid, RTMMessageType.NormalFile.value(), filePath, callback, timeoutInseconds);
+    default void sendFile(long fromUid, long toUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds){
+        sendFile(fromUid, toUid, RTMMessageType.NormalFile.value(), filePath, attrs, rtmAudioFileInfo, callback, timeoutInseconds);
     }
 
-    default void sendFile(long fromUid, long toUid, byte messageType, String filePath, SendFileLambdaCallback callback){
-        sendFile(fromUid, toUid, messageType, filePath, callback,0);
+    default void sendFile(long fromUid, long toUid, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendFile(fromUid, toUid, messageType, filePath, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendFile(long fromUid, long toUid, byte messageType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
+    default void sendFile(long fromUid, long toUid, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds) {
         RTMServerClientBase client = getCoreClient();
         try{
             FileInfo info = client.readFileForSendAPI(filePath);
-            sendFile(fromUid, toUid, messageType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
+            sendFile(fromUid, toUid, messageType, info.fileContent, info.fileName, info.filenameExtensiion, attrs, rtmAudioFileInfo, callback, timeoutInseconds);
         }catch (Exception ex){
             ErrorRecorder.record("send file by read fileinfo exception.", ex);
             callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "send file by read fileinfo exception.");
         }
     }
 
-    default void sendFile(long fromUid, long toUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
-        sendFile(fromUid, toUid, messageType, fileContent, filename, filenameExtension, callback,0);
+    default void sendFile(long fromUid, long toUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendFile(fromUid, toUid, messageType, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendFile(long fromUid, long toUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
+    default void sendFile(long fromUid, long toUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest fileTokenQuest;
         try {
@@ -176,9 +176,9 @@ public interface FileAPI extends APIBase {
                 String token = (String) answer.get("token");
                 String endpoint = (String) answer.get("endpoint");
 
-                String attrs;
+                String realAttr;
                 try {
-                    attrs = client.buildFileAttrs(token, fileContent, filename, filenameExtension);
+                    realAttr = client.buildFileAttrs(token, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo);
                 } catch (Exception e) {
                     ErrorRecorder.record("Build attrs for sending P2P file exception.", e);
                     callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Build attrs for sending P2P file exception.");
@@ -208,7 +208,7 @@ public interface FileAPI extends APIBase {
                 quest.param("to", toUid);
                 quest.param("mid", genMid());
                 quest.param("file", fileContent);
-                quest.param("attrs", attrs);
+                quest.param("attrs", realAttr);
 
                 AnswerCallback internalCallback = new AnswerCallback() {
                     @Override
@@ -235,34 +235,34 @@ public interface FileAPI extends APIBase {
     }
 
     //---------------send files--------------------
-    default long sendFiles(long fromUid, Set<Long> toUids, String filePath)
+    default long sendFiles(long fromUid, Set<Long> toUids, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendFiles(fromUid, toUids, filePath, 0);
+        return sendFiles(fromUid, toUids, filePath, attrs, rtmAudioFileInfo,0);
     }
 
-    default long sendFiles(long fromUid, Set<Long> toUids, String filePath, int timeoutInseconds)
+    default long sendFiles(long fromUid, Set<Long> toUids, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendFiles(fromUid, toUids, RTMMessageType.NormalFile.value(), filePath, timeoutInseconds);
+        return sendFiles(fromUid, toUids, RTMMessageType.NormalFile.value(), filePath, attrs, rtmAudioFileInfo, timeoutInseconds);
     }
 
-    default long sendFiles(long fromUid, Set<Long> toUids, byte messageType, String filePath)
+    default long sendFiles(long fromUid, Set<Long> toUids, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendFiles(fromUid, toUids, messageType, filePath, 0);
+        return sendFiles(fromUid, toUids, messageType, filePath, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendFiles(long fromUid, Set<Long> toUids, byte messageType, String filePath, int timeoutInseconds)
+    default long sendFiles(long fromUid, Set<Long> toUids, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         FileInfo info = client.readFileForSendAPI(filePath);
-        return sendFiles(fromUid, toUids, messageType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
+        return sendFiles(fromUid, toUids, messageType, info.fileContent, info.fileName, info.filenameExtensiion, attrs, rtmAudioFileInfo, timeoutInseconds);
     }
 
-    default long sendFiles(long fromUid, Set<Long> toUids, byte messageType, byte[] fileContent, String filename, String filenameExtension)
+    default long sendFiles(long fromUid, Set<Long> toUids, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
-        return sendFiles(fromUid, toUids, messageType, fileContent, filename, filenameExtension, 0);
+        return sendFiles(fromUid, toUids, messageType, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendFiles(long fromUid, Set<Long> toUids, byte messageType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
+    default long sendFiles(long fromUid, Set<Long> toUids, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
 
         String token;
@@ -281,7 +281,7 @@ public interface FileAPI extends APIBase {
             endpoint = (String) answer.get("endpoint");
         }
 
-        String attrs = client.buildFileAttrs(token, fileContent, filename, filenameExtension);
+        String realAttr = client.buildFileAttrs(token, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo);
 
         //-- Recalculate the timeout.
         {
@@ -309,7 +309,7 @@ public interface FileAPI extends APIBase {
             quest.param("tos", toUids);
             quest.param("mid", genMid());
             quest.param("file", fileContent);
-            quest.param("attrs", attrs);
+            quest.param("attrs", realAttr);
 
             Answer answer = fileGate.sendQuest(quest, timeoutInseconds);
             if (answer.isErrorAnswer()) {
@@ -324,34 +324,34 @@ public interface FileAPI extends APIBase {
         }
     }
 
-    default void sendFiles(long fromUid, Set<Long> toUids, String filePath, SendFileLambdaCallback callback){
-        sendFiles(fromUid, toUids, filePath, callback,0);
+    default void sendFiles(long fromUid, Set<Long> toUids, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendFiles(fromUid, toUids, filePath, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendFiles(long fromUid, Set<Long> toUids, String filePath, SendFileLambdaCallback callback, int timeoutInseconds){
-        sendFiles(fromUid, toUids, RTMMessageType.NormalFile.value(), filePath, callback, timeoutInseconds);
+    default void sendFiles(long fromUid, Set<Long> toUids, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds){
+        sendFiles(fromUid, toUids, RTMMessageType.NormalFile.value(), filePath, attrs, rtmAudioFileInfo, callback, timeoutInseconds);
     }
 
-    default void sendFiles(long fromUid, Set<Long> toUids, byte messageType, String filePath, SendFileLambdaCallback callback){
-        sendFiles(fromUid, toUids, messageType, filePath, callback,0);
+    default void sendFiles(long fromUid, Set<Long> toUids, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendFiles(fromUid, toUids, messageType, filePath, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendFiles(long fromUid, Set<Long> toUids, byte messageType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
+    default void sendFiles(long fromUid, Set<Long> toUids, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds) {
         RTMServerClientBase client = getCoreClient();
         try{
             FileInfo info = client.readFileForSendAPI(filePath);
-            sendFiles(fromUid, toUids, messageType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
+            sendFiles(fromUid, toUids, messageType, info.fileContent, info.fileName, info.filenameExtensiion, attrs, rtmAudioFileInfo, callback, timeoutInseconds);
         }catch (Exception ex){
             ErrorRecorder.record("send files by read fileinfo exception.", ex);
             callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "send files by read fileinfo exception.");
         }
     }
 
-    default void sendFiles(long fromUid, Set<Long> toUids, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
-        sendFiles(fromUid, toUids, messageType, fileContent, filename, filenameExtension, callback,0);
+    default void sendFiles(long fromUid, Set<Long> toUids, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendFiles(fromUid, toUids, messageType, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendFiles(long fromUid, Set<Long> toUids, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
+    default void sendFiles(long fromUid, Set<Long> toUids, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest fileTokenQuest;
         try {
@@ -387,9 +387,9 @@ public interface FileAPI extends APIBase {
                 String token = (String) answer.get("token");
                 String endpoint = (String) answer.get("endpoint");
 
-                String attrs;
+                String realAttr;
                 try {
-                    attrs = client.buildFileAttrs(token, fileContent, filename, filenameExtension);
+                    realAttr = client.buildFileAttrs(token, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo);
                 } catch (Exception e) {
                     ErrorRecorder.record("Build attrs for sending P2Ps file exception.", e);
                     callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Build attrs for sending P2Ps file exception.");
@@ -419,7 +419,7 @@ public interface FileAPI extends APIBase {
                 quest.param("tos", toUids);
                 quest.param("mid", genMid());
                 quest.param("file", fileContent);
-                quest.param("attrs", attrs);
+                quest.param("attrs", realAttr);
 
                 AnswerCallback internalCallback = new AnswerCallback() {
                     @Override
@@ -447,34 +447,34 @@ public interface FileAPI extends APIBase {
     }
 
     //---------------send group file--------------------
-    default long sendGroupFile(long fromUid, long groupId, String filePath)
+    default long sendGroupFile(long fromUid, long groupId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendGroupFile(fromUid, groupId, filePath, 0);
+        return sendGroupFile(fromUid, groupId, filePath, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendGroupFile(long fromUid, long groupId, String filePath, int timeoutInseconds)
+    default long sendGroupFile(long fromUid, long groupId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendGroupFile(fromUid, groupId, RTMMessageType.NormalFile.value(), filePath, timeoutInseconds);
+        return sendGroupFile(fromUid, groupId, RTMMessageType.NormalFile.value(), filePath, attrs, rtmAudioFileInfo, timeoutInseconds);
     }
 
-    default long sendGroupFile(long fromUid, long groupId, byte messageType, String filePath)
+    default long sendGroupFile(long fromUid, long groupId, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendGroupFile(fromUid, groupId, messageType, filePath, 0);
+        return sendGroupFile(fromUid, groupId, messageType, filePath, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendGroupFile(long fromUid, long groupId, byte messageType, String filePath, int timeoutInseconds)
+    default long sendGroupFile(long fromUid, long groupId, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         FileInfo info = client.readFileForSendAPI(filePath);
-        return sendGroupFile(fromUid, groupId, messageType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
+        return sendGroupFile(fromUid, groupId, messageType, info.fileContent, info.fileName, info.filenameExtensiion, attrs, rtmAudioFileInfo, timeoutInseconds);
     }
 
-    default long sendGroupFile(long fromUid, long groupId, byte messageType, byte[] fileContent, String filename, String filenameExtension)
+    default long sendGroupFile(long fromUid, long groupId, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
-        return sendGroupFile(fromUid, groupId, messageType, fileContent, filename, filenameExtension, 0);
+        return sendGroupFile(fromUid, groupId, messageType, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendGroupFile(long fromUid, long groupId, byte messageType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
+    default long sendGroupFile(long fromUid, long groupId, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
 
         String token;
@@ -493,7 +493,7 @@ public interface FileAPI extends APIBase {
             endpoint = (String) answer.get("endpoint");
         }
 
-        String attrs = client.buildFileAttrs(token, fileContent, filename, filenameExtension);
+        String realAttr = client.buildFileAttrs(token, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo);
 
         //-- Recalculate the timeout.
         {
@@ -521,7 +521,7 @@ public interface FileAPI extends APIBase {
             quest.param("gid", groupId);
             quest.param("mid", genMid());
             quest.param("file", fileContent);
-            quest.param("attrs", attrs);
+            quest.param("attrs", realAttr);
 
             Answer answer = fileGate.sendQuest(quest, timeoutInseconds);
             if (answer.isErrorAnswer()) {
@@ -536,34 +536,34 @@ public interface FileAPI extends APIBase {
         }
     }
 
-    default void sendGroupFile(long fromUid, long groupId, String filePath, SendFileLambdaCallback callback){
-        sendGroupFile(fromUid, groupId, filePath, callback,0);
+    default void sendGroupFile(long fromUid, long groupId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendGroupFile(fromUid, groupId, filePath, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendGroupFile(long fromUid, long groupId, String filePath, SendFileLambdaCallback callback, int timeoutInseconds){
-        sendGroupFile(fromUid, groupId, RTMMessageType.NormalFile.value(), filePath, callback, timeoutInseconds);
+    default void sendGroupFile(long fromUid, long groupId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds){
+        sendGroupFile(fromUid, groupId, RTMMessageType.NormalFile.value(), filePath, attrs, rtmAudioFileInfo, callback, timeoutInseconds);
     }
 
-    default void sendGroupFile(long fromUid, long groupId, byte messageType, String filePath, SendFileLambdaCallback callback){
-        sendGroupFile(fromUid, groupId, messageType, filePath, callback,0);
+    default void sendGroupFile(long fromUid, long groupId, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendGroupFile(fromUid, groupId, messageType, filePath, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendGroupFile(long fromUid, long groupId, byte messageType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
+    default void sendGroupFile(long fromUid, long groupId, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds) {
         RTMServerClientBase client = getCoreClient();
         try{
             FileInfo info = client.readFileForSendAPI(filePath);
-            sendGroupFile(fromUid, groupId, messageType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
+            sendGroupFile(fromUid, groupId, messageType, info.fileContent, info.fileName, info.filenameExtensiion, attrs, rtmAudioFileInfo, callback, timeoutInseconds);
         }catch (Exception ex){
             ErrorRecorder.record("send file by read fileinfo exception.", ex);
             callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "send file by read fileinfo exception.");
         }
     }
 
-    default void sendGroupFile(long fromUid, long groupId, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
-        sendGroupFile(fromUid, groupId, messageType, fileContent, filename, filenameExtension, callback,0);
+    default void sendGroupFile(long fromUid, long groupId, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendGroupFile(fromUid, groupId, messageType, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendGroupFile(long fromUid, long groupId, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
+    default void sendGroupFile(long fromUid, long groupId, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest fileTokenQuest;
         try {
@@ -599,9 +599,9 @@ public interface FileAPI extends APIBase {
                 String token = (String) answer.get("token");
                 String endpoint = (String) answer.get("endpoint");
 
-                String attrs;
+                String realAttr;
                 try {
-                    attrs = client.buildFileAttrs(token, fileContent, filename, filenameExtension);
+                    realAttr = client.buildFileAttrs(token, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo);
                 } catch (Exception e) {
                     ErrorRecorder.record("Build attrs for sending Group file exception.", e);
                     callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Build attrs for sending Group file exception.");
@@ -631,7 +631,7 @@ public interface FileAPI extends APIBase {
                 quest.param("gid", groupId);
                 quest.param("mid", genMid());
                 quest.param("file", fileContent);
-                quest.param("attrs", attrs);
+                quest.param("attrs", realAttr);
 
                 AnswerCallback internalCallback = new AnswerCallback() {
                     @Override
@@ -658,34 +658,34 @@ public interface FileAPI extends APIBase {
     }
 
     //---------------send Room file--------------------
-    default long sendRoomFile(long fromUid, long roomId, String filePath)
+    default long sendRoomFile(long fromUid, long roomId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendRoomFile(fromUid, roomId, filePath, 0);
+        return sendRoomFile(fromUid, roomId, filePath, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendRoomFile(long fromUid, long roomId, String filePath, int timeoutInseconds)
+    default long sendRoomFile(long fromUid, long roomId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendRoomFile(fromUid, roomId, RTMMessageType.NormalFile.value(), filePath, timeoutInseconds);
+        return sendRoomFile(fromUid, roomId, RTMMessageType.NormalFile.value(), filePath, attrs, rtmAudioFileInfo, timeoutInseconds);
     }
 
-    default long sendRoomFile(long fromUid, long roomId, byte messageType, String filePath)
+    default long sendRoomFile(long fromUid, long roomId, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendRoomFile(fromUid, roomId, messageType, filePath, 0);
+        return sendRoomFile(fromUid, roomId, messageType, filePath, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendRoomFile(long fromUid, long roomId, byte messageType, String filePath, int timeoutInseconds)
+    default long sendRoomFile(long fromUid, long roomId, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         FileInfo info = client.readFileForSendAPI(filePath);
-        return sendRoomFile(fromUid, roomId, messageType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
+        return sendRoomFile(fromUid, roomId, messageType, info.fileContent, info.fileName, info.filenameExtensiion, attrs, rtmAudioFileInfo, timeoutInseconds);
     }
 
-    default long sendRoomFile(long fromUid, long roomId, byte messageType, byte[] fileContent, String filename, String filenameExtension)
+    default long sendRoomFile(long fromUid, long roomId, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
-        return sendRoomFile(fromUid, roomId, messageType, fileContent, filename, filenameExtension, 0);
+        return sendRoomFile(fromUid, roomId, messageType, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendRoomFile(long fromUid, long roomId, byte messageType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
+    default long sendRoomFile(long fromUid, long roomId, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
 
         String token;
@@ -704,7 +704,7 @@ public interface FileAPI extends APIBase {
             endpoint = (String) answer.get("endpoint");
         }
 
-        String attrs = client.buildFileAttrs(token, fileContent, filename, filenameExtension);
+        String realAttr = client.buildFileAttrs(token, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo);
 
         //-- Recalculate the timeout.
         {
@@ -732,7 +732,7 @@ public interface FileAPI extends APIBase {
             quest.param("rid", roomId);
             quest.param("mid", genMid());
             quest.param("file", fileContent);
-            quest.param("attrs", attrs);
+            quest.param("attrs", realAttr);
 
             Answer answer = fileGate.sendQuest(quest, timeoutInseconds);
             if (answer.isErrorAnswer()) {
@@ -747,34 +747,34 @@ public interface FileAPI extends APIBase {
         }
     }
 
-    default void sendRoomFile(long fromUid, long roomId, String filePath, SendFileLambdaCallback callback){
-        sendRoomFile(fromUid, roomId, filePath, callback,0);
+    default void sendRoomFile(long fromUid, long roomId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendRoomFile(fromUid, roomId, filePath, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendRoomFile(long fromUid, long roomId, String filePath, SendFileLambdaCallback callback, int timeoutInseconds){
-        sendRoomFile(fromUid, roomId, RTMMessageType.NormalFile.value(), filePath, callback, timeoutInseconds);
+    default void sendRoomFile(long fromUid, long roomId, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds){
+        sendRoomFile(fromUid, roomId, RTMMessageType.NormalFile.value(), filePath, attrs, rtmAudioFileInfo, callback, timeoutInseconds);
     }
 
-    default void sendRoomFile(long fromUid, long roomId, byte messageType, String filePath, SendFileLambdaCallback callback){
-        sendRoomFile(fromUid, roomId, messageType, filePath, callback,0);
+    default void sendRoomFile(long fromUid, long roomId, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendRoomFile(fromUid, roomId, messageType, filePath, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendRoomFile(long fromUid, long roomId, byte messageType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
+    default void sendRoomFile(long fromUid, long roomId, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds) {
         RTMServerClientBase client = getCoreClient();
         try{
             FileInfo info = client.readFileForSendAPI(filePath);
-            sendRoomFile(fromUid, roomId, messageType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
+            sendRoomFile(fromUid, roomId, messageType, info.fileContent, info.fileName, info.filenameExtensiion, attrs, rtmAudioFileInfo, callback, timeoutInseconds);
         }catch (Exception ex){
             ErrorRecorder.record("send room file by read fileinfo exception.", ex);
             callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "send room file by read fileinfo exception.");
         }
     }
 
-    default void sendRoomFile(long fromUid, long roomId, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
-        sendRoomFile(fromUid, roomId, messageType, fileContent, filename, filenameExtension, callback,0);
+    default void sendRoomFile(long fromUid, long roomId, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendRoomFile(fromUid, roomId, messageType, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendRoomFile(long fromUid, long roomId, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
+    default void sendRoomFile(long fromUid, long roomId, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest fileTokenQuest;
         try {
@@ -810,9 +810,9 @@ public interface FileAPI extends APIBase {
                 String token = (String) answer.get("token");
                 String endpoint = (String) answer.get("endpoint");
 
-                String attrs;
+                String realAttr;
                 try {
-                    attrs = client.buildFileAttrs(token, fileContent, filename, filenameExtension);
+                    realAttr = client.buildFileAttrs(token, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo);
                 } catch (Exception e) {
                     ErrorRecorder.record("Build attrs for sending room file exception.", e);
                     callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Build attrs for sending room file exception.");
@@ -842,7 +842,7 @@ public interface FileAPI extends APIBase {
                 quest.param("rid", roomId);
                 quest.param("mid", genMid());
                 quest.param("file", fileContent);
-                quest.param("attrs", attrs);
+                quest.param("attrs", realAttr);
 
                 AnswerCallback internalCallback = new AnswerCallback() {
                     @Override
@@ -869,34 +869,34 @@ public interface FileAPI extends APIBase {
     }
 
     //---------------send broadcast file--------------------
-    default long sendBroadcastFile(long fromUid, String filePath)
+    default long sendBroadcastFile(long fromUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendBroadcastFile(fromUid, filePath, 0);
+        return sendBroadcastFile(fromUid, filePath, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendBroadcastFile(long fromUid, String filePath, int timeoutInseconds)
+    default long sendBroadcastFile(long fromUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendBroadcastFile(fromUid, RTMMessageType.NormalFile.value(), filePath, timeoutInseconds);
+        return sendBroadcastFile(fromUid, RTMMessageType.NormalFile.value(), filePath, attrs, rtmAudioFileInfo, timeoutInseconds);
     }
 
-    default long sendBroadcastFile(long fromUid, byte messageType, String filePath)
+    default long sendBroadcastFile(long fromUid, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return sendBroadcastFile(fromUid, messageType, filePath, 0);
+        return sendBroadcastFile(fromUid, messageType, filePath, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendBroadcastFile(long fromUid, byte messageType, String filePath, int timeoutInseconds)
+    default long sendBroadcastFile(long fromUid, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         FileInfo info = client.readFileForSendAPI(filePath);
-        return sendBroadcastFile(fromUid, messageType, info.fileContent, info.fileName, info.filenameExtensiion, timeoutInseconds);
+        return sendBroadcastFile(fromUid, messageType, info.fileContent, info.fileName, info.filenameExtensiion, attrs, rtmAudioFileInfo, timeoutInseconds);
     }
 
-    default long sendBroadcastFile(long fromUid, byte messageType, byte[] fileContent, String filename, String filenameExtension)
+    default long sendBroadcastFile(long fromUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
-        return sendBroadcastFile(fromUid, messageType, fileContent, filename, filenameExtension, 0);
+        return sendBroadcastFile(fromUid, messageType, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo, 0);
     }
 
-    default long sendBroadcastFile(long fromUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, int timeoutInseconds)
+    default long sendBroadcastFile(long fromUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, int timeoutInseconds)
             throws RTMException, IOException, GeneralSecurityException, InterruptedException {
 
         String token;
@@ -914,7 +914,7 @@ public interface FileAPI extends APIBase {
             endpoint = (String) answer.get("endpoint");
         }
 
-        String attrs = client.buildFileAttrs(token, fileContent, filename, filenameExtension);
+        String realAttr = client.buildFileAttrs(token, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo);
 
         //-- Recalculate the timeout.
         {
@@ -941,7 +941,7 @@ public interface FileAPI extends APIBase {
 
             quest.param("mid", genMid());
             quest.param("file", fileContent);
-            quest.param("attrs", attrs);
+            quest.param("attrs", realAttr);
 
             Answer answer = fileGate.sendQuest(quest, timeoutInseconds);
             if (answer.isErrorAnswer()) {
@@ -956,34 +956,34 @@ public interface FileAPI extends APIBase {
         }
     }
 
-    default void sendBroadcastFile(long fromUid, String filePath, SendFileLambdaCallback callback){
-        sendBroadcastFile(fromUid, filePath, callback,0);
+    default void sendBroadcastFile(long fromUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendBroadcastFile(fromUid, filePath, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendBroadcastFile(long fromUid, String filePath, SendFileLambdaCallback callback, int timeoutInseconds){
-        sendBroadcastFile(fromUid, RTMMessageType.NormalFile.value(), filePath, callback, timeoutInseconds);
+    default void sendBroadcastFile(long fromUid, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds){
+        sendBroadcastFile(fromUid, RTMMessageType.NormalFile.value(), filePath, attrs, rtmAudioFileInfo, callback, timeoutInseconds);
     }
 
-    default void sendBroadcastFile(long fromUid, byte messageType, String filePath, SendFileLambdaCallback callback){
-        sendBroadcastFile(fromUid, messageType, filePath, callback,0);
+    default void sendBroadcastFile(long fromUid, byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendBroadcastFile(fromUid, messageType, filePath, attrs, rtmAudioFileInfo, callback,0);
     }
 
-    default void sendBroadcastFile(long fromUid,byte messageType, String filePath, SendFileLambdaCallback callback, int timeoutInseconds) {
+    default void sendBroadcastFile(long fromUid,byte messageType, String filePath, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds) {
         RTMServerClientBase client = getCoreClient();
         try{
             FileInfo info = client.readFileForSendAPI(filePath);
-            sendBroadcastFile(fromUid, messageType, info.fileContent, info.fileName, info.filenameExtensiion, callback, timeoutInseconds);
+            sendBroadcastFile(fromUid, messageType, info.fileContent, info.fileName, info.filenameExtensiion, attrs, rtmAudioFileInfo, callback, timeoutInseconds);
         }catch (Exception ex){
             ErrorRecorder.record("send broadcast file by read fileinfo exception.", ex);
             callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "send broadcast file by read fileinfo exception.");
         }
     }
 
-    default void sendBroadcastFile(long fromUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback){
-        sendBroadcastFile(fromUid, messageType, fileContent, filename, filenameExtension, callback, 0);
+    default void sendBroadcastFile(long fromUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback){
+        sendBroadcastFile(fromUid, messageType, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo, callback, 0);
     }
 
-    default void sendBroadcastFile(long fromUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, SendFileLambdaCallback callback, int timeoutInseconds){
+    default void sendBroadcastFile(long fromUid, byte messageType, byte[] fileContent, String filename, String filenameExtension, String attrs, RTMServerClientBase.RTMAudioFileInfo rtmAudioFileInfo, SendFileLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest fileTokenQuest;
         try {
@@ -1018,9 +1018,9 @@ public interface FileAPI extends APIBase {
                 String token = (String) answer.get("token");
                 String endpoint = (String) answer.get("endpoint");
 
-                String attrs;
+                String realAttr;
                 try {
-                    attrs = client.buildFileAttrs(token, fileContent, filename, filenameExtension);
+                    realAttr = client.buildFileAttrs(token, fileContent, filename, filenameExtension, attrs, rtmAudioFileInfo);
                 } catch (Exception e) {
                     ErrorRecorder.record("Build attrs for sending broadcast file exception.", e);
                     callback.done(-1, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Build attrs for sending broadcast file exception.");
@@ -1049,7 +1049,7 @@ public interface FileAPI extends APIBase {
 
                 quest.param("mid", genMid());
                 quest.param("file", fileContent);
-                quest.param("attrs", attrs);
+                quest.param("attrs", realAttr);
 
                 AnswerCallback internalCallback = new AnswerCallback() {
                     @Override

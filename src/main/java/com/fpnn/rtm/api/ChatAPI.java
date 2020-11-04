@@ -18,14 +18,6 @@ public interface ChatAPI extends MessageCoreAPI {
         internalCoreSendMessage(fromUid, toUid, RTMMessageType.Chat.value(), message, attrs, callback, 0);
     }
 
-    default void sendAudio(long fromUid, long toUid, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalCoreSendMessage(fromUid, toUid, RTMMessageType.AudioChat.value(), message, attrs, callback, timeoutInseconds);
-    }
-
-    default void sendAudio(long fromUid, long toUid, byte[] message, String attrs, SendMessageLambdaCallback callback) {
-        internalCoreSendMessage(fromUid, toUid, RTMMessageType.AudioChat.value(), message, attrs, callback, 0);
-    }
-
     default void sendCmd(long fromUid, long toUid, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
         internalCoreSendMessage(fromUid, toUid, RTMMessageType.Cmd.value(), message, attrs, callback, timeoutInseconds);
     }
@@ -44,17 +36,6 @@ public interface ChatAPI extends MessageCoreAPI {
     default long sendChat(long fromUid, long toUid,  String message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
         return internalCoreSendMessage(fromUid, toUid, RTMMessageType.Chat.value(), message, attrs, 0);
-    }
-
-    default long sendAudio(long fromUid, long toUid, byte[] message, String attrs, int timeoutInseconds)
-            throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-
-        return internalCoreSendMessage(fromUid, toUid, RTMMessageType.AudioChat.value(), message, attrs, timeoutInseconds);
-    }
-
-    default long sendAudio(long fromUid, long toUid, byte[] message, String attrs)
-            throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalCoreSendMessage(fromUid, toUid, RTMMessageType.AudioChat.value(), message, attrs, 0);
     }
 
     default long sendCmd(long fromUid, long toUid, String message, String attrs, int timeoutInseconds)
@@ -78,14 +59,6 @@ public interface ChatAPI extends MessageCoreAPI {
         internalCoreSendMessages(fromUid, toUids, RTMMessageType.Chat.value(), message, attrs, callback, 0);
     }
 
-    default void sendAudios(long fromUid, Set<Long> toUids, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalCoreSendMessages(fromUid, toUids, RTMMessageType.AudioChat.value(), message, attrs, callback, timeoutInseconds);
-    }
-
-    default void sendAudios(long fromUid, Set<Long> toUids, byte[] message, String attrs, SendMessageLambdaCallback callback) {
-        internalCoreSendMessages(fromUid, toUids, RTMMessageType.AudioChat.value(), message, attrs, callback, 0);
-    }
-
     default void sendCmds(long fromUid, Set<Long> toUids, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
         internalCoreSendMessages(fromUid, toUids, RTMMessageType.Cmd.value(), message, attrs, callback, timeoutInseconds);
     }
@@ -104,17 +77,6 @@ public interface ChatAPI extends MessageCoreAPI {
     default long sendChats(long fromUid, Set<Long> toUids, String message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
         return internalCoreSendMessages(fromUid, toUids, RTMMessageType.Chat.value(), message, attrs, 0);
-    }
-
-    default long sendAudios(long fromUid, Set<Long> toUids, byte[] message, String attrs, int timeoutInseconds)
-            throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-
-        return internalCoreSendMessages(fromUid, toUids, RTMMessageType.AudioChat.value(), message, attrs, timeoutInseconds);
-    }
-
-    default long sendAudios(long fromUid, Set<Long> toUids, byte[] message, String attrs)
-            throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalCoreSendMessages(fromUid, toUids, RTMMessageType.AudioChat.value(), message, attrs, 0);
     }
 
     default long sendCmds(long fromUid, Set<Long> toUids, String message, String attrs, int timeoutInseconds)
@@ -138,14 +100,6 @@ public interface ChatAPI extends MessageCoreAPI {
         internalCoreSendGroupMessage(fromUid, groupId, RTMMessageType.Chat.value(), message, attrs, callback, 0);
     }
 
-    default void sendGroupAudio(long fromUid, long groupId, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalCoreSendGroupMessage(fromUid, groupId, RTMMessageType.AudioChat.value(), message, attrs, callback, timeoutInseconds);
-    }
-
-    default void sendGroupAudio(long fromUid, long groupId, byte[] message, String attrs, SendMessageLambdaCallback callback) {
-        internalCoreSendGroupMessage(fromUid, groupId, RTMMessageType.AudioChat.value(), message, attrs, callback, 0);
-    }
-
     default void sendGroupCmd(long fromUid, long groupId, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
         internalCoreSendGroupMessage(fromUid, groupId, RTMMessageType.Cmd.value(), message, attrs, callback, timeoutInseconds);
     }
@@ -164,17 +118,6 @@ public interface ChatAPI extends MessageCoreAPI {
     default long sendGroupChat(long fromUid, long groupId, String message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
         return internalCoreSendGroupMessage(fromUid, groupId, RTMMessageType.Chat.value(), message, attrs, 0);
-    }
-
-    default long sendGroupAudio(long fromUid, long groupId, byte[] message, String attrs, int timeoutInseconds)
-            throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-
-        return internalCoreSendGroupMessage(fromUid, groupId, RTMMessageType.AudioChat.value(), message, attrs, timeoutInseconds);
-    }
-
-    default long sendGroupAudio(long fromUid, long groupId, byte[] message, String attrs)
-            throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalCoreSendGroupMessage(fromUid, groupId, RTMMessageType.AudioChat.value(), message, attrs, 0);
     }
 
     default long sendGroupCmd(long fromUid, long groupId, String message, String attrs, int timeoutInseconds)
@@ -198,14 +141,6 @@ public interface ChatAPI extends MessageCoreAPI {
         internalCoreSendRoomMessage(fromUid, roomId, RTMMessageType.Chat.value(), message, attrs, callback, 0);
     }
 
-    default void sendRoomAudio(long fromUid, long roomId,  byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalCoreSendRoomMessage(fromUid, roomId, RTMMessageType.AudioChat.value(), message, attrs, callback, timeoutInseconds);
-    }
-
-    default void sendRoomAudio(long fromUid, long roomId, byte[] message, String attrs, SendMessageLambdaCallback callback) {
-        internalCoreSendRoomMessage(fromUid, roomId, RTMMessageType.AudioChat.value(), message, attrs, callback, 0);
-    }
-
     default void sendRoomCmd(long fromUid, long roomId, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
         internalCoreSendRoomMessage(fromUid, roomId, RTMMessageType.Cmd.value(), message, attrs, callback, timeoutInseconds);
     }
@@ -223,16 +158,6 @@ public interface ChatAPI extends MessageCoreAPI {
     default long sendRoomChat(long fromUid, long roomId, String message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
         return internalCoreSendRoomMessage(fromUid, roomId, RTMMessageType.Chat.value(), message, attrs, 0);
-    }
-
-    default long sendRoomAudio(long fromUid, long roomId, byte[] message, String attrs, int timeoutInseconds)
-            throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalCoreSendRoomMessage(fromUid, roomId, RTMMessageType.AudioChat.value(), message, attrs, timeoutInseconds);
-    }
-
-    default long sendRoomAudio(long fromUid, long roomId, byte[] message, String attrs)
-            throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalCoreSendRoomMessage(fromUid, roomId, RTMMessageType.AudioChat.value(), message, attrs, 0);
     }
 
     default long sendRoomCmd(long fromUid, long roomId, String message, String attrs, int timeoutInseconds)
@@ -255,14 +180,6 @@ public interface ChatAPI extends MessageCoreAPI {
         internalCoreSendBroadcastMessage(fromUid, RTMMessageType.Chat.value(), message, attrs, callback, 0);
     }
 
-    default void sendBroadcastAudio(long fromUid, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
-        internalCoreSendBroadcastMessage(fromUid, RTMMessageType.AudioChat.value(), message, attrs, callback, timeoutInseconds);
-    }
-
-    default void sendBroadcastAudio(long fromUid, byte[] message, String attrs, SendMessageLambdaCallback callback) {
-        internalCoreSendBroadcastMessage(fromUid, RTMMessageType.AudioChat.value(), message, attrs, callback, 0);
-    }
-
     default void sendBroadcastCmd(long fromUid, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds) {
         internalCoreSendBroadcastMessage(fromUid, RTMMessageType.Cmd.value(), message, attrs, callback, timeoutInseconds);
     }
@@ -280,16 +197,6 @@ public interface ChatAPI extends MessageCoreAPI {
     default long sendBroadcastChat(long fromUid, String message, String attrs)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException {
         return internalCoreSendBroadcastMessage(fromUid, RTMMessageType.Chat.value(), message, attrs, 0);
-    }
-
-    default long sendBroadcastAudio(long fromUid, byte[] message, String attrs, int timeoutInseconds)
-            throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalCoreSendBroadcastMessage(fromUid, RTMMessageType.AudioChat.value(), message, attrs, timeoutInseconds);
-    }
-
-    default long sendBroadcastAudio(long fromUid, byte[] message, String attrs)
-            throws RTMException, GeneralSecurityException, IOException, InterruptedException {
-        return internalCoreSendBroadcastMessage(fromUid, RTMMessageType.AudioChat.value(), message, attrs, 0);
     }
 
     default long sendBroadcastCmd(long fromUid, String message, String attrs, int timeoutInseconds)

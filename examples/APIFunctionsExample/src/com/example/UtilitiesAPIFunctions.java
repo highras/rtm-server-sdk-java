@@ -73,17 +73,6 @@ public class UtilitiesAPIFunctions {
             client.profanity(profanityDemo, true, 0, text, classification);
             System.out.println("sync return profanity success. source = " + profanityDemo + " ,result = " + text + " ,classification types = " + classification);
 
-            // transcribe
-            String audio = "test aaaaa"; //此处只是展示使用接口，可能会返回失败，一般都是客户端转发过来的语音
-            StringBuffer textAudio = new StringBuffer();
-            StringBuffer texLang = new StringBuffer();
-            client.transcribe(audio.getBytes("UTF-8"), textAudio, texLang);
-            System.out.println("sync return transcribe success. audio = " + audio + " ,text audio = " + textAudio + " ,textlang = " + texLang);
-
-            client.transcribe(audio.getBytes("UTF-8"), 0, true, textAudio, texLang);
-            System.out.println("sync return transcribe success. audio = " + audio + " ,text audio = " + textAudio + " ,textlang = " + texLang);
-            System.out.println();
-
         }catch (RTMException ex){
             System.out.println(ex.toString());
         }
@@ -130,26 +119,6 @@ public class UtilitiesAPIFunctions {
                 }
                 else{
                     System.out.println("async return profanity success. source = " + profanityDemo + " ,result = " + text + " ,classification types = " + classification);
-                }
-            });
-
-            // transcribe
-            String audio = "test aaaaa"; //此处只是展示使用接口，可能会返回失败，一般都是客户端转发过来的语音
-            client.transcribe(audio.getBytes("UTF-8"), (text, lang, errorCode, errorMessage) -> {
-                if(errorCode != ErrorCode.FPNN_EC_OK.value()){
-                    System.out.println("async return transcribe error answer errorCode = " + errorCode + " ,errorMessage = " + errorMessage);
-                }
-                else{
-                    System.out.println("async return transcribe success. audio = " + audio + " ,text audio = " + text + " ,textlang = " + lang);
-                }
-            });
-
-            client.transcribe(audio.getBytes("UTF-8"), 0, true, (text, lang, errorCode, errorMessage) -> {
-                if(errorCode != ErrorCode.FPNN_EC_OK.value()){
-                    System.out.println("async return transcribe error answer errorCode = " + errorCode + " ,errorMessage = " + errorMessage);
-                }
-                else{
-                    System.out.println("async return transcribe success. audio = " + audio + " ,text audio = " + text + " ,textlang = " + lang);
                 }
             });
 

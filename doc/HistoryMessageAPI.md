@@ -1,12 +1,12 @@
-# RTM Server Java SDK HistoryChat API Docs
+# RTM Server Java SDK HistoryMessage API Docs
 
 # Index
 
 [TOC]
 
-### -------------------------获取历史聊天数据接口--------------------------
+### -------------------------获取历史消息数据接口--------------------------
 
-### 历史聊天数据单元
+### 历史消息数据单元
 
     public static class RTMAudioFileInfo {
         public boolean isRTMaudio;
@@ -57,7 +57,7 @@
         }
     }
     
-### 历史聊天返回结果
+### 历史消息返回结果
     
     public static class RTMHistoryMessage {
         public int count;            // 实际返回的条目数量
@@ -80,19 +80,19 @@
         }
     }
     
-### 获取 P2P 历史聊天
+### 获取 P2P 历史消息
 
     // sync methods
-    RTMHistoryMessage getP2PChat(long uid, long peerUid, boolean desc, int count);
-    RTMHistoryMessage getP2PChat(long uid, long peerUid, boolean desc, int count, int timeoutInseconds);
-    RTMHistoryMessage getP2PChat(long uid, long peerUid, boolean desc, int count, long begin, long end, long lastId);
-    RTMHistoryMessage getP2PChat(long uid, long peerUid, boolean desc, int count, long begin, long end, long lastId, int timeoutInseconds);
+    RTMHistoryMessage getP2PMsg(long uid, long peerUid, boolean desc, int count);
+    RTMHistoryMessage getP2PMsg(long uid, long peerUid, boolean desc, int count, int timeoutInseconds);
+    RTMHistoryMessage getP2PMsg(long uid, long peerUid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes);
+    RTMHistoryMessage getP2PMsg(long uid, long peerUid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, int timeoutInseconds);
     
     // async methods
-    void getP2PChat(long uid, long peerUid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback);
-    void getP2PChat(long uid, long peerUid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
-    void getP2PChat(long uid, long peerUid, boolean desc, int count, long begin, long end, long lastId, GetHistoryMessagesLambdaCallback callback);
-    void getP2PChat(long uid, long peerUid, boolean desc, int count, long begin, long end, long lastId, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
+    void getP2PMsg(long uid, long peerUid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback);
+    void getP2PMsg(long uid, long peerUid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
+    void getP2PMsg(long uid, long peerUid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtype, GetHistoryMessagesLambdaCallback callback);
+    void getP2PMsg(long uid, long peerUid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
     
 参数说明：   
 
@@ -106,87 +106,7 @@
 
 * `long lastId`: 最后一条消息的id，第一次填默认0。条件：> 或者 <
 
-* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
-client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
-
-* `GetHistoryMessagesLambdaCallback callback`: 为异步回调返回接口, 历史数据以及错误码和错误信息将通过callback返回
-        
-        public interface GetHistoryMessagesLambdaCallback{
-            void done(RTMServerClientBase.RTMHistoryMessage result, int errorCode, String errorMessage);
-        }
-
-返回值:       
-
-* **sync**: 同步接口正常时返回历史数据，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
-
-* **async**: 异步接口不会抛出异常，通过callback返回历史数据，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.  
-
-### 获取 Group 历史聊天
-
-    // sync methods
-    RTMHistoryMessage getGroupChat(long uid, long gid, boolean desc, int count);
-    RTMHistoryMessage getGroupChat(long uid, long gid, boolean desc, int count, int timeoutInseconds);
-    RTMHistoryMessage getGroupChat(long uid, long gid, boolean desc, int count, long begin, long end, long lastId);
-    RTMHistoryMessage getGroupChat(long uid, long gid, boolean desc, int count, long begin, long end, long lastId, int timeoutInseconds);
-    
-    // async methods
-    void getGroupChat(long uid, long gid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback);
-    void getGroupChat(long uid, long gid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
-    void getGroupChat(long uid, long gid, boolean desc, int count, long begin, long end, long lastId, GetHistoryMessagesLambdaCallback callback);
-    void getGroupChat(long uid, long gid, boolean desc, int count, long begin, long end, long lastId, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
-    
-参数说明：   
-
-* `boolean desc`: false: 从begin的时间戳开始，顺序翻页. true: 从end的时间戳开始，倒序翻页.
-
-* `int count`: 获取条目数量。建议10条，**最多一次20条**.
-
-* `long begin`: 开始时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：>=
-
-* `long end`: 结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
-
-* `long lastId`: 最后一条消息的id，第一次填默认0。条件：> 或者 <
-
-* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
-client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
-
-* `GetHistoryMessagesLambdaCallback callback`: 为异步回调返回接口, 历史数据以及错误码和错误信息将通过callback返回
-        
-        public interface GetHistoryMessagesLambdaCallback{
-            void done(RTMServerClientBase.RTMHistoryMessage result, int errorCode, String errorMessage);
-        }
-
-返回值:       
-
-* **sync**: 同步接口正常时返回历史数据，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
-
-* **async**: 异步接口不会抛出异常，通过callback返回历史数据，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.
-
-### 获取 Room 历史聊天
-
-    // sync methods
-    RTMHistoryMessage getRoomChat(long uid, long rid, boolean desc, int count);
-    RTMHistoryMessage getRoomChat(long uid, long rid, boolean desc, int count, int timeoutInseconds);
-    RTMHistoryMessage getRoomChat(long uid, long rid, boolean desc, int count, long begin, long end, long lastId);
-    RTMHistoryMessage getRoomChat(long uid, long rid, boolean desc, int count, long begin, long end, long lastId, int timeoutInseconds);
-    
-    // async methods
-    void getRoomChat(long uid, long rid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback);
-    void getRoomChat(long uid, long rid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
-    void getRoomChat(long uid, long rid, boolean desc, int count, long begin, long end, long lastId, GetHistoryMessagesLambdaCallback callback);
-    void getRoomChat(long uid, long rid, boolean desc, int count, long begin, long end, long lastId, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
-    
-参数说明：   
-
-* `boolean desc`: false: 从begin的时间戳开始，顺序翻页. true: 从end的时间戳开始，倒序翻页.
-
-* `int count`: 获取条目数量。建议10条，**最多一次20条**.
-
-* `long begin`: 开始时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：>=
-
-* `long end`: 结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
-
-* `long lastId`: 最后一条消息的id，第一次填默认0。条件：> 或者 <
+* `List<Byte> mtypes`: 指定获取的 mtype类型，可为空或null
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -203,19 +123,19 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 
 * **async**: 异步接口不会抛出异常，通过callback返回历史数据，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息. 
 
-### 获取 Broadcast 历史聊天
+### 获取 Group 历史消息
 
     // sync methods
-    RTMHistoryMessage getBroadCastChat(long uid, boolean desc, int count);
-    RTMHistoryMessage getBroadCastChat(long uid, boolean desc, int count, int timeoutInseconds);
-    RTMHistoryMessage getBroadCastChat(long uid, boolean desc, int count, long begin, long end, long lastId);
-    RTMHistoryMessage getBroadCastChat(long uid, boolean desc, int count, long begin, long end, long lastId, int timeoutInseconds);
+    RTMHistoryMessage getGroupMsg(long uid, long gid, boolean desc, int count);
+    RTMHistoryMessage getGroupMsg(long uid, long gid, boolean desc, int count, int timeoutInseconds);
+    RTMHistoryMessage getGroupMsg(long uid, long gid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes);
+    RTMHistoryMessage getGroupMsg(long uid, long gid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, int timeoutInseconds);
     
     // async methods
-    void getBroadCastChat(long uid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback);
-    void getBroadCastChat(long uid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
-    void getBroadCastChat(long uid, boolean desc, int count, long begin, long end, long lastId, GetHistoryMessagesLambdaCallback callback);
-    void getBroadCastChat(long uid, boolean desc, int count, long begin, long end, long lastId, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
+    void getGroupMsg(long uid, long gid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback);
+    void getGroupMsg(long uid, long gid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
+    void getGroupMsg(long uid, long gid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtype, GetHistoryMessagesLambdaCallback callback);
+    void getGroupMsg(long uid, long gid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
     
 参数说明：   
 
@@ -228,6 +148,8 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 * `long end`: 结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
 
 * `long lastId`: 最后一条消息的id，第一次填默认0。条件：> 或者 <
+
+* `List<Byte> mtypes`: 指定获取的 mtype类型，可为空或null
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
 client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
@@ -242,4 +164,90 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 
 * **sync**: 同步接口正常时返回历史数据，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
 
-* **async**: 异步接口不会抛出异常，通过callback返回历史数据，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.   
+* **async**: 异步接口不会抛出异常，通过callback返回历史数据，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息. 
+
+### 获取 Room 历史消息
+
+    // sync methods     
+    RTMHistoryMessage getRoomMsg(long uid, long rid, boolean desc, int count);
+    RTMHistoryMessage getRoomMsg(long uid, long rid, boolean desc, int count, int timeoutInseconds);
+    RTMHistoryMessage getRoomMsg(long uid, long rid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes);
+    RTMHistoryMessage getRoomMsg(long uid, long rid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, int timeoutInseconds);
+    
+    // async methods
+    void getRoomMsg(long uid, long rid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback);
+    void getRoomMsg(long uid, long rid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
+    void getRoomMsg(long uid, long rid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtype, GetHistoryMessagesLambdaCallback callback);
+    void getRoomMsg(long uid, long rid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
+    
+参数说明：   
+
+* `boolean desc`: false: 从begin的时间戳开始，顺序翻页. true: 从end的时间戳开始，倒序翻页.
+
+* `int count`: 获取条目数量。建议10条，**最多一次20条**.
+
+* `long begin`: 开始时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：>=
+
+* `long end`: 结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
+
+* `long lastId`: 最后一条消息的id，第一次填默认0。条件：> 或者 <
+
+* `List<Byte> mtypes`: 指定获取的 mtype类型，可为空或null
+
+* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
+client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
+
+* `GetHistoryMessagesLambdaCallback callback`: 为异步回调返回接口, 历史数据以及错误码和错误信息将通过callback返回
+        
+        public interface GetHistoryMessagesLambdaCallback{
+            void done(RTMServerClientBase.RTMHistoryMessage result, int errorCode, String errorMessage);
+        }
+
+返回值:       
+
+* **sync**: 同步接口正常时返回历史数据，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+
+* **async**: 异步接口不会抛出异常，通过callback返回历史数据，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息. 
+
+### 获取 Broadcast 历史消息
+
+    // sync methods
+    RTMHistoryMessage getBroadCastMsg(long uid, boolean desc, int count);
+    RTMHistoryMessage getBroadCastMsg(long uid, boolean desc, int count, int timeoutInseconds);
+    RTMHistoryMessage getBroadCastMsg(long uid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes);
+    RTMHistoryMessage getBroadCastMsg(long uid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, int timeoutInseconds);
+    
+    // async methods
+    void getBroadCastMsg(long uid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback);
+    void getBroadCastMsg(long uid, boolean desc, int count, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
+    void getBroadCastMsg(long uid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtype, GetHistoryMessagesLambdaCallback callback);
+    void getBroadCastMsg(long uid, boolean desc, int count, long begin, long end, long lastId, List<Byte> mtypes, GetHistoryMessagesLambdaCallback callback, int timeoutInseconds);
+    
+参数说明：   
+
+* `boolean desc`: false: 从begin的时间戳开始，顺序翻页. true: 从end的时间戳开始，倒序翻页.
+
+* `int count`: 获取条目数量。建议10条，**最多一次20条**.
+
+* `long begin`: 开始时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：>=
+
+* `long end`: 结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
+
+* `long lastId`: 最后一条消息的id，第一次填默认0。条件：> 或者 <
+
+* `List<Byte> mtypes`: 指定获取的 mtype类型，可为空或null
+
+* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
+client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
+
+* `GetHistoryMessagesLambdaCallback callback`: 为异步回调返回接口, 历史数据以及错误码和错误信息将通过callback返回
+        
+        public interface GetHistoryMessagesLambdaCallback{
+            void done(RTMServerClientBase.RTMHistoryMessage result, int errorCode, String errorMessage);
+        }
+
+返回值:       
+
+* **sync**: 同步接口正常时返回历史数据，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+
+* **async**: 异步接口不会抛出异常，通过callback返回历史数据，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.       

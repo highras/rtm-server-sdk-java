@@ -96,8 +96,6 @@ public class ChatAPIFunctions {
             // sync send p2p chat
             long time = client.sendChat(from, to, "chat hello word", "");
             System.out.println("sync return chat mtime " + time);
-            time = client.sendAudio(from, to, "audio hello word".getBytes("UTF-8"), "");
-            System.out.println("sync return audio mtime " + time);
             time= client.sendCmd(from, to, "cmd hello word", "");
             System.out.println("sync return cmd mtime " + time);
 
@@ -108,14 +106,6 @@ public class ChatAPIFunctions {
                 }
                 else{
                     System.out.println("async return sendChat success answer time = " + time1);
-                }
-            });
-            client.sendAudio(from, to, "audio hello word".getBytes("UTF-8"), "", (time12, errorCode, errorMessage) -> {
-                if(errorCode != ErrorCode.FPNN_EC_OK.value()){
-                    System.out.println("async return sendAudio error answer errorCode " + errorCode + " error message = " + errorMessage);
-                }
-                else{
-                    System.out.println("async return sendAudio success answer time = " + time12);
                 }
             });
 
@@ -142,8 +132,6 @@ public class ChatAPIFunctions {
             // sync send p2ps chat
             long time = client.sendChats(from, uids, "chats hello word", "");
             System.out.println("sync return chats mtime " + time);
-            time = client.sendAudios(from, uids, "audios hello word".getBytes("UTF-8"), "");
-            System.out.println("sync return audios  mtime " + time);
             time = client.sendCmds(from, uids, "cmds hello word", "");
             System.out.println("sync return cmds mtime " + time);
 
@@ -154,15 +142,6 @@ public class ChatAPIFunctions {
                 }
                 else{
                     System.out.println("async return sendChats success answer time = " + time1);
-                }
-            });
-
-            client.sendAudios(from, uids, "audios hello word".getBytes("UTF-8"), "", (time12, errorCode, errorMessage) -> {
-                if(errorCode != ErrorCode.FPNN_EC_OK.value()){
-                    System.out.println("async return sendAudios error answer errorCode " + errorCode + " error message = " + errorMessage);
-                }
-                else{
-                    System.out.println("async return sendAudios success answer time = " + time12);
                 }
             });
 
@@ -189,8 +168,6 @@ public class ChatAPIFunctions {
             // sync send group chat
             long time = client.sendGroupChat(from, gid, "group chat hello word", "");
             System.out.println("sync return group chat mtime " + time);
-            time = client.sendGroupAudio(from, gid, "group audio hello word".getBytes("UTF-8"), "");
-            System.out.println("sync return group audio mtime " + time);
             time = client.sendGroupCmd(from, gid, "group cmd hello word", "");
             System.out.println("sync return group cmd mtime " + time);
 
@@ -203,16 +180,6 @@ public class ChatAPIFunctions {
                     System.out.println("async return sendGroupChat success answer time = " + time1);
                 }
             });
-
-            client.sendGroupAudio(from, gid, "group audio hello word".getBytes("UTF-8"), "", (time12, errorCode, errorMessage) -> {
-                if(errorCode != ErrorCode.FPNN_EC_OK.value()){
-                    System.out.println("async return sendGroupAudio error answer errorCode " + errorCode + " error message = " + errorMessage);
-                }
-                else{
-                    System.out.println("async return sendGroupAudio success answer time = " + time12);
-                }
-            });
-
 
             client.sendGroupCmd(from, gid,"group cmd hello word", "", (time13, errorCode, errorMessage) -> {
                 if(errorCode != ErrorCode.FPNN_EC_OK.value()){
@@ -237,8 +204,6 @@ public class ChatAPIFunctions {
             // sync send room chat
             long time = client.sendRoomChat(from, rid, "room chat hello word", "");
             System.out.println("sync return room chat mtime " + time);
-            time = client.sendRoomAudio(from, rid, "room audio hello word".getBytes("UTF-8"), "");
-            System.out.println("sync return room audio mtime " + time);
             time = client.sendRoomCmd(from, rid, "room cmd hello word", "");
             System.out.println("sync return room cmd mtime " + time);
 
@@ -251,16 +216,6 @@ public class ChatAPIFunctions {
                     System.out.println("async return sendRoomChat success answer time = " + time1);
                 }
             });
-
-            client.sendRoomAudio(from, rid, "room audio hello word".getBytes("UTF-8"), "", (time12, errorCode, errorMessage) -> {
-                if(errorCode != ErrorCode.FPNN_EC_OK.value()){
-                    System.out.println("async return sendRoomAudio error answer errorCode " + errorCode + " error message = " + errorMessage);
-                }
-                else{
-                    System.out.println("async return sendRoomAudio success answer time = " + time12);
-                }
-            });
-
 
             client.sendRoomCmd(from, rid,"room cmd hello word", "", (time13, errorCode, errorMessage) -> {
                 if(errorCode != ErrorCode.FPNN_EC_OK.value()){
@@ -284,8 +239,6 @@ public class ChatAPIFunctions {
             // sync send broadcast chat
             long time = client.sendBroadcastChat(adminUid, "broadcast chat hello word", "");
             System.out.println("sync return broadcast chat mtime " + time);
-            time = client.sendBroadcastAudio(adminUid, "broadcast audio hello word".getBytes("UTF-8"), "");
-            System.out.println("sync return broadcast audio mtime " + time);
             time = client.sendBroadcastCmd(adminUid, "room cmd hello word", "");
             System.out.println("sync return broadcast cmd mtime " + time);
 
@@ -298,16 +251,6 @@ public class ChatAPIFunctions {
                     System.out.println("async return sendBroadcastChat success answer time = " + time1);
                 }
             });
-
-            client.sendBroadcastAudio(adminUid, "broadcast audio hello word".getBytes("UTF-8"), "", (time12, errorCode, errorMessage) -> {
-                if(errorCode != ErrorCode.FPNN_EC_OK.value()){
-                    System.out.println("async return sendBroadcastAudio error answer errorCode " + errorCode + " error message = " + errorMessage);
-                }
-                else{
-                    System.out.println("async return sendBroadcastAudio success answer time = " + time12);
-                }
-            });
-
 
             client.sendBroadcastCmd(adminUid, "broadcast cmd hello word", "", (time13, errorCode, errorMessage) -> {
                 if(errorCode != ErrorCode.FPNN_EC_OK.value()){

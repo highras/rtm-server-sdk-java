@@ -1,5 +1,9 @@
 package com.fpnn.rtm;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fpnn.rtm.api.ServerPushMonitorAPI;
 import com.fpnn.sdk.*;
 import com.fpnn.sdk.proto.Answer;
@@ -132,6 +136,47 @@ public class RTMServerClientBase extends TCPClient {
 
     }
 
+    public static FileMsgInfo processFileInfo(String msg, String attrs, int mtype) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            RTMAudioFileInfo rtmAudioFileInfo = new RTMAudioFileInfo();
+            FileMsgInfo fileMsgInfo = objectMapper.readValue(msg, FileMsgInfo.class);
+            if(mtype == RTMMessageType.AudioFile.value()) {
+                ObjectMapper objectMapper1 = new ObjectMapper();
+                JsonNode jsonNode1 = objectMapper1.readValue(attrs, JsonNode.class);
+                JsonNode rtmNode = jsonNode1.get("rtm");
+                String type = rtmNode.get("type").asText();
+                if(type == "audiomsg") {
+                    rtmAudioFileInfo.lang = rtmNode.get("lang").asText("");
+                    rtmAudioFileInfo.codec = rtmNode.get("codec").asText("");
+                    rtmAudioFileInfo.duration = rtmNode.get("duration").asInt(0);
+                    rtmAudioFileInfo.srate = rtmNode.get("srate").asInt(0);
+                    rtmAudioFileInfo.isRTMaudio = true;
+                }
+            }
+            fileMsgInfo.rtmAudioFileInfo = rtmAudioFileInfo;
+            return fileMsgInfo;
+        }catch(IOException ex) {
+            ErrorRecorder.record("parse file json error", ex);
+            ex.printStackTrace();
+        }
+        return new FileMsgInfo();
+    }
+
+    public static String fetchFileCustomAttrs(String attr) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readValue(attr, JsonNode.class);
+            JsonNode customNode = jsonNode.get("custom");
+            String customAttr = customNode.textValue();
+            return customAttr;
+        }catch(IOException ex) {
+            ErrorRecorder.record("parse file custom attr json error", ex);
+            ex.printStackTrace();
+        }
+        return "";
+    }
+
     public FileInfo readFileForSendAPI(String filePath) throws IOException {
         FileInfo info = new FileInfo();
         info.fileContent = Files.readAllBytes(Paths.get(filePath));
@@ -147,7 +192,7 @@ public class RTMServerClientBase extends TCPClient {
         return info;
     }
 
-    public String buildFileAttrs(String token, byte[] fileContent, String filename, String ext) throws GeneralSecurityException, IOException {
+    public String buildFileAttrs(String token, byte[] fileContent, String filename, String ext, String attr, RTMAudioFileInfo rtmAudioFileInfo) throws GeneralSecurityException, IOException {
 
         MessageDigest md5 = MessageDigest.getInstance("MD5");
         md5.update(fileContent);
@@ -159,26 +204,53 @@ public class RTMServerClientBase extends TCPClient {
         md5Binary = md5.digest();
         md5Hex = bytesToHexString(md5Binary, true);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("\"sign\":\"").append(md5Hex).append("\"");
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode parentNode = objectMapper.createObjectNode();
+        ObjectNode rtmNode = objectMapper.createObjectNode();
+        rtmNode.put("sign", md5Hex);
 
         if (ext != null && ext.length() > 0)
-            sb.append(", \"ext\":\"").append(ext).append("\"");
+            rtmNode.put("ext", ext);
 
         if (filename != null && filename.length() > 0)
-            sb.append(", \"filename\":\"").append(filename).append("\"");
+            rtmNode.put("filename", filename);
 
-        sb.append("}");
+        if(rtmAudioFileInfo != null && rtmAudioFileInfo.isRTMaudio) {
+            rtmNode.put("type", "audiomsg");
+            rtmNode.put("codec", rtmAudioFileInfo.codec);
+            rtmNode.put("srate", rtmAudioFileInfo.srate);
+            rtmNode.put("lang", rtmAudioFileInfo.lang);
+            rtmNode.put("duration", rtmAudioFileInfo.duration);
+        }
+        parentNode.set("rtm", rtmNode);
+        if(attr.length() > 0){
+            try {
+                JsonNode customNodee = objectMapper.readTree(attr);
+                parentNode.set("custom", customNodee);
+            }catch (IOException ex) {
+                parentNode.put("custom", attr);
+            }
+        } else {
+            parentNode.put("custom", "");
+        }
 
-        return sb.toString();
+        return objectMapper.writeValueAsString(parentNode);
     }
 
-    public static class AudioInfo{
-        public String sourceLanguage;
-        public String recognizedLanguage;
-        public String recognizedText;
+    public static class RTMAudioFileInfo {
+        public boolean isRTMaudio;
+        public String codec;
+        public String lang;
+        public int srate;
         public int duration;
+    }
+
+    public static class FileMsgInfo {
+        public String url;
+        public long size;
+        public String surl;
+        @JsonIgnore
+        public RTMAudioFileInfo rtmAudioFileInfo = null;
 
     }
 
@@ -192,7 +264,7 @@ public class RTMServerClientBase extends TCPClient {
         public String stringMessage;
         public byte[] binaryMessage;
         public String attrs;
-        public AudioInfo audioInfo = null;   //for serverpush and history
+        public FileMsgInfo fileMsgInfo = null;
 
         @Override
         public String toString(){

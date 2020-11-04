@@ -31,11 +31,6 @@ public interface ServerPushMonitorAPI {
     default void pushP2PChat(RTMMessage message){}
     default void pushGroupChat(RTMMessage message){}
 
-    // audio
-    default void pushRoomAudio(RTMMessage message){}
-    default void pushP2PAudio(RTMMessage message){}
-    default void pushGroupAudio(RTMMessage message){}
-
     // cmd
     default void pushRoomCmd(RTMMessage message){}
     default void pushP2PCmd(RTMMessage message){}

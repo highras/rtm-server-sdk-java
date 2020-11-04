@@ -63,27 +63,27 @@ public class FileAPIFunctions {
         // sync api
         try{
             // sendFile
-            long time = client.sendFile(from, to, filePath);
+            long time = client.sendFile(from, to, filePath, "", null);
             System.out.println("sync return sendFile " + time);
             sleep(1000);
 
             // sendGroupFile
-            time= client.sendGroupFile(from, gid, filePath);
+            time= client.sendGroupFile(from, gid, filePath, "", null);
             System.out.println("sync return sendGroupFile mtime " + time);
             sleep(1000);
 
             // sendRoomFile
-            time = client.sendRoomFile(from, rid, filePath);
+            time = client.sendRoomFile(from, rid, filePath, "", null);
             System.out.println("sync return sendRoomFile mtime " + time);
             sleep(1000);
 
             // sendFiles
-            time= client.sendFiles(from, uids, filePath);
+            time= client.sendFiles(from, uids, filePath, "", null);
             System.out.println("sync return sendFiles mtime " + time);
             sleep(1000);
 
             //sendBroadcastFile
-            time= client.sendBroadcastFile(adminUid, filePath);
+            time= client.sendBroadcastFile(adminUid, filePath, "", null);
             System.out.println("sync return sendBroadcastFile mtime " + time);
             sleep(1000);
             System.out.println();
@@ -99,7 +99,7 @@ public class FileAPIFunctions {
         //async api
         try{
             // sendFile
-            client.sendFile(from, to, filePath, (time, errorCode, errorMessage) -> {
+            client.sendFile(from, to, filePath,"", null,(time, errorCode, errorMessage) -> {
                 if(errorCode != ErrorCode.FPNN_EC_OK.value()){
                     System.out.println("async return sendFile error answer errorCode " + errorCode + " error Message =  " + errorMessage);
                 }
@@ -110,7 +110,7 @@ public class FileAPIFunctions {
             sleep(1000);
 
             // sendGroupFile
-            client.sendGroupFile(from, gid, filePath, (time, errorCode, errorMessage) -> {
+            client.sendGroupFile(from, gid, filePath, "", null, (time, errorCode, errorMessage) -> {
                 if(errorCode != ErrorCode.FPNN_EC_OK.value()){
                     System.out.println("async return sendGroupFile error answer errorCode " + errorCode + " error Message =  " + errorMessage);
                 }
@@ -121,7 +121,7 @@ public class FileAPIFunctions {
             sleep(1000);
 
             // sendRoomFile
-            client.sendRoomFile(from, rid, filePath, (time, errorCode, errorMessage) -> {
+            client.sendRoomFile(from, rid, filePath, "", null, (time, errorCode, errorMessage) -> {
                 if(errorCode != ErrorCode.FPNN_EC_OK.value()){
                     System.out.println("async return sendRoomFile error answer errorCode " + errorCode + " error Message =  " + errorMessage);
                 }
@@ -132,7 +132,7 @@ public class FileAPIFunctions {
             sleep(1000);
 
             // sendFiles
-            client.sendFiles(from, uids, filePath, (time, errorCode, errorMessage) -> {
+            client.sendFiles(from, uids, filePath, "", null, (time, errorCode, errorMessage) -> {
                 if(errorCode != ErrorCode.FPNN_EC_OK.value()){
                     System.out.println("async return sendFiles error answer errorCode " + errorCode + " error Message =  " + errorMessage);
                 }
@@ -143,7 +143,7 @@ public class FileAPIFunctions {
             sleep(1000);
 
             //sendBroadcastFile
-            client.sendBroadcastFile(adminUid, filePath, (time, errorCode, errorMessage) -> {
+            client.sendBroadcastFile(adminUid, filePath, "", null, (time, errorCode, errorMessage) -> {
                 if(errorCode != ErrorCode.FPNN_EC_OK.value()){
                     System.out.println("async return sendBroadcastFile error answer errorCode " + errorCode + " error Message =  " + errorMessage);
                 }

@@ -71,7 +71,7 @@
 
 获取历史消息接口
 
-具体请参见: [获取历史消息数据](HistoryMessageAP.md)
+具体请参见: [获取历史消息数据](HistoryMessageAPI.md)
 
 
 ## Monitor Functions

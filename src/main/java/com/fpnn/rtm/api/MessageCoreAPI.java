@@ -1,13 +1,10 @@
 package com.fpnn.rtm.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpnn.rtm.RTMException;
 import com.fpnn.rtm.RTMMessageType;
 import com.fpnn.rtm.RTMServerClientBase.RTMHistoryMessage;
 import com.fpnn.rtm.RTMServerClientBase.RTMHistoryMessageUnit;
 import com.fpnn.rtm.RTMServerClientBase.RTMMessage;
-import com.fpnn.rtm.RTMServerClientBase.AudioInfo;
 import com.fpnn.rtm.RTMServerClientBase;
 import com.fpnn.sdk.AnswerCallback;
 import com.fpnn.sdk.ErrorCode;
@@ -16,7 +13,6 @@ import com.fpnn.sdk.proto.Answer;
 import com.fpnn.sdk.proto.Quest;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Set;
@@ -336,37 +332,16 @@ interface MessageCoreAPI extends APIBase {
             info.attrs = String.valueOf(data.get(6));
             info.modifiedTime = Long.valueOf(String.valueOf(data.get(7)));
             Object obj = data.get(5);
-            if(info.messageType == RTMMessageType.AudioChat.value()){
-                if(obj instanceof byte[]){
-                    byte[] bytes = (byte[])obj;
-                    info.binaryMessage = bytes;
-                } else {
-                    try{
-                        String audioInfo = String.valueOf(obj);
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        JsonNode jsonNode = objectMapper.readValue(audioInfo, JsonNode.class);
-                        String sl = jsonNode.get("sl").asText();
-                        String rl = jsonNode.get("rl").asText();
-                        String rt = jsonNode.get("rt").asText();
-                        int duration = jsonNode.get("du").asInt();
-                        AudioInfo audio = new AudioInfo();
-                        audio.duration = duration;
-                        audio.recognizedText = rt;
-                        audio.recognizedLanguage = rl;
-                        audio.sourceLanguage = sl;
-                        info.audioInfo = audio;
-                        info.stringMessage = audio.recognizedText;
+            if(info.messageType >= RTMMessageType.ImageFile.value() && info.messageType <= RTMMessageType.NormalFile.value()){
+                try{
+                    String msg = String.valueOf(obj);
+                    info.fileMsgInfo = RTMServerClientBase.processFileInfo(msg, info.attrs, info.messageType);
+                    info.attrs = RTMServerClientBase.fetchFileCustomAttrs(info.attrs);
 
-                    }catch (IOException ex){
-                        ex.printStackTrace();
-                        ErrorRecorder.record("audio string parse failed", ex);
-                    }catch (Exception ex){
-                        ex.printStackTrace();
-                        ErrorRecorder.record("unknown error audio string parse failed", ex);
-                    }
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                    ErrorRecorder.record("unknown error file json string parse failed", ex);
                 }
-
-
             }
             else{
                 info.stringMessage = String.valueOf(obj);
@@ -678,12 +653,14 @@ interface MessageCoreAPI extends APIBase {
         info.attrs = (String)answer.get("attrs", "");
         info.modifiedTime = answer.getLong("mtime", 0);
         String msg = (String)answer.get("msg", "");
-        if(info.messageType == RTMMessageType.AudioChat.value()){
+        if(info.messageType >= RTMMessageType.ImageFile.value() && info.messageType <= RTMMessageType.NormalFile.value()){
             try{
-                info.binaryMessage = msg.getBytes("UTF-8");
-            }catch (UnsupportedEncodingException ex){
+                info.fileMsgInfo = RTMServerClientBase.processFileInfo(msg, info.attrs, info.messageType);
+                info.attrs = RTMServerClientBase.fetchFileCustomAttrs(info.attrs);
+
+            }catch (Exception ex){
                 ex.printStackTrace();
-                ErrorRecorder.record("audio string to binary failed", ex);
+                ErrorRecorder.record("unknown error file json string parse failed", ex);
             }
         }
         else{

@@ -127,7 +127,7 @@
   
 返回值:       
   
-* **sync**: 同步接口正常时返回翻译结果RTMTranslateMessage，通过参数回传返回uid的公开信息、私有信息，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+* **sync**: 同步接口正常时返回翻译结果RTMTranslateMessage，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
   
 * **async**: 异步接口不会抛出异常，通过callback返回翻译结果RTMTranslateMessage，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.  
 
@@ -144,6 +144,9 @@
     void profanity(String text, ProfanityLambdaCallback callback, int timeoutInsecond);
     void profanity(String text, boolean classify, long uid, ProfanityLambdaCallback callback);
     void profanity(String text, boolean classify, long uid, ProfanityLambdaCallback callback, int timeoutInsecond);
+
+Note:    
+* Maybe in after version this interface will be deprecated，recommend use textCheck interface replace
     
 参数说明:  
 
@@ -168,109 +171,234 @@
   
 返回值:       
   
-* **sync**: 同步接口正常时通过参数回传的方式返回敏感词过滤后的文本和文本分类检测结果，通过参数回传返回uid的公开信息、私有信息，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+* **sync**: 同步接口正常时通过参数回传的方式返回敏感词过滤后的文本和文本分类检测结果，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
   
 * **async**: 异步接口不会抛出异常，通过callback返回敏感词过滤后的文本和文本分类检测结果，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.   
 
-### 语音识别 
-
-    // sync methods
-    void transcribe(byte[] audio, StringBuffer text, StringBuffer lang);
-    void transcribe(byte[] audio, StringBuffer text, StringBuffer lang, int timeoutInsecond);
-    void transcribe(byte[] audio, long uid, boolean profanityFilter, StringBuffer text, StringBuffer lang);
-    void transcribe(byte[] audio, long uid, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond);
-    
-    // async methods
-    void transcribe(byte[] audio, TranscribeLambdaCallback callback);
-    void transcribe(byte[] audio, TranscribeLambdaCallback callback, int timeoutInsecond);
-    void transcribe(byte[] audio, long uid, boolean profanityFilter, TranscribeLambdaCallback callback);
-    void transcribe(byte[] audio, long uid, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond);
-    
-参数说明:  
-
-* `byte[] audio`: 语音数据，对于语音数据只支持规定的编码和头部格式，在client端的sdk会做处理，服务端sdk可能只是转发接口
-
-* `StringBuffer text`: 语音识别后的文本.
-
-* `StringBuffer lang`: 语音识别后的语言.
-
-* `boolean profanityFilter`: 是否进行敏感词过滤，默认为 false.
-    
-* `long uid`: 用户id，可选    
-  
-* `int timeoutInseconds`: 该接口需要将超时时间设置到120s.
-  
-* `TranscribeLambdaCallback callback`: 为异步回调返回接口, 调用结果以及错误码和错误信息将通过callback返回
-          
-        public interface TranscribeLambdaCallback{
-            void done(String text, String lang, int errorCode, String errorMessage);
-        }
-  
-返回值:       
-  
-* **sync**: 同步接口正常时通过参数回传的方式返回语音识别的文本和语言，通过参数回传返回uid的公开信息、私有信息，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
-  
-* **async**: 异步接口不会抛出异常，通过callback返回语音识别的文本和语言，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.
-
-
-### 语音识别 只支持rtm发送的语音消息，无需把原始语音发一遍，节省流量
+### 语音转文字
 
     // sync method
-    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, boolean profanityFilter, StringBuffer text, StringBuffer lang);
-    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, StringBuffer text, StringBuffer lang);
-    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, StringBuffer text, StringBuffer lang, int timeoutInsecond);
-    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond);
-    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, boolean profanityFilter, StringBuffer text, StringBuffer lang);
-    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, StringBuffer text, StringBuffer lang);
-    void stranscribeGroupAudio(long from, long messageId, long groupId, StringBuffer text, StringBuffer lang, int timeoutInsecond);
-    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond);
-    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, boolean profanityFilter, StringBuffer text, StringBuffer lang);
-    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, StringBuffer text, StringBuffer lang);
-    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, StringBuffer text, StringBuffer lang, int timeoutInsecond);
-    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond);
-    void stranscribeBroadcastAudio(long fromUid, long messageId, boolean profanityFilter, StringBuffer text, StringBuffer lang);
-    void stranscribeBroadcastAudio(long fromUid, long messageId, StringBuffer text, StringBuffer lang);
-    void stranscribeBroadcastAudio(long fromUid, long messageId, StringBuffer text, StringBuffer lang, int timeoutInsecond);
-    void stranscribeBroadcastAudio(long fromUid, long messageId, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond);
+    void speechToText(String audio, int audioType, RTMTranslateLanguage lang, String codec, int srate, long uid,  StringBuffer text, StringBuffer dstLang, int timeoutInsecond);
+    void speechToText(String audio, int audioType, RTMTranslateLanguage lang, String codec, int srate, long uid,  StringBuffer text, StringBuffer dstLang);
+    void speechToText(String audio, int audioType, RTMTranslateLanguage lang, StringBuffer text, StringBuffer dstLang, int timeoutInsecond);
+    void speechToText(String audio, int audioType, RTMTranslateLanguage lang, StringBuffer text, StringBuffer dstLang);
     
     // async method
-    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond);
-    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, boolean profanityFilter, TranscribeLambdaCallback callback);
-    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, TranscribeLambdaCallback callback, int timeoutInsecond);
-    void stranscribeP2PAudio(long fromUid, long messageId, long toUid, TranscribeLambdaCallback callback);
-    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond);
-    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, boolean profanityFilter, TranscribeLambdaCallback callback);
-    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, TranscribeLambdaCallback callback, int timeoutInsecond);
-    void stranscribeGroupAudio(long fromUid, long messageId, long groupId, TranscribeLambdaCallback callback);
-    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond);
-    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, boolean profanityFilter, TranscribeLambdaCallback callback);
-    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, TranscribeLambdaCallback callback, int timeoutInsecond);
-    void stranscribeRoomAudio(long fromUid, long messageId, long roomId, TranscribeLambdaCallback callback);
-    void stranscribeBroadcastAudio(long fromUid, long messageId, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond);
-    void stranscribeBroadcastAudio(long fromUid, long messageId, boolean profanityFilter, TranscribeLambdaCallback callback);
-    void stranscribeBroadcastAudio(long fromUid, long messageId, TranscribeLambdaCallback callback, int timeoutInsecond);
-    void stranscribeBroadcastAudio(long fromUid, long messageId, TranscribeLambdaCallback callback);
+    void speechToText(String audio, int audioType, RTMTranslateLanguage lang, String codec, int srate, long uid, SpeechToTextLambdaCallback callback, int timeoutInsecond);
+    void speechToText(String audio, int audioType, RTMTranslateLanguage lang, String codec, int srate, long uid, SpeechToTextLambdaCallback callback);
+    void speechToText(String audio, int audioType, RTMTranslateLanguage lang, SpeechToTextLambdaCallback callback, int timeoutInsecond);
+    void speechToText(String audio, int audioType, RTMTranslateLanguage lang, SpeechToTextLambdaCallback callback)
     
-参数说明:  
-
-* `StringBuffer text`: 语音识别后的文本.
-
-* `StringBuffer lang`: 语音识别后的语言.
-
-* `boolean profanityFilter`: 是否进行敏感词过滤，默认为 false.
-  
-* `int timeoutInseconds`: 该接口需要将超时时间设置到120s.
-  
-* `TranscribeLambdaCallback callback`: 为异步回调返回接口, 调用结果以及错误码和错误信息将通过callback返回
-          
-        public interface TranscribeLambdaCallback{
-            void done(String text, String lang, int errorCode, String errorMessage);
-        }
-  
-返回值:       
-  
-* **sync**: 同步接口正常时通过参数回传的方式返回语音识别的文本和语言，通过参数回传返回uid的公开信息、私有信息，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
-  
-* **async**: 异步接口不会抛出异常，通过callback返回语音识别的文本和语言，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息. 
-    
+ 参数说明:  
  
+ * `String audio`: 音频的url或者内容（需要提供lang&codec&srate)
+ 
+ * `int audioType`: 1：url, 2：内容
+ 
+ * `RTMTranslateLanguage lang`: 参见: [RTMTranslateLanguage](#翻译参数以及返回结果)
+ 
+ * ` String codec`: codec为空则默认为AMR_WB
+     
+ * `int srate`: srate为0或者空则默认为16000   
+ 
+ * `long uid`: 可选用户id
+ 
+ * `StringBuffer text`: 识别后的文本
+ 
+ * `StringBuffer dstLang`: 识别后的语言
+   
+ * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
+   client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
+   
+ * `SpeechToTextLambdaCallback callback`: 为异步回调返回接口, 调用结果以及错误码和错误信息将通过callback返回
+           
+         interface SpeechToTextLambdaCallback {
+             void done(String text, String lang, int errorCode, String errorMessage);
+         }
+   
+ 返回值:       
+   
+ * **sync**: 同步接口正常时通过参数回传的方式返回识别后的文本和语言，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+   
+ * **async**: 异步接口不会抛出异常，通过callback返回识别后的文本结果，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.  
+ 
+ ### 文本审核
+ 
+    // sync method
+    int textCheck(String text, long uid, StringBuffer resultText, Set<Integer> tags, Set<String> wlist, int timeoutInsecond);
+    int textCheck(String text, long uid, StringBuffer resultText, Set<Integer> tags, Set<String> wlist);
+    int textCheck(String text, StringBuffer resultText, Set<Integer> tags, Set<String> wlist);
+    int textCheck(String text, StringBuffer resultText, Set<Integer> tags, Set<String> wlist, int timeoutInsecond);
+    
+    // async method
+    void textCheck(String text, long uid, TextCheckLambdaCallback callback, int timeoutInsecond);
+    void textCheck(String text, long uid, TextCheckLambdaCallback callback);
+    void textCheck(String text, TextCheckLambdaCallback callback);
+    void textCheck(String text, TextCheckLambdaCallback callback, int timeoutInsecond);
+    
+ 参数说明:  
+  
+ * `String text`: 文本内容  
+  
+ * `long uid`: 可选用户id
+  
+ * `StringBuffer resultText`: 审核后的文本
+  
+ * `Set<Integer> tags`: 触发的分类，比如涉黄涉政等等，具体见文本审核分类
+ 
+ * `Set<String> wlist`: 敏感词列表
+    
+ * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
+    client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
+    
+ * `TextCheckLambdaCallback callback`: 为异步回调返回接口, 调用结果以及错误码和错误信息将通过callback返回
+            
+        interface TextCheckLambdaCallback {
+            void done(int result, String text, Set<Integer> tags, Set<String> wlist, int errorCode, String errorMessage);
+        }
+    
+返回值:       
+result: 0: 通过，2，不通过  
+resultText：敏感词过滤后的文本内容，含有的敏感词会被替换为*，如果没有被标星，则无此字段
+  
+* **sync**: 同步接口正常时通过参数回传的方式返回审核后的结果，当返回的result=2，正常处理是：如果text不为空则可以直接发出(用返回的text)，否则拦截（可能是广告或者隐晦色情等等），
+错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+    
+* **async**: 异步接口不会抛出异常，通过callback返回审核后的结果，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息. 
+
+注：如果需要详细的返回结果，请调用审核产品原生接口
+
+### 图片审核
+
+    // sync method
+    int imageCheck(String image, int imageType, long uid, Set<Integer>tags,  int timeoutInsecond);
+    int imageCheck(String image, int imageType, long uid, Set<Integer>tags);
+    int imageCheck(String image, int imageType, Set<Integer>tags);
+    int imageCheck(String image, int imageType, Set<Integer>tags, int timeoutInsecond);
+    
+    // async method
+    void imageCheck(String image, int imageType, long uid, OtherCheckLambdaCallback callback, int timeoutInsecond);
+    void imageCheck(String image, int imageType, long uid, OtherCheckLambdaCallback callback);
+    void imageCheck(String image, int imageType, OtherCheckLambdaCallback callback);
+    void imageCheck(String image, int imageType, OtherCheckLambdaCallback callback, int timeoutInsecond);
+    
+ 参数说明:  
+  
+ * `String image`: 图片的url 或者内容  
+  
+ * `long uid`: 可选用户id
+  
+ * `int imageType`: 1: url, 2: 内容
+  
+ * `Set<Integer> tags`: 触发的分类，比如涉黄涉政等等，具体见图片审核分类
+    
+ * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
+    client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
+    
+ * `OtherCheckLambdaCallback callback`: 为异步回调返回接口, 调用结果以及错误码和错误信息将通过callback返回
+            
+        interface OtherCheckLambdaCallback {
+            void done(int result, Set<Integer> tags, int errorCode, String errorMessage);
+        }
+    
+返回值:       
+result: 0: 通过，2，不通过  
+  
+* **sync**: 同步接口正常时通过参数回传的方式返回审核后的结果，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+    
+* **async**: 异步接口不会抛出异常，通过callback返回审核后的结果，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息. 
+
+注：如果需要详细的返回结果，请调用审核产品原生接口  
+
+### 视频审核
+
+    // sync method
+    int videoCheck(String video, int videoType, String videoName, long uid, Set<Integer> tags, int timeoutInsecond);
+    int videoCheck(String video, int videoType, String videoName, long uid, Set<Integer>tags);
+    int videoCheck(String video, int videoType, String videoName, Set<Integer>tags);
+    int videoCheck(String video, int videoType, String videoName, Set<Integer>tags, int timeoutInsecond);
+    
+    // async method
+    void videoCheck(String video, int videoType, String videoName, long uid, OtherCheckLambdaCallback callback, int timeoutInsecond);
+    void videoCheck(String video, int videoType, String videoName, long uid, OtherCheckLambdaCallback callback);
+    void videoCheck(String video, int videoType, String videoName, OtherCheckLambdaCallback callback);
+    void videoCheck(String video, int videoType, String videoName, OtherCheckLambdaCallback callback, int timeoutInsecond);
+    
+ 参数说明:  
+  
+ * `String video`: 视频的url或者内容 
+  
+ * `long uid`: 可选用户id
+  
+ * `int imageType`: 1: url, 2: 内容
+ 
+ * `String videoName`: 视频文件名，type=2时候必选，可以通过文件名获取文件格式
+  
+ * `Set<Integer> tags`: 触发的分类，比如涉黄涉政等等，具体见图片审核分类
+    
+ * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
+    client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
+    
+ * `OtherCheckLambdaCallback callback`: 为异步回调返回接口, 调用结果以及错误码和错误信息将通过callback返回
+            
+        interface OtherCheckLambdaCallback {
+            void done(int result, Set<Integer> tags, int errorCode, String errorMessage);
+        }
+    
+返回值:       
+result: 0: 通过，2，不通过  
+  
+* **sync**: 同步接口正常时通过参数回传的方式返回审核后的结果，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+    
+* **async**: 异步接口不会抛出异常，通过callback返回审核后的结果，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息. 
+
+注：如果需要详细的返回结果，请调用审核产品原生接口 
+
+### 音频审核
+
+    // sync method
+    int audioCheck(String audio, int audioType, RTMTranslateLanguage lang, long uid, String codec, int srate, Set<Integer>tags,  int timeoutInsecond);
+    int audioCheck(String audio, int audioType, RTMTranslateLanguage lang, long uid, String codec, int srate, Set<Integer>tags);
+    int audioCheck(String audio, int audioType, RTMTranslateLanguage lang, Set<Integer>tags);
+    int audioCheck(String audio, int audioType, RTMTranslateLanguage lang, Set<Integer>tags, int timeoutInsecond);
+    
+    // async method
+    void audioCheck(String audio, int audioType, RTMTranslateLanguage lang, long uid, String codec, int srate, OtherCheckLambdaCallback callback, int timeoutInsecond);
+    void audioCheck(String audio, int audioType, RTMTranslateLanguage lang, long uid, String codec, int srate, OtherCheckLambdaCallback callback);
+    void audioCheck(String audio, int audioType, RTMTranslateLanguage lang, OtherCheckLambdaCallback callback);
+    void audioCheck(String audio, int audioType, RTMTranslateLanguage lang, OtherCheckLambdaCallback callback, int timeoutInsecond);
+    
+ 参数说明:  
+  
+ * `String audio`: 音频的url或者内容（需要提供lang&codec&srate)
+ 
+ * `int audioType`: 1：url, 2：内容
+ 
+ * `RTMTranslateLanguage lang`: 参见: [RTMTranslateLanguage](#翻译参数以及返回结果)
+ 
+ * ` String codec`: codec为空则默认为AMR_WB
+     
+ * `int srate`: srate为0或者空则默认为16000   
+ 
+ * `long uid`: 可选用户id
+  
+ * `Set<Integer> tags`: 触发的分类，比如涉黄涉政等等，具体见图片审核分类
+    
+ * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
+    client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
+    
+ * `OtherCheckLambdaCallback callback`: 为异步回调返回接口, 调用结果以及错误码和错误信息将通过callback返回
+            
+        interface OtherCheckLambdaCallback {
+            void done(int result, Set<Integer> tags, int errorCode, String errorMessage);
+        }
+    
+返回值:       
+result: 0: 通过，2，不通过  
+  
+* **sync**: 同步接口正常时通过参数回传的方式返回审核后的结果，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+    
+* **async**: 异步接口不会抛出异常，通过callback返回审核后的结果，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息. 
+
+注：如果需要详细的返回结果，请调用审核产品原生接口
+

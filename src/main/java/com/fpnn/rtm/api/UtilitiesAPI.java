@@ -26,9 +26,18 @@ public interface UtilitiesAPI extends APIBase{
         void done(String text, Set<String> classification, int errorCode, String errorMessage);
     }
 
-    interface TranscribeLambdaCallback{
+    interface SpeechToTextLambdaCallback {
         void done(String text, String lang, int errorCode, String errorMessage);
     }
+
+    interface TextCheckLambdaCallback {
+        void done(int result, String text, Set<Integer> tags, Set<String> wlist, int errorCode, String errorMessage);
+    }
+
+    interface OtherCheckLambdaCallback {
+        void done(int result, Set<Integer> tags, int errorCode, String errorMessage);
+    }
+
 
     enum TranslateType{
         TRANSLATE_TYPE_CHAT,
@@ -201,6 +210,7 @@ public interface UtilitiesAPI extends APIBase{
 
 
     //---------------------------------profanity----------------------------
+    // Explain: maybe in after version this interface will be deprecated，recommend use TextCheck interface replace
     default void profanity(String text, boolean classify, long uid, StringBuffer resultText, Set<String> classification, int timeoutInsecond)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException{
         RTMServerClientBase client = getCoreClient();
@@ -340,97 +350,72 @@ public interface UtilitiesAPI extends APIBase{
         profanity(text, callback, 0);
     }
 
-    //-----------------------------transcribe------------------
-    default void transcribe(byte[] audio, long uid, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond)
+    //-----------------------------speechToText------------------
+    default void speechToText(String audio, int audioType, RTMTranslateLanguage lang, String codec, int srate, long uid,  StringBuffer text, StringBuffer dstLang, int timeoutInsecond)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException{
         RTMServerClientBase client = getCoreClient();
-        Quest quest = client.genBasicQuest("transcribe");
-        quest.param("audio", new String(audio));
-        if(uid > 0)
+        Quest quest = client.genBasicQuest("speech2text");
+        quest.param("audio", audio);
+        quest.param("type", audioType);
+        quest.param("lang", lang.toString());
+        if(codec.length() > 0) {
+            quest.param("codec", codec);
+        }
+
+        if(srate > 0) {
+            quest.param("srate", srate);
+        }
+
+        if(uid > 0){
             quest.param("uid", uid);
-        quest.param("profanityFilter", profanityFilter);
+        }
         Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInsecond);
         text.setLength(0);
-        lang.setLength(0);
+        dstLang.setLength(0);
         text.append((String) answer.get("text", ""));
-        lang.append((String)answer.get("lang", ""));
+        dstLang.append((String)answer.get("lang", ""));
     }
 
-    default void transcribe(byte[] audio, long uid, boolean profanityFilter, StringBuffer text, StringBuffer lang)
+    default void speechToText(String audio, int audioType, RTMTranslateLanguage lang, String codec, int srate, long uid,  StringBuffer text, StringBuffer dstLang)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        transcribe(audio, uid, profanityFilter, text, lang,120);
+        speechToText(audio, audioType, lang, codec, srate, uid, text, dstLang, 120);
     }
 
-    default void transcribe(byte[] audio, StringBuffer text, StringBuffer lang, int timeoutInsecond)
+    default void speechToText(String audio, int audioType, RTMTranslateLanguage lang, StringBuffer text, StringBuffer dstLang, int timeoutInsecond)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-
-        RTMServerClientBase client = getCoreClient();
-        Quest quest = client.genBasicQuest("transcribe");
-        quest.param("audio", new String(audio));
-        Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInsecond);
-        text.setLength(0);
-        lang.setLength(0);
-        text.append((String) answer.get("text", ""));
-        lang.append((String)answer.get("lang", ""));
+        speechToText(audio, audioType, lang, "", 0, 0, text, dstLang, timeoutInsecond);
     }
 
-    default void transcribe(byte[] audio, StringBuffer text, StringBuffer lang)
+    default void speechToText(String audio, int audioType, RTMTranslateLanguage lang, StringBuffer text, StringBuffer dstLang)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        transcribe(audio, text, lang, 120);
+        speechToText(audio, audioType, lang, text, dstLang, 120);
     }
 
-    default void transcribe(byte[] audio, long uid, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond){
+    default void speechToText(String audio, int audioType, RTMTranslateLanguage lang, String codec, int srate, long uid, SpeechToTextLambdaCallback callback, int timeoutInsecond){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
-            quest = client.genBasicQuest("transcribe");
+            quest = client.genBasicQuest("speech2text");
         }catch (Exception ex){
-            ErrorRecorder.record("Generate transcribe message sign exception.", ex);
-            callback.done("", "", ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate transcribe message sign exception.");
+            ErrorRecorder.record("Generate speech2text message sign exception.", ex);
+            callback.done("", "", ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate speech2text message sign exception.");
             return;
         }
-        quest.param("audio", new String(audio));
-        if(uid > 0)
+        quest.param("audio", audio);
+        quest.param("type", audioType);
+        quest.param("lang", lang.toString());
+        if(codec.length() > 0) {
+            quest.param("codec", codec);
+        }
+
+        if(srate > 0) {
+            quest.param("srate", srate);
+        }
+
+        if(uid > 0){
             quest.param("uid", uid);
-        quest.param("profanityFilter", profanityFilter);
-
-        AnswerCallback answerCallback = new AnswerCallback() {
-            @Override
-            public void onAnswer(Answer answer) {
-                if(answer != null){
-                    callback.done((String)answer.get("text", ""), (String)answer.get("lang", ""), ErrorCode.FPNN_EC_OK.value(), "");
-                }
-            }
-
-            @Override
-            public void onException(Answer answer, int i) {
-                String info = null;
-                if(answer != null){
-                    info = (String)answer.get("ex", "");
-                }
-                callback.done("", "", i, info);
-
-            }
-        };
-        client.sendQuest(quest, answerCallback, timeoutInsecond);
-
-    }
-
-    default void transcribe(byte[] audio, long uid, boolean profanityFilter, TranscribeLambdaCallback callback){
-        transcribe(audio, uid, profanityFilter, callback, 120);
-    }
-
-    default void transcribe(byte[] audio, TranscribeLambdaCallback callback, int timeoutInsecond){
-        RTMServerClientBase client = getCoreClient();
-        Quest quest;
-        try{
-            quest = client.genBasicQuest("transcribe");
-        }catch (Exception ex){
-            ErrorRecorder.record("Generate transcribe message sign exception.", ex);
-            callback.done("", "", ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate transcribe message sign exception.");
-            return;
         }
-        quest.param("audio", new String(audio));
+
         AnswerCallback answerCallback = new AnswerCallback() {
             @Override
             public void onAnswer(Answer answer) {
@@ -450,130 +435,102 @@ public interface UtilitiesAPI extends APIBase{
             }
         };
         client.sendQuest(quest, answerCallback, timeoutInsecond);
+
     }
 
-    default void transcribe(byte[] audio, TranscribeLambdaCallback callback){
-        transcribe(audio, callback, 120);
+    default void speechToText(String audio, int audioType, RTMTranslateLanguage lang, String codec, int srate, long uid, SpeechToTextLambdaCallback callback){
+        speechToText(audio, audioType, lang, codec, srate, uid, callback, 120);
     }
 
-    //-----------------------------stranscribe------------------
-    default void stranscribe(long from, long messageId, long xid, MessageType type, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond)
+    default void speechToText(String audio, int audioType, RTMTranslateLanguage lang, SpeechToTextLambdaCallback callback, int timeoutInsecond){
+        speechToText(audio, audioType, lang, "", 0, 0, callback, timeoutInsecond);
+    }
+
+    default void speechToText(String audio, int audioType, RTMTranslateLanguage lang, SpeechToTextLambdaCallback callback){
+        speechToText(audio, audioType, lang, callback, 120);
+    }
+
+    //-----------------------------textCheck------------------
+    default int textCheck(String text, long uid, StringBuffer resultText, Set<Integer> tags, Set<String> wlist, int timeoutInsecond)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException{
         RTMServerClientBase client = getCoreClient();
-        Quest quest = client.genBasicQuest("stranscribe");
-        quest.param("from", from);
-        quest.param("mid", messageId);
-        quest.param("xid", xid);
-        quest.param("type", type.value());
-        quest.param("profanityFilter", profanityFilter);
+        Quest quest = client.genBasicQuest("tcheck");
+        quest.param("text", text);
+        if(uid > 0) {
+            quest.param("uid", uid);
+        }
         Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInsecond);
-        text.setLength(0);
-        lang.setLength(0);
-        text.append((String) answer.get("text", ""));
-        lang.append((String)answer.get("lang", ""));
+        resultText.setLength(0);
+        resultText.append((String) answer.get("text", ""));
+        int result = answer.getInt("result", -1);
+        Object object = answer.get("tags", null);
+        if(object != null){
+            List<Object> data = (List<Object>)object;
+            for(Object o : data){
+                tags.add(Integer.valueOf(String.valueOf(o)));
+            }
+        }
+        object = answer.get("wlist", null);
+        if(object != null) {
+            List<Object> data = (List<Object>)object;
+            for(Object o : data){
+                wlist.add(String.valueOf(o));
+            }
+        }
+        return result;
     }
 
-    default void stranscribeP2PAudio(long fromUid, long messageId, long toUid, boolean profanityFilter, StringBuffer text, StringBuffer lang)
+    default int textCheck(String text, long uid, StringBuffer resultText, Set<Integer> tags, Set<String> wlist)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, toUid, MessageType.MESSAGE_TYPE_P2P, profanityFilter, text, lang,120);
+        return textCheck(text, uid, resultText, tags, wlist, 0);
     }
 
-    default void stranscribeP2PAudio(long fromUid, long messageId, long toUid, StringBuffer text, StringBuffer lang)
+    default int textCheck(String text, StringBuffer resultText, Set<Integer> tags, Set<String> wlist)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, toUid, MessageType.MESSAGE_TYPE_P2P, false, text, lang,120);
+        return textCheck(text, 0, resultText, tags, wlist, 0);
     }
 
-    default void stranscribeP2PAudio(long fromUid, long messageId, long toUid, StringBuffer text, StringBuffer lang, int timeoutInsecond)
+    default int textCheck(String text, StringBuffer resultText, Set<Integer> tags, Set<String> wlist, int timeoutInsecond)
             throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, toUid, MessageType.MESSAGE_TYPE_P2P, false, text, lang, timeoutInsecond);
+        return textCheck(text, 0, resultText, tags, wlist, timeoutInsecond);
     }
 
-    default void stranscribeP2PAudio(long fromUid, long messageId, long toUid, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, toUid, MessageType.MESSAGE_TYPE_P2P, profanityFilter, text, lang, timeoutInsecond);
-    }
-
-    default void stranscribeGroupAudio(long fromUid, long messageId, long groupId, boolean profanityFilter, StringBuffer text, StringBuffer lang)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, groupId, MessageType.MESSAGE_TYPE_GROUP, profanityFilter, text, lang,120);
-    }
-
-    default void stranscribeGroupAudio(long fromUid, long messageId, long groupId, StringBuffer text, StringBuffer lang)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, groupId, MessageType.MESSAGE_TYPE_GROUP, false, text, lang,120);
-    }
-
-    default void stranscribeGroupAudio(long from, long messageId, long groupId, StringBuffer text, StringBuffer lang, int timeoutInsecond)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(from, messageId, groupId, MessageType.MESSAGE_TYPE_GROUP, false, text, lang, timeoutInsecond);
-    }
-
-    default void stranscribeGroupAudio(long fromUid, long messageId, long groupId, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, groupId, MessageType.MESSAGE_TYPE_GROUP, profanityFilter, text, lang, timeoutInsecond);
-    }
-
-    default void stranscribeRoomAudio(long fromUid, long messageId, long roomId, boolean profanityFilter, StringBuffer text, StringBuffer lang)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, roomId, MessageType.MESSAGE_TYPE_ROOM, profanityFilter, text, lang,120);
-    }
-
-    default void stranscribeRoomAudio(long fromUid, long messageId, long roomId, StringBuffer text, StringBuffer lang)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, roomId, MessageType.MESSAGE_TYPE_ROOM, false, text, lang,120);
-    }
-
-    default void stranscribeRoomAudio(long fromUid, long messageId, long roomId, StringBuffer text, StringBuffer lang, int timeoutInsecond)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, roomId, MessageType.MESSAGE_TYPE_ROOM, false, text, lang, timeoutInsecond);
-    }
-
-    default void stranscribeRoomAudio(long fromUid, long messageId, long roomId, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, roomId, MessageType.MESSAGE_TYPE_ROOM, profanityFilter, text, lang, timeoutInsecond);
-    }
-
-    default void stranscribeBroadcastAudio(long fromUid, long messageId, boolean profanityFilter, StringBuffer text, StringBuffer lang)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, 0, MessageType.MESSAGE_TYPE_BROADCAST, profanityFilter, text, lang,120);
-    }
-
-    default void stranscribeBroadcastAudio(long fromUid, long messageId, StringBuffer text, StringBuffer lang)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, 0, MessageType.MESSAGE_TYPE_BROADCAST, false, text, lang,120);
-    }
-
-    default void stranscribeBroadcastAudio(long fromUid, long messageId, StringBuffer text, StringBuffer lang, int timeoutInsecond)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, 0, MessageType.MESSAGE_TYPE_BROADCAST, false, text, lang, timeoutInsecond);
-    }
-
-    default void stranscribeBroadcastAudio(long fromUid, long messageId, boolean profanityFilter, StringBuffer text, StringBuffer lang, int timeoutInsecond)
-            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
-        stranscribe(fromUid, messageId, 0, MessageType.MESSAGE_TYPE_BROADCAST, profanityFilter, text, lang, timeoutInsecond);
-    }
-
-    default void stranscribe(long from, long messageId, long xid, MessageType type, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond){
+    default void textCheck(String text, long uid, TextCheckLambdaCallback callback, int timeoutInsecond){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
-            quest = client.genBasicQuest("stranscribe");
+            quest = client.genBasicQuest("tcheck");
         }catch (Exception ex){
-            ErrorRecorder.record("Generate stranscribe message sign exception.", ex);
-            callback.done("", "", ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate stranscribe message sign exception.");
+            ErrorRecorder.record("Generate tcheck message sign exception.", ex);
+            callback.done(-1, "", null, null, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate tcheck message sign exception.");
             return;
         }
-        quest.param("from", from);
-        quest.param("mid", messageId);
-        quest.param("xid", xid);
-        quest.param("type", type.value());
-        quest.param("profanityFilter", profanityFilter);
+        quest.param("text", text);
+        if(uid > 0){
+            quest.param("uid", uid);
+        }
 
         AnswerCallback answerCallback = new AnswerCallback() {
             @Override
             public void onAnswer(Answer answer) {
                 if(answer != null){
-                    callback.done((String)answer.get("text", ""), (String)answer.get("lang", ""), ErrorCode.FPNN_EC_OK.value(), "");
+                    Set<Integer> tags = new HashSet<>();
+                    Object object = answer.get("tags", null);
+                    if(object != null){
+                        List<Object> data = (List<Object>)object;
+                        for(Object o : data){
+                            tags.add(Integer.valueOf(String.valueOf(o)));
+                        }
+                    }
+                    Set<String> wlist = new HashSet<>();
+                    object = answer.get("wlist", null);
+                    if(object != null) {
+                        List<Object> data = (List<Object>)object;
+                        for(Object o : data){
+                            wlist.add(String.valueOf(o));
+                        }
+                    }
+                    callback.done(answer.getInt("result", -1), (String)answer.get("text", ""), tags, wlist, ErrorCode.FPNN_EC_OK.value(), "");
                 }
             }
 
@@ -583,74 +540,323 @@ public interface UtilitiesAPI extends APIBase{
                 if(answer != null){
                     info = (String)answer.get("ex", "");
                 }
-                callback.done("", "", i, info);
+                callback.done(-1, "", null, null, i, info);
 
             }
         };
         client.sendQuest(quest, answerCallback, timeoutInsecond);
     }
 
-    default void stranscribeP2PAudio(long fromUid, long messageId, long toUid, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond){
-        stranscribe(fromUid, messageId, toUid, MessageType.MESSAGE_TYPE_P2P, profanityFilter, callback, timeoutInsecond);
+    default void textCheck(String text, long uid, TextCheckLambdaCallback callback) {
+        textCheck(text, uid, callback, 0);
     }
 
-    default void stranscribeP2PAudio(long fromUid, long messageId, long toUid, boolean profanityFilter, TranscribeLambdaCallback callback){
-        stranscribe(fromUid, messageId, toUid, MessageType.MESSAGE_TYPE_P2P, profanityFilter, callback, 120);
+    default void textCheck(String text, TextCheckLambdaCallback callback) {
+        textCheck(text, 0, callback);
     }
 
-    default void stranscribeP2PAudio(long fromUid, long messageId, long toUid, TranscribeLambdaCallback callback, int timeoutInsecond){
-        stranscribe(fromUid, messageId, toUid, MessageType.MESSAGE_TYPE_P2P, false, callback, timeoutInsecond);
+    default void textCheck(String text, TextCheckLambdaCallback callback, int timeoutInsecond) {
+        textCheck(text, 0, callback, timeoutInsecond);
     }
 
-    default void stranscribeP2PAudio(long fromUid, long messageId, long toUid, TranscribeLambdaCallback callback){
-        stranscribe(fromUid, messageId, toUid, MessageType.MESSAGE_TYPE_P2P, false, callback, 120);
+    ////////////////////////////////// imageCheck ///////////////////////////
+    default int imageCheck(String image, int imageType, long uid, Set<Integer>tags,  int timeoutInsecond)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
+        RTMServerClientBase client = getCoreClient();
+        Quest quest = client.genBasicQuest("icheck");
+        quest.param("image", image);
+        quest.param("type", imageType);
+        if(uid > 0) {
+            quest.param("uid", uid);
+        }
+        Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInsecond);
+        int result = answer.getInt("result", -1);
+        Object object = answer.get("tags", null);
+        if(object != null){
+            List<Object> data = (List<Object>)object;
+            for(Object o : data){
+                tags.add(Integer.valueOf(String.valueOf(o)));
+            }
+        }
+        return result;
     }
 
-    default void stranscribeGroupAudio(long fromUid, long messageId, long groupId, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond){
-        stranscribe(fromUid, messageId, groupId, MessageType.MESSAGE_TYPE_GROUP, profanityFilter, callback, timeoutInsecond);
+    default int imageCheck(String image, int imageType, long uid, Set<Integer>tags)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
+        return imageCheck(image, imageType, uid, tags, 120);
     }
 
-    default void stranscribeGroupAudio(long fromUid, long messageId, long groupId, boolean profanityFilter, TranscribeLambdaCallback callback){
-        stranscribe(fromUid, messageId, groupId, MessageType.MESSAGE_TYPE_GROUP, profanityFilter, callback, 120);
+    default int imageCheck(String image, int imageType, Set<Integer>tags)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
+        return imageCheck(image, imageType, tags, 120);
     }
 
-    default void stranscribeGroupAudio(long fromUid, long messageId, long groupId, TranscribeLambdaCallback callback, int timeoutInsecond){
-        stranscribe(fromUid, messageId, groupId, MessageType.MESSAGE_TYPE_GROUP, false, callback, timeoutInsecond);
+    default int imageCheck(String image, int imageType, Set<Integer>tags, int timeoutInsecond)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
+        return imageCheck(image, imageType, 0, tags, timeoutInsecond);
     }
 
-    default void stranscribeGroupAudio(long fromUid, long messageId, long groupId, TranscribeLambdaCallback callback){
-        stranscribe(fromUid, messageId, groupId, MessageType.MESSAGE_TYPE_GROUP, false, callback, 120);
+    default void imageCheck(String image, int imageType, long uid, OtherCheckLambdaCallback callback, int timeoutInsecond){
+        RTMServerClientBase client = getCoreClient();
+        Quest quest;
+        try{
+            quest = client.genBasicQuest("icheck");
+        }catch (Exception ex){
+            ErrorRecorder.record("Generate icheck message sign exception.", ex);
+            callback.done(-1, null, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate icheck message sign exception.");
+            return;
+        }
+        quest.param("image", image);
+        quest.param("type", imageType);
+        if(uid > 0){
+            quest.param("uid", uid);
+        }
+
+        AnswerCallback answerCallback = new AnswerCallback() {
+            @Override
+            public void onAnswer(Answer answer) {
+                if(answer != null){
+                    Set<Integer> tags = new HashSet<>();
+                    Object object = answer.get("tags", null);
+                    if(object != null){
+                        List<Object> data = (List<Object>)object;
+                        for(Object o : data){
+                            tags.add(Integer.valueOf(String.valueOf(o)));
+                        }
+                    }
+                    callback.done(answer.getInt("result", -1),  tags, ErrorCode.FPNN_EC_OK.value(), "");
+                }
+            }
+
+            @Override
+            public void onException(Answer answer, int i) {
+                String info = null;
+                if(answer != null){
+                    info = (String)answer.get("ex", "");
+                }
+                callback.done(-1, null, i, info);
+
+            }
+        };
+        client.sendQuest(quest, answerCallback, timeoutInsecond);
     }
 
-    default void stranscribeRoomAudio(long fromUid, long messageId, long roomId, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond){
-        stranscribe(fromUid, messageId, roomId, MessageType.MESSAGE_TYPE_ROOM, profanityFilter, callback, timeoutInsecond);
+    default void imageCheck(String image, int imageType, long uid, OtherCheckLambdaCallback callback) {
+        imageCheck(image, imageType, uid, callback, 120);
     }
 
-    default void stranscribeRoomAudio(long fromUid, long messageId, long roomId, boolean profanityFilter, TranscribeLambdaCallback callback){
-        stranscribe(fromUid, messageId, roomId, MessageType.MESSAGE_TYPE_ROOM, profanityFilter, callback, 120);
+    default void imageCheck(String image, int imageType, OtherCheckLambdaCallback callback) {
+        imageCheck(image, imageType, callback,120);
     }
 
-    default void stranscribeRoomAudio(long fromUid, long messageId, long roomId, TranscribeLambdaCallback callback, int timeoutInsecond){
-        stranscribe(fromUid, messageId, roomId, MessageType.MESSAGE_TYPE_ROOM, false, callback, timeoutInsecond);
+    default void imageCheck(String image, int imageType, OtherCheckLambdaCallback callback, int timeoutInsecond) {
+        imageCheck(image, imageType, 0, callback, timeoutInsecond);
     }
 
-    default void stranscribeRoomAudio(long fromUid, long messageId, long roomId, TranscribeLambdaCallback callback){
-        stranscribe(fromUid, messageId, roomId, MessageType.MESSAGE_TYPE_ROOM, false, callback, 120);
+    ////////////////////////////////// audioCheck ///////////////////////////
+    default int audioCheck(String audio, int audioType, RTMTranslateLanguage lang, long uid, String codec, int srate, Set<Integer>tags,  int timeoutInsecond)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
+        RTMServerClientBase client = getCoreClient();
+        Quest quest = client.genBasicQuest("acheck");
+        quest.param("audio", audio);
+        quest.param("type", audioType);
+        quest.param("lang", lang);
+
+        if(codec.length() > 0) {
+            quest.param("codec", codec);
+        }
+        if(srate > 0) {
+            quest.param("srate", srate);
+        }
+        if(uid > 0) {
+            quest.param("uid", uid);
+        }
+        Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInsecond);
+        int result = answer.getInt("result", -1);
+        Object object = answer.get("tags", null);
+        if(object != null){
+            List<Object> data = (List<Object>)object;
+            for(Object o : data){
+                tags.add(Integer.valueOf(String.valueOf(o)));
+            }
+        }
+        return result;
     }
 
-    default void stranscribeBroadcastAudio(long fromUid, long messageId, boolean profanityFilter, TranscribeLambdaCallback callback, int timeoutInsecond){
-        stranscribe(fromUid, messageId, 0, MessageType.MESSAGE_TYPE_BROADCAST, profanityFilter, callback, timeoutInsecond);
+    default int audioCheck(String audio, int audioType, RTMTranslateLanguage lang, long uid, String codec, int srate, Set<Integer>tags)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
+        return audioCheck(audio, audioType, lang, uid, codec, srate, tags, 120);
     }
 
-    default void stranscribeBroadcastAudio(long fromUid, long messageId, boolean profanityFilter, TranscribeLambdaCallback callback){
-        stranscribe(fromUid, messageId, 0, MessageType.MESSAGE_TYPE_BROADCAST, profanityFilter, callback, 120);
+    default int audioCheck(String audio, int audioType, RTMTranslateLanguage lang, Set<Integer>tags)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
+        return audioCheck(audio, audioType, lang, tags, 120);
     }
 
-    default void stranscribeBroadcastAudio(long fromUid, long messageId, TranscribeLambdaCallback callback, int timeoutInsecond){
-        stranscribe(fromUid, messageId, 0, MessageType.MESSAGE_TYPE_BROADCAST, false, callback, timeoutInsecond);
+    default int audioCheck(String audio, int audioType, RTMTranslateLanguage lang, Set<Integer>tags, int timeoutInsecond)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
+        return audioCheck(audio, audioType, lang, 0, "", 0, tags, timeoutInsecond);
     }
 
-    default void stranscribeBroadcastAudio(long fromUid, long messageId, TranscribeLambdaCallback callback){
-        stranscribe(fromUid, messageId, 0, MessageType.MESSAGE_TYPE_BROADCAST, false, callback, 120);
+    default void audioCheck(String audio, int audioType, RTMTranslateLanguage lang, long uid, String codec, int srate, OtherCheckLambdaCallback callback, int timeoutInsecond){
+        RTMServerClientBase client = getCoreClient();
+        Quest quest;
+        try{
+            quest = client.genBasicQuest("acheck");
+        }catch (Exception ex){
+            ErrorRecorder.record("Generate acheck message sign exception.", ex);
+            callback.done(-1, null, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate acheck message sign exception.");
+            return;
+        }
+        quest.param("audio", audio);
+        quest.param("type", audioType);
+        quest.param("lang", lang.toString());
+
+        if(codec.length() > 0) {
+            quest.param("codec", codec);
+        }
+        if(srate > 0) {
+            quest.param("srate", srate);
+        }
+        if(uid > 0){
+            quest.param("uid", uid);
+        }
+
+        AnswerCallback answerCallback = new AnswerCallback() {
+            @Override
+            public void onAnswer(Answer answer) {
+                if(answer != null){
+                    Set<Integer> tags = new HashSet<>();
+                    Object object = answer.get("tags", null);
+                    if(object != null){
+                        List<Object> data = (List<Object>)object;
+                        for(Object o : data){
+                            tags.add(Integer.valueOf(String.valueOf(o)));
+                        }
+                    }
+                    callback.done(answer.getInt("result", -1),  tags, ErrorCode.FPNN_EC_OK.value(), "");
+                }
+            }
+
+            @Override
+            public void onException(Answer answer, int i) {
+                String info = null;
+                if(answer != null){
+                    info = (String)answer.get("ex", "");
+                }
+                callback.done(-1, null, i, info);
+
+            }
+        };
+        client.sendQuest(quest, answerCallback, timeoutInsecond);
     }
+
+    default void audioCheck(String audio, int audioType, RTMTranslateLanguage lang, long uid, String codec, int srate, OtherCheckLambdaCallback callback) {
+        audioCheck(audio, audioType, lang, uid, codec, srate, callback, 120);
+    }
+
+    default void audioCheck(String audio, int audioType, RTMTranslateLanguage lang, OtherCheckLambdaCallback callback) {
+        audioCheck(audio, audioType, lang, callback,120);
+    }
+
+    default void audioCheck(String audio, int audioType, RTMTranslateLanguage lang, OtherCheckLambdaCallback callback, int timeoutInsecond) {
+        audioCheck(audio, audioType, lang, 0, "", 0, callback, timeoutInsecond);
+    }
+
+    ////////////////////////////////// videoCheck ///////////////////////////
+    default int videoCheck(String video, int videoType, String videoName, long uid, Set<Integer> tags, int timeoutInsecond)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
+        RTMServerClientBase client = getCoreClient();
+        Quest quest = client.genBasicQuest("vcheck");
+        quest.param("video", video);
+        quest.param("type", videoType);
+        quest.param("videoName", videoName);
+        if(uid > 0) {
+            quest.param("uid", uid);
+        }
+        Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInsecond);
+        int result = answer.getInt("result", -1);
+        Object object = answer.get("tags", null);
+        if(object != null){
+            List<Object> data = (List<Object>)object;
+            for(Object o : data){
+                tags.add(Integer.valueOf(String.valueOf(o)));
+            }
+        }
+        return result;
+    }
+
+    default int videoCheck(String video, int videoType, String videoName, long uid, Set<Integer>tags)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
+        return videoCheck(video, videoType, videoName, uid, tags, 120);
+    }
+
+    default int videoCheck(String video, int videoType, String videoName, Set<Integer>tags)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
+        return videoCheck(video, videoType, videoName, tags, 120);
+    }
+
+    default int videoCheck(String video, int videoType, String videoName, Set<Integer>tags, int timeoutInsecond)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException{
+        return videoCheck(video, videoType, videoName,0, tags, timeoutInsecond);
+    }
+
+    default void videoCheck(String video, int videoType, String videoName, long uid, OtherCheckLambdaCallback callback, int timeoutInsecond){
+        RTMServerClientBase client = getCoreClient();
+        Quest quest;
+        try{
+            quest = client.genBasicQuest("vcheck");
+        }catch (Exception ex){
+            ErrorRecorder.record("Generate vcheck message sign exception.", ex);
+            callback.done(-1, null, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate vcheck message sign exception.");
+            return;
+        }
+        quest.param("video", video);
+        quest.param("type", videoType);
+        quest.param("videoName", videoName);
+        if(uid > 0){
+            quest.param("uid", uid);
+        }
+
+        AnswerCallback answerCallback = new AnswerCallback() {
+            @Override
+            public void onAnswer(Answer answer) {
+                if(answer != null){
+                    Set<Integer> tags = new HashSet<>();
+                    Object object = answer.get("tags", null);
+                    if(object != null){
+                        List<Object> data = (List<Object>)object;
+                        for(Object o : data){
+                            tags.add(Integer.valueOf(String.valueOf(o)));
+                        }
+                    }
+                    callback.done(answer.getInt("result", -1),  tags, ErrorCode.FPNN_EC_OK.value(), "");
+                }
+            }
+
+            @Override
+            public void onException(Answer answer, int i) {
+                String info = null;
+                if(answer != null){
+                    info = (String)answer.get("ex", "");
+                }
+                callback.done(-1, null, i, info);
+
+            }
+        };
+        client.sendQuest(quest, answerCallback, timeoutInsecond);
+    }
+
+    default void videoCheck(String video, int videoType, String videoName, long uid, OtherCheckLambdaCallback callback) {
+        videoCheck(video, videoType, videoName, uid, callback, 120);
+    }
+
+    default void videoCheck(String video, int videoType, String videoName, OtherCheckLambdaCallback callback) {
+        videoCheck(video, videoType, videoName, callback,120);
+    }
+
+    default void videoCheck(String video, int videoType, String videoName, OtherCheckLambdaCallback callback, int timeoutInsecond) {
+        videoCheck(video, videoType, videoName, 0, callback, timeoutInsecond);
+    }
+
 }

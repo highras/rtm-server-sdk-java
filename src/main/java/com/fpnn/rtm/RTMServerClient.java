@@ -12,8 +12,8 @@ public class RTMServerClient extends RTMServerClientBase implements ChatAPI, Dat
         GroupAPI, ListeningAPI, MessageAPI, RoomAPI, TokenAPI, UserAPI, DeviceAPI, UtilitiesAPI, HistoryChatAPI,
         HistoryMessageAPI, BlacklistAPI {
 
-    public static String SDKVersion = "2.1.0";
-    public static String InterfaceVersion = "2.2.0";
+    public static String SDKVersion = "2.2.0";
+    public static String InterfaceVersion = "2.3.0";
 
     public static class RegressiveState {
         public int currentFailedCount = 0;

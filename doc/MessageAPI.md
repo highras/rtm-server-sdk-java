@@ -214,7 +214,7 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
             public String stringMessage;
             public byte[] binaryMessage;
             public String attrs;
-            public AudioInfo audioInfo = null;   //for serverpush and history
+            public FileMsgInfo fileMsgInfo = null;
     
             @Override
             public String toString(){
@@ -235,6 +235,8 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
                 return "";
             }
         }
+
+参见: [FileMsgInfo](HistoryMessageAPI.md#历史消息数据单元)  
 
 返回值:     
   

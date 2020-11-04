@@ -33,33 +33,6 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 
 * **async**: 异步接口不会抛出异常，通过callback返回mtime，或者error信息, 当errorCode不等于ErrorCode.FPNN_EC_OK.value(),则为error返回，可查看message错误信息.
    
-### 发送 P2P 语音消息
-
-    // sync methods
-    long sendAudio(long fromUid, long toUid, byte[] message, String attrs);
-    long sendAudio(long fromUid, long toUid, byte[] message, String attrs, int timeoutInseconds);
-    
-    // async methods
-    void sendAudio(long fromUid, long toUid, byte[] message, String attrs, SendMessageLambdaCallback callback);
-    void sendAudio(long fromUid, long toUid, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
-    
-参数说明：   
-* `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
-
-* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
-client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
-
-* `SendMessageLambdaCallback callback`: 为异步回调返回接口, mtime以及 error信息将通过callback返回
-        
-        public interface SendMessageLambdaCallback{
-            void done(long time, int errorCode, String errorMessage);
-        }
-
-返回值:       
-* **sync**: 同步接口正常时返回mtime，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
-
-* **async**: 异步接口不会抛出异常，通过callback返回mtime，或者error信息, 当errorCode不等于ErrorCode.FPNN_EC_OK.value(),则为error返回，可查看message错误信息.   
-    
 ### 发送 P2P 控制命令
 
     // sync methods
@@ -97,33 +70,6 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
     void sendChats(long fromUid, Set<Long> toUids, String message, String attrs, SendMessageLambdaCallback callback);
     void sendChats(long fromUid, Set<Long> toUids, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
     
-参数说明：   
-* `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
-
-* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
-client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
-
-* `SendMessageLambdaCallback callback`: 为异步回调返回接口, mtime以及 error信息将通过callback返回
-        
-        public interface SendMessageLambdaCallback{
-            void done(long time, int errorCode, String errorMessage);
-        }
-
-返回值:       
-* **sync**: 同步接口正常时返回mtime，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
-
-* **async**: 异步接口不会抛出异常，通过callback返回mtime，或者error信息, 当errorCode不等于ErrorCode.FPNN_EC_OK.value(),则为error返回，可查看message错误信息.
-
-### 发送多人 P2P 语音消息
-
-    // sync methods
-    long sendAudios(long fromUid, Set<Long> toUids, byte[] message, String attrs);
-    long sendAudios(long fromUid, Set<Long> toUids, byte[] message, String attrs, int timeoutInseconds);
-    
-    // async methods
-    void sendAudios(long fromUid, Set<Long> toUids, byte[] message, String attrs, SendMessageLambdaCallback callback);
-    void sendAudios(long fromUid, Set<Long> toUids, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
-
 参数说明：   
 * `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
 
@@ -195,33 +141,6 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
 
 * **async**: 异步接口不会抛出异常，通过callback返回mtime，或者error信息, 当errorCode不等于ErrorCode.FPNN_EC_OK.value(),则为error返回，可查看message错误信息.
 
-### 发送 Group 语音消息
-
-    // sync methods
-    long sendGroupAudio(long fromUid, long groupId, byte[] message, String attrs);
-    long sendGroupAudio(long fromUid, long groupId, byte[] message, String attrs, int timeoutInseconds);
-    
-    // async methods
-    void sendGroupAudio(long fromUid, long groupId, byte[] message, String attrs, SendMessageLambdaCallback callback);
-    void sendGroupAudio(long fromUid, long groupId, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
-
-参数说明：   
-* `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
-
-* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
-client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
-
-* `SendMessageLambdaCallback callback`: 为异步回调返回接口, mtime以及 error信息将通过callback返回
-        
-        public interface SendMessageLambdaCallback{
-            void done(long time, int errorCode, String errorMessage);
-        }
-
-返回值:       
-* **sync**: 同步接口正常时返回mtime，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
-
-* **async**: 异步接口不会抛出异常，通过callback返回mtime，或者error信息, 当errorCode不等于ErrorCode.FPNN_EC_OK.value(),则为error返回，可查看message错误信息.
-
 ### 发送 Group 控制命令
 
     // sync methods
@@ -258,33 +177,6 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
     // async methods
     void sendRoomChat(long fromUid, long roomId, String message, String attrs, SendMessageLambdaCallback callback);
     void sendRoomChat(long fromUid, long roomId, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
-    
-参数说明：   
-* `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
-
-* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
-client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
-
-* `SendMessageLambdaCallback callback`: 为异步回调返回接口, mtime以及 error信息将通过callback返回
-        
-        public interface SendMessageLambdaCallback{
-            void done(long time, int errorCode, String errorMessage);
-        }
-
-返回值:       
-* **sync**: 同步接口正常时返回mtime，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
-
-* **async**: 异步接口不会抛出异常，通过callback返回mtime，或者error信息, 当errorCode不等于ErrorCode.FPNN_EC_OK.value(),则为error返回，可查看message错误信息.
-
-### 发送 Room 语音消息
-
-    // sync methods
-    long sendRoomAudio(long fromUid, long roomId, byte[] message, String attrs);
-    long sendRoomAudio(long fromUid, long roomId, byte[] message, String attrs, int timeoutInseconds);
-    
-    // async methods
-    void sendRoomAudio(long fromUid, long roomId, byte[] message, String attrs, SendMessageLambdaCallback callback);
-    void sendRoomAudio(long fromUid, long roomId,  byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
     
 参数说明：   
 * `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
@@ -341,35 +233,6 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
     void sendBroadcastChat(long fromUid, String message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
     
 参数说明:   
-* `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
-
-* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
-client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
-
-* `SendMessageLambdaCallback callback`: 为异步回调返回接口, mtime以及 error信息将通过callback返回
-        
-        public interface SendMessageLambdaCallback{
-            void done(long time, int errorCode, String errorMessage);
-        }
-
-返回值:       
-
-* **sync**: 同步接口正常时返回mtime，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
-
-* **async**: 异步接口不会抛出异常，通过callback返回mtime，或者error信息, 当errorCode不等于ErrorCode.FPNN_EC_OK.value(),则为error返回，可查看message错误信息.
-
-### 发送 Broadcast 语音消息
-
-    // sync methods
-    long sendBroadcastAudio(long fromUid, byte[] message, String attrs);
-    long sendBroadcastAudio(long fromUid, byte[] message, String attrs, int timeoutInseconds);
-    
-    // async methods
-    void sendBroadcastAudio(long fromUid, byte[] message, String attrs, SendMessageLambdaCallback callback);
-    void sendBroadcastAudio(long fromUid, byte[] message, String attrs, SendMessageLambdaCallback callback, int timeoutInseconds);
-
-参数说明:   
-
 * `String attrs`: 消息的属性信息，建议使用可解析的json字符串，默认为空字符串
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
@@ -459,7 +322,7 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
             public String stringMessage;
             public byte[] binaryMessage;
             public String attrs;
-            public AudioInfo audioInfo = null;  //for serverpush
+            public FileMsgInfo fileMsgInfo = null;
     
             @Override
             public String toString(){
@@ -480,6 +343,8 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
                 return "";
             }
         }
+
+参见: [FileMsgInfo](HistoryChatAPI.md#历史消息数据单元)  
 
 返回值:     
   
