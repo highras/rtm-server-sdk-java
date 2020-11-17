@@ -190,7 +190,8 @@ If client.setAutoConnect(false) is called, this explicit connecting method MUST 
                 
 ## API Docs
 
-Please refer: [API docs](doc/API.md)
+Please refer: [API docs](doc/API.md)    
+              [API docs_EN](doc_en/API.md)
 
 ## Directory Structure
 

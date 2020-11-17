@@ -335,6 +335,7 @@ interface MessageCoreAPI extends APIBase {
             if(info.messageType >= RTMMessageType.ImageFile.value() && info.messageType <= RTMMessageType.NormalFile.value()){
                 try{
                     String msg = String.valueOf(obj);
+                    info.stringMessage = msg;
                     info.fileMsgInfo = RTMServerClientBase.processFileInfo(msg, info.attrs, info.messageType);
                     info.attrs = RTMServerClientBase.fetchFileCustomAttrs(info.attrs);
 
@@ -653,6 +654,7 @@ interface MessageCoreAPI extends APIBase {
         info.attrs = (String)answer.get("attrs", "");
         info.modifiedTime = answer.getLong("mtime", 0);
         String msg = (String)answer.get("msg", "");
+        info.stringMessage = msg;
         if(info.messageType >= RTMMessageType.ImageFile.value() && info.messageType <= RTMMessageType.NormalFile.value()){
             try{
                 info.fileMsgInfo = RTMServerClientBase.processFileInfo(msg, info.attrs, info.messageType);
@@ -662,9 +664,6 @@ interface MessageCoreAPI extends APIBase {
                 ex.printStackTrace();
                 ErrorRecorder.record("unknown error file json string parse failed", ex);
             }
-        }
-        else{
-            info.stringMessage = msg;
         }
         message.message = info;
         return  message;

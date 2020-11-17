@@ -47,16 +47,20 @@ public class RTMServerQuestProcessor {
             message.messageId = mid;
             message.modifiedTime = mtime;
             message.attrs = attrs;
+            message.stringMessage = (String)msg;
             if(mtype == RTMMessageType.Chat.value()){
-                message.stringMessage = (String)msg;
                 monitor.pushP2PChat(message);
             }
             else if(mtype == RTMMessageType.Cmd.value()){
-                message.stringMessage = (String)msg;
                 monitor.pushP2PCmd(message);
             }
+            else if (mtype >= RTMMessageType.ImageFile.value() && mtype <= RTMMessageType.NormalFile.value())
+            {
+                message.fileMsgInfo = RTMServerClientBase.processFileInfo(message.stringMessage, message.attrs, message.messageType);
+                message.attrs = RTMServerClientBase.fetchFileCustomAttrs(message.attrs);
+                monitor.pushP2PFile(message);
+            }
             else{
-                message.stringMessage = (String)msg;
                 monitor.pushP2PMessage(message);
             }
         }
@@ -86,16 +90,20 @@ public class RTMServerQuestProcessor {
             message.messageId = mid;
             message.modifiedTime = mtime;
             message.attrs = attrs;
+            message.stringMessage = (String)msg;
             if(mtype == RTMMessageType.Chat.value()){
-                message.stringMessage = (String)msg;
                 monitor.pushGroupChat(message);
             }
             else if(mtype == RTMMessageType.Cmd.value()){
-                message.stringMessage = (String)msg;
                 monitor.pushGroupCmd(message);
             }
+            else if (mtype >= RTMMessageType.ImageFile.value() && mtype <= RTMMessageType.NormalFile.value())
+            {
+                message.fileMsgInfo = RTMServerClientBase.processFileInfo(message.stringMessage, message.attrs, message.messageType);
+                message.attrs = RTMServerClientBase.fetchFileCustomAttrs(message.attrs);
+                monitor.pushGroupFile(message);
+            }
             else{
-                message.stringMessage = (String)msg;
                 monitor.pushGroupMessage(message);
             }
         }
@@ -125,16 +133,19 @@ public class RTMServerQuestProcessor {
             message.messageId = mid;
             message.modifiedTime = mtime;
             message.attrs = attrs;
+            message.stringMessage = (String)msg;
             if(mtype == RTMMessageType.Chat.value()){
-                message.stringMessage = (String)msg;
                 monitor.pushRoomChat(message);
             }
             else if(mtype == RTMMessageType.Cmd.value()){
-                message.stringMessage = (String)msg;
                 monitor.pushRoomCmd(message);
             }
+            else if(mtype >= RTMMessageType.ImageFile.value() && mtype <= RTMMessageType.NormalFile.value()){
+                message.fileMsgInfo = RTMServerClientBase.processFileInfo(message.stringMessage, message.attrs, message.messageType);
+                message.attrs = RTMServerClientBase.fetchFileCustomAttrs(message.attrs);
+                monitor.pushRoomFile(message);
+            }
             else{
-                message.stringMessage = (String)msg;
                 monitor.pushRoomMessage(message);
             }
         }
@@ -155,67 +166,6 @@ public class RTMServerQuestProcessor {
         String endpoint = (String)quest.get("endpoint");
         String data = (String)quest.get("data", "");
         monitor.pushEvent(pid, event, uid, time, endpoint, data);
-
-        return new Answer(quest);
-    }
-
-    public Answer pushfile(Quest quest, InetSocketAddress peer){
-        if(monitor == null){
-            ErrorRecorder.record("[ERROR] RTMServerPushMonitor is unconfiged.");
-            return new Answer(quest);
-        }
-        RTMServerClientBase.RTMMessage message = new RTMServerClientBase.RTMMessage();
-        message.fromUid = quest.getLong("from", 0);
-        message.toId = quest.getLong("to", 0);
-        message.messageType = (byte)quest.getInt("mtype", 0);
-        message.messageId = quest.getLong("mid", 0);
-        String msg = (String)quest.get("msg", "");
-        message.attrs = (String)quest.get("attrs", "");
-        message.modifiedTime = quest.getLong("mtime", 0);
-        message.fileMsgInfo = RTMServerClientBase.processFileInfo(msg, message.attrs, message.messageType);
-        message.attrs = RTMServerClientBase.fetchFileCustomAttrs(message.attrs);
-        monitor.pushP2PFile(message);
-
-        return new Answer(quest);
-    }
-
-    public Answer pushgroupfile(Quest quest, InetSocketAddress peer){
-        if(monitor == null){
-            ErrorRecorder.record("[ERROR] RTMServerPushMonitor is unconfiged.");
-            return new Answer(quest);
-        }
-
-        RTMServerClientBase.RTMMessage message = new RTMServerClientBase.RTMMessage();
-        message.fromUid = quest.getLong("from", 0);
-        message.toId = quest.getLong("gid", 0);
-        message.messageType = (byte)quest.getInt("mtype", 0);
-        message.messageId = quest.getLong("mid", 0);
-        String msg = (String)quest.get("msg");
-        message.attrs = (String)quest.get("attrs");
-        message.modifiedTime = quest.getLong("mtime", 0);
-        message.fileMsgInfo = RTMServerClientBase.processFileInfo(msg, message.attrs, message.messageType);
-        message.attrs = RTMServerClientBase.fetchFileCustomAttrs(message.attrs);
-        monitor.pushGroupFile(message);
-
-        return new Answer(quest);
-    }
-
-    public Answer pushroomfile(Quest quest, InetSocketAddress peer){
-        if(monitor == null){
-            ErrorRecorder.record("[ERROR] RTMServerPushMonitor is unconfiged.");
-            return new Answer(quest);
-        }
-        RTMServerClientBase.RTMMessage message = new RTMServerClientBase.RTMMessage();
-        message.fromUid = quest.getLong("from", 0);
-        message.toId = quest.getLong("rid", 0);
-        message.messageType = (byte)quest.getInt("mtype", 0);
-        message.messageId = quest.getLong("mid", 0);
-        String msg = (String)quest.get("msg", "");
-        message.attrs = (String)quest.get("attrs", "");
-        message.modifiedTime = quest.getLong("mtime", 0);
-        message.fileMsgInfo = RTMServerClientBase.processFileInfo(msg, message.attrs, message.messageType);
-        message.attrs = RTMServerClientBase.fetchFileCustomAttrs(message.attrs);
-        monitor.pushRoomFile(message);
 
         return new Answer(quest);
     }
