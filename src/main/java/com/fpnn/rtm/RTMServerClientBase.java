@@ -73,7 +73,7 @@ public class RTMServerClientBase extends TCPClient {
             }
             lastTime = time;
             long id = (time<< (randBits + sequenceBits)) | randId<< sequenceBits| count;
-            return id &0x1FFFFFFFFFFFFFL;
+            return id;
         }
 
         static private long getNextMillis(long lastTimestamp) {
