@@ -85,6 +85,14 @@ public class RoomAPIFunctions {
             client.getRoomInfo(rid, oInfo, pInfo);
             System.out.println("sync return getRoomInfo success, oInfo = " + oInfo + " ,pInfo = " + pInfo);
 
+            // getRoomMembers
+            Set<Long> members = client.getRoomMembers(rid);
+            System.out.println("sync return getRoomMembers success, values: " + members);
+
+            // getRoomUserCount
+            int count = client.getRoomUserCount(rid);
+            System.out.println("sync return getRoomUserCount success, count: " + count);
+
             // delRoomMember
             client.delRoomMember(rid, uid);
             System.out.println("sync return delRoomMember success");
@@ -160,6 +168,24 @@ public class RoomAPIFunctions {
                 }
                 else{
                     System.out.println("async return getRoomInfo success, openInfo = " + openInfo + " ,priInfo = " + priInfo);
+                }
+            });
+
+            client.getRoomMembers(rid, (members, errorCode, errorMessage) -> {
+                if(errorCode != ErrorCode.FPNN_EC_OK.value()){
+                    System.out.println("async return getRoomMembers error answer errorCode = " + errorCode + " ,errorMessage =  " + errorMessage);
+                }
+                else{
+                    System.out.println("async return getRoomMembers success, values: " + members);
+                }
+            });
+
+            client.getRoomUserCount(rid, (count, errorCode, errorMessage) -> {
+                if(errorCode != ErrorCode.FPNN_EC_OK.value()){
+                    System.out.println("async return getRoomUserCount error answer errorCode = " + errorCode + " ,errorMessage =  " + errorMessage);
+                }
+                else{
+                    System.out.println("async return getRoomUserCount success, count: " + count);
                 }
             });
 

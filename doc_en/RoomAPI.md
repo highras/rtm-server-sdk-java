@@ -70,6 +70,8 @@ return value:
     
 Parameter Description:  
 
+* `long roomId`: If **roomId <= 0**, all rooms are muted
+
 * `int btime`: The duration of the mute, starting from the current time, in seconds
   
 * `int timeoutInseconds`: Sending timeout, lack of timeoutInseconds parameter, or timeoutInseconds is 0, the configuration of the RTM Server Client instance will be used, that is, call The timeout time set by client.setQuestTimeout(int timeout). If the RTM Server Client instance is not configured, the corresponding timeout configuration of fpnn will be used, and the default is 5seconds.
@@ -97,7 +99,9 @@ return value:
     void removeRoomBan(long roomId, long uid, DoneLambdaCallback callback, int timeoutInseconds);
     
 Parameter Description:  
-  
+
+* `long roomId`: If **roomId <= 0**, all rooms are unblocked
+
 * `int timeoutInseconds`: Sending timeout, lack of timeoutInseconds parameter, or timeoutInseconds is 0, the configuration of the RTM Server Client instance will be used, that is, call The timeout time set by client.setQuestTimeout(int timeout). If the RTM Server Client instance is not configured, the corresponding timeout configuration of fpnn will be used, and the default is 5seconds.
   
 * `DoneLambdaCallback callback`: return interface for asynchronous callback, error code and error message will be returned through callback
@@ -197,3 +201,57 @@ return value:
 * **sync**: The synchronization interface returns empty when it is normal, and the public and private information of the roomId is returned through parameter return. When an error is returned, an exception RTMException or other systemic exceptions will be thrown. For RTMException exceptions, you can view the error through the toString method information.
   
 * **async**: The asynchronous interface will not throw an exception. The public and private information of the roomId is returned through callback. When the errorCode is not equal to ErrorCode.FPNN_EC_OK.value(), it is returned as an error. You can view the message error information.
+
+
+### Get the list of members in the room  
+
+    // sync methods
+    Set<Long> getRoomMembers(long roomId);
+    Set<Long> getRoomMembers(long roomId, int timeoutInseconds);
+    
+    // async methods
+    void getRoomMembers(long roomId, GetRoomMembersCallback callback);
+    void getRoomMembers(long roomId, GetRoomMembersCallback callback, int timeoutInseconds);
+    
+Parameter Description:  
+  
+* `int timeoutInseconds`: Sending timeout, lack of timeoutInseconds parameter, or timeoutInseconds is 0, the configuration of the RTM Server Client instance will be used, that is, call The timeout time set by client.setQuestTimeout(int timeout). If the RTM Server Client instance is not configured, the corresponding timeout configuration of fpnn will be used, and the default is 5seconds.
+
+* `GetRoomMembersCallback callback`: return interface for asynchronous callback, the call result, error code and error information will be returned through callback
+          
+        interface GetRoomMembersCallback{
+            void done(Set<Long> uids, int errorCode, String errorMessage);
+        }
+  
+return value:        
+  
+* **sync**: When the synchronization interface is normal, it returns the list of room members, and when the error returns, it will throw an exception RTMException or other systemic exceptions. For RTMException exceptions, you can view the error information through the toString method.
+  
+* **async**: The asynchronous interface does not throw exceptions, and returns the list of members in the room through callback. When errorCode is not equal to ErrorCode.FPNN_EC_OK.value(), it is returned as error. You can view the message error information.    
+    
+
+### Get the number of members in the room
+
+    // sync methods
+    int getRoomUserCount(long roomId);
+    int getRoomUserCount(long roomId, int timeoutInseconds);
+    
+    // async methods
+    void getRoomUserCount(long roomId, GetRoomUserCountCallback callback);
+    void getRoomUserCount(long roomId, GetRoomUserCountCallback callback, int timeoutInseconds);
+    
+Parameter Description:
+  
+* `int timeoutInseconds`: Sending timeout, lack of timeoutInseconds parameter, or timeoutInseconds is 0, the configuration of the RTM Server Client instance will be used, that is, call The timeout time set by client.setQuestTimeout(int timeout). If the RTM Server Client instance is not configured, the corresponding timeout configuration of fpnn will be used, and the default is 5seconds.
+
+* `GetRoomUserCountCallback callback`: return interface for asynchronous callback, the call result, error code and error information will be returned through callback
+          
+        interface GetRoomUserCountCallback{
+            void done(int count, int errorCode, String errorMessage);
+        }
+  
+return value:       
+  
+* **sync**: When the synchronization interface is normal, the number of users in the room will be returned. When an error is returned, an RTMException or other systemic exception will be thrown. For RTMException exceptions, you can view the error information through the toString method.
+  
+* **async**: The asynchronous interface will not throw an exception, and the number of users in the room will be returned through callback. When the errorCode is not equal to ErrorCode.FPNN_EC_OK.value(), it will be returned as an error. You can view the message error information.

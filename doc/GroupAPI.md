@@ -184,6 +184,8 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
     
 参数说明:  
 
+* `long groupId`: 如果**groupId <= 0**,则为全部群组禁言
+
 * `int btime`:  禁言时长，从当前时间开始，以秒计算
   
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
@@ -212,6 +214,8 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
     void removeGroupBan(long groupId, long uid, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:  
+
+* `long groupId`: 如果**groupId <= 0**,则为全部群组解除禁言
   
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
   client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.

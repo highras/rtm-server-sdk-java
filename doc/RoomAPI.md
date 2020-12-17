@@ -72,6 +72,8 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
     
 参数说明:  
 
+* `long roomId`: 如果 **roomId <= 0**, 则所有房间禁言
+
 * `int btime`:  禁言时长，从当前时间开始，以秒计算
   
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
@@ -100,7 +102,9 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
     void removeRoomBan(long roomId, long uid, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:  
-  
+
+* `long roomId`: 如果 **roomId <= 0**, 则所有房间解除禁言
+
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
   client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
   
@@ -203,7 +207,64 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
   
 * **sync**: 同步接口正常时返回空，通过参数回传返回roomId的公开信息、私有信息，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
   
-* **async**: 异步接口不会抛出异常，通过callback返回roomId的公开信息、私有信息，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.     
+* **async**: 异步接口不会抛出异常，通过callback返回roomId的公开信息、私有信息，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息. 
+
+### 获取房间内成员列表  
+
+    // sync methods
+    Set<Long> getRoomMembers(long roomId);
+    Set<Long> getRoomMembers(long roomId, int timeoutInseconds);
+    
+    // async methods
+    void getRoomMembers(long roomId, GetRoomMembersCallback callback);
+    void getRoomMembers(long roomId, GetRoomMembersCallback callback, int timeoutInseconds);
+    
+参数说明:  
+  
+* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
+  client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
+  
+* `GetRoomMembersCallback callback`: 为异步回调返回接口, 调用结果以及错误码和错误信息将通过callback返回
+          
+        interface GetRoomMembersCallback{
+            void done(Set<Long> uids, int errorCode, String errorMessage);
+        }
+  
+返回值:       
+  
+* **sync**: 同步接口正常时返回房间成员列表，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+  
+* **async**: 异步接口不会抛出异常，通过callback返回房间内的成员列表，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.     
+    
+
+### 获取房间内成员个数   
+
+    // sync methods
+    int getRoomUserCount(long roomId);
+    int getRoomUserCount(long roomId, int timeoutInseconds);
+    
+    // async methods
+    void getRoomUserCount(long roomId, GetRoomUserCountCallback callback);
+    void getRoomUserCount(long roomId, GetRoomUserCountCallback callback, int timeoutInseconds);
+    
+参数说明:  
+  
+* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
+  client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
+  
+* `GetRoomUserCountCallback callback`: 为异步回调返回接口, 调用结果以及错误码和错误信息将通过callback返回
+          
+        interface GetRoomUserCountCallback{
+            void done(int count, int errorCode, String errorMessage);
+        }
+  
+返回值:       
+  
+* **sync**: 同步接口正常时返回房间用户个数，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+  
+* **async**: 异步接口不会抛出异常，通过callback返回房间用户个数，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.     
+    
+    
     
 
    

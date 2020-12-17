@@ -178,6 +178,8 @@ return value:
     
 Parameter Description:  
 
+* `long groupId`: If **groupId <= 0**, all groups are muted
+
 * `int btime`: The duration of the mute, starting from the current time, in seconds
   
 * `int timeoutInseconds`: Sending timeout, lack of timeoutInseconds parameter, or timeoutInseconds is 0, the configuration of the RTM Server Client instance will be used, that is, call The timeout time set by client.setQuestTimeout(int timeout). If the RTM Server Client instance is not configured, the corresponding timeout configuration of fpnn will be used, and the default is 5seconds.
@@ -205,7 +207,9 @@ return value:
     void removeGroupBan(long groupId, long uid, DoneLambdaCallback callback, int timeoutInseconds);
     
 Parameter Description:  
-  
+
+* `long groupId`: If **groupId <= 0**, all groups are unblocked
+
 * `int timeoutInseconds`: Sending timeout, lack of timeoutInseconds parameter, or timeoutInseconds is 0, the configuration of the RTM Server Client instance will be used, that is, call The timeout time set by client.setQuestTimeout(int timeout). If the RTM Server Client instance is not configured, the corresponding timeout configuration of fpnn will be used, and the default is 5seconds.
   
 * `DoneLambdaCallback callback`: return interface for asynchronous callback, error code and error message will be returned through callback

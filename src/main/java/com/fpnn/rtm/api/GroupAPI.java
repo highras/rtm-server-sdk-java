@@ -312,7 +312,9 @@ public interface GroupAPI extends APIBase {
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("addgroupban");
-        quest.param("gid", groupId);
+        if(groupId > 0) {
+            quest.param("gid", groupId);
+        }
         quest.param("uid", uid);
         quest.param("btime", btime);
         client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
@@ -332,7 +334,9 @@ public interface GroupAPI extends APIBase {
             callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate addgroupban message sign exception.");
             return;
         }
-        quest.param("gid", groupId);
+        if(groupId > 0) {
+            quest.param("gid", groupId);
+        }
         quest.param("uid", uid);
         quest.param("btime", btime);
         AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
@@ -348,7 +352,9 @@ public interface GroupAPI extends APIBase {
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("removegroupban");
-        quest.param("gid", groupId);
+        if(groupId > 0) {
+            quest.param("gid", groupId);
+        }
         quest.param("uid", uid);
         client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
     }
@@ -367,7 +373,9 @@ public interface GroupAPI extends APIBase {
             callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate removegroupban message sign exception.");
             return;
         }
-        quest.param("gid", groupId);
+        if(groupId > 0) {
+            quest.param("gid", groupId);
+        }
         quest.param("uid", uid);
         AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
         client.sendQuest(quest, answerCallback, timeoutInseconds);

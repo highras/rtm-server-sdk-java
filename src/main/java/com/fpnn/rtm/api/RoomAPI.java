@@ -10,6 +10,9 @@ import com.fpnn.sdk.proto.Quest;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public interface RoomAPI extends APIBase {
 
@@ -22,7 +25,9 @@ public interface RoomAPI extends APIBase {
         throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase clientBase = getCoreClient();
         Quest quest = clientBase.genBasicQuest("addroomban");
-        quest.param("rid", roomId);
+        if(roomId > 0){
+            quest.param("rid", roomId);
+        }
         quest.param("uid", uid);
         quest.param("btime", banTime);
         clientBase.sendQuestAndCheckAnswer(quest, timeoutInseconds);
@@ -42,7 +47,9 @@ public interface RoomAPI extends APIBase {
             callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate addroomban message sign exception.");
             return;
         }
-        quest.param("rid", roomId);
+        if(roomId > 0){
+            quest.param("rid", roomId);
+        }
         quest.param("uid", uid);
         quest.param("btime", banTime);
         AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
@@ -58,7 +65,9 @@ public interface RoomAPI extends APIBase {
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase clientBase = getCoreClient();
         Quest quest = clientBase.genBasicQuest("removeroomban");
-        quest.param("rid", roomId);
+        if(roomId > 0){
+            quest.param("rid", roomId);
+        }
         quest.param("uid", uid);
         clientBase.sendQuestAndCheckAnswer(quest, timeoutInseconds);
     }
@@ -77,7 +86,9 @@ public interface RoomAPI extends APIBase {
             callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate removeroomban message sign exception.");
             return;
         }
-        quest.param("rid", roomId);
+        if(roomId > 0){
+            quest.param("rid", roomId);
+        }
         quest.param("uid", uid);
         AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
         clientBase.sendQuest(quest, answerCallback, timeoutInseconds);
@@ -299,4 +310,127 @@ public interface RoomAPI extends APIBase {
         };
         client.sendQuest(quest, answerCallback, timeoutInseconds);
     }
+
+    interface GetRoomMembersCallback{
+        void done(Set<Long> uids, int errorCode, String errorMessage);
+    }
+
+    default Set<Long> getRoomMembers(long roomId)
+            throws RTMException, GeneralSecurityException, IOException, InterruptedException{
+        return getRoomMembers(roomId, 0);
+    }
+
+    default Set<Long> getRoomMembers(long roomId, int timeoutInseconds)
+            throws RTMException, GeneralSecurityException, IOException, InterruptedException{
+        RTMServerClientBase client = getCoreClient();
+        Quest quest = client.genBasicQuest("getroommembers");
+        quest.param("rid", roomId);
+        Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
+        Object object = answer.get("uids", null);
+        Set<Long> result = new HashSet<>();
+        if(object != null){
+            List<Object> data = (List<Object>)object;
+            for(Object o : data){
+                result.add(Long.valueOf(String.valueOf(o)));
+            }
+        }
+        return result;
+    }
+
+    default void getRoomMembers(long roomId, GetRoomMembersCallback callback) {
+        getRoomMembers(roomId, callback,0);
+    }
+
+    default void getRoomMembers(long roomId, GetRoomMembersCallback callback, int timeoutInseconds){
+        RTMServerClientBase client = getCoreClient();
+        Quest quest;
+        try{
+            quest = client.genBasicQuest("getroommembers");
+        }catch (Exception ex){
+            ErrorRecorder.record("Generate getroommembers message sign exception.", ex);
+            callback.done(null, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate getroommembers message sign exception.");
+            return;
+        }
+        quest.param("rid", roomId);
+        AnswerCallback answerCallback = new AnswerCallback() {
+            @Override
+            public void onAnswer(Answer answer) {
+                Object object = answer.get("uids", null);
+                Set<Long> result = new HashSet<>();
+                if(object != null){
+                    List<Object> data = (List<Object>)object;
+                    for(Object o : data){
+                        result.add(Long.valueOf(String.valueOf(o)));
+                    }
+                }
+                callback.done(result, ErrorCode.FPNN_EC_OK.value(), "");
+            }
+
+            @Override
+            public void onException(Answer answer, int i) {
+                String info = null;
+                if(answer != null){
+                    info = (String)answer.get("ex","");
+                }
+                callback.done(null, i, info);
+
+            }
+        };
+        client.sendQuest(quest, answerCallback, timeoutInseconds);
+    }
+
+    interface GetRoomUserCountCallback{
+        void done(int count, int errorCode, String errorMessage);
+    }
+
+    default int getRoomUserCount(long roomId)
+            throws RTMException, GeneralSecurityException, IOException, InterruptedException{
+        return getRoomUserCount(roomId, 0);
+    }
+
+    default int getRoomUserCount(long roomId, int timeoutInseconds)
+            throws RTMException, GeneralSecurityException, IOException, InterruptedException{
+        RTMServerClientBase client = getCoreClient();
+        Quest quest = client.genBasicQuest("getroomcount");
+        quest.param("rid", roomId);
+        Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
+        int count = answer.getInt("cn", 0);
+        return count;
+    }
+
+    default void getRoomUserCount(long roomId, GetRoomUserCountCallback callback) {
+        getRoomUserCount(roomId, callback,0);
+    }
+
+    default void getRoomUserCount(long roomId, GetRoomUserCountCallback callback, int timeoutInseconds){
+        RTMServerClientBase client = getCoreClient();
+        Quest quest;
+        try{
+            quest = client.genBasicQuest("getroomcount");
+        }catch (Exception ex){
+            ErrorRecorder.record("Generate getroomcount message sign exception.", ex);
+            callback.done(0, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate getroomcount message sign exception.");
+            return;
+        }
+        quest.param("rid", roomId);
+        AnswerCallback answerCallback = new AnswerCallback() {
+            @Override
+            public void onAnswer(Answer answer) {
+                int count = answer.getInt("cn", 0);
+                callback.done(count, ErrorCode.FPNN_EC_OK.value(), "");
+            }
+
+            @Override
+            public void onException(Answer answer, int i) {
+                String info = null;
+                if(answer != null){
+                    info = (String)answer.get("ex","");
+                }
+                callback.done(0, i, info);
+
+            }
+        };
+        client.sendQuest(quest, answerCallback, timeoutInseconds);
+    }
+
 }
