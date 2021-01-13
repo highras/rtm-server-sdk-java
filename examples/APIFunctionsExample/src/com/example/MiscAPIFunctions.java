@@ -8,6 +8,11 @@ import com.fpnn.rtm.RTMException;
 import com.fpnn.sdk.ErrorCode;
 import com.fpnn.sdk.ErrorRecorder;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import static java.lang.Thread.sleep;
 
 public class MiscAPIFunctions {
@@ -45,6 +50,13 @@ public class MiscAPIFunctions {
         client.setRTMClientHasClosedCallback(hasClosedCallback);
 
         long uid = 2222;
+        long fromUid = 3333;
+        long groupId = 4444;
+
+        Set<Integer> mtypes = new HashSet<>();
+        mtypes.add(102);
+        mtypes.add(103);
+
 
         // sync api
         try{
@@ -67,6 +79,30 @@ public class MiscAPIFunctions {
             System.out.println("sync return removeDevice success. uid = " + uid + " ,device id = " + deviceToken);
             System.out.println();
 
+            client.addDevicePushOption(uid, 0, fromUid, mtypes );
+            client.addDevicePushOption(uid, 1, groupId, mtypes);
+            System.out.println("sync return addDevicePushOption success.");
+            Map<Long, Set<Integer>> p2pOption = new HashMap<>();
+            Map<Long, Set<Integer>> groupOption = new HashMap<>();
+            client.getDevicePushOption(uid, p2pOption, groupOption);
+            System.out.println("sync return getDevicePushOption success. p2p: " + p2pOption + " , group: " + groupOption);
+            client.getDevicePushOption(uid, ((p2pOption1, groupOption1, errorCode, errorMessage) -> {
+                if(errorCode != ErrorCode.FPNN_EC_OK.value()){
+                    System.out.println("async return getDevicePushOption error answer errorCode = " + errorCode + " ,errorMessage =  " + errorMessage);
+                }
+                else{
+                    System.out.println("async return getDevicePushOption success. p2p = " + p2pOption1 + " ,group = " + groupOption1);
+                }
+            }));
+            sleep(1000);
+            client.removeDevicePushOption(uid, 0, fromUid, mtypes );
+            client.removeDevicePushOption(uid, 1, groupId, mtypes);
+            System.out.println("sync return removeDevicePushOption success.");
+            Map<Long, Set<Integer>> p2pOption1 = new HashMap<>();
+            Map<Long, Set<Integer>> groupOption1 = new HashMap<>();
+            client.getDevicePushOption(uid, p2pOption1, groupOption1);
+            System.out.println("sync return getDevicePushOption success. p2p: " + p2pOption1 + " , group: " + groupOption1);
+
         }catch (RTMException ex){
             System.out.println(ex.toString());
         }
@@ -75,6 +111,7 @@ public class MiscAPIFunctions {
             ex.printStackTrace();
         }
 
+        /*
         //async api
         try{
             // getToken
@@ -125,6 +162,7 @@ public class MiscAPIFunctions {
             System.out.println("async fun exception msg ");
             ex.printStackTrace();
         }
+        */
 
         client.close();
         //-- Wait for close event is processed.
@@ -136,7 +174,7 @@ public class MiscAPIFunctions {
         }
 
         //-- Optional
-        ErrorRecorder recorder = (ErrorRecorder)ErrorRecorder.getInstance();
+        ErrorRecorder recorder = ErrorRecorder.getInstance();
         recorder.println();
 
         //-- Optional: Only when client.setAutoCleanup(false); must call this function for cleaning up;

@@ -275,3 +275,47 @@ return value:
 * **sync**: When the synchronization interface is normal, it returns empty. When the error returns, it will throw an exception RTMException or other systemic exceptions. For RTMException exceptions, you can view the error information through the toString method.
 
 * **async**: The asynchronous interface will not throw an exception, and the interface call result will be returned through callback. When the errorCode is not equal to ErrorCode.FPNN_EC_OK.value(), it will be returned as an error. You can view the message error information.
+
+### Get statistics of messages sent in a room or group
+
+Note：
+    Only saved messages will be counted. Currently, chat messages are saved by default, plus the message type configured by the user. 
+
+    // sync method
+    RTMMessageCount getMsgCount(MessageType type, long xid, Set<Long> mtypes, long begin, long end)；
+    RTMMessageCount getMsgCount(MessageType type, long xid, Set<Long> mtypes, long begin, long end, int timeoutInseconds)；
+    
+    // async method 
+    void getMsgCount(MessageType type, long xid, Set<Long> mtypes, long begin, long end, GetMssageCountLambdaCallback callback);
+    void getMsgCount(MessageType type, long xid, Set<Long> mtypes, long begin, long end,  GetMssageCountLambdaCallback callback, int timeoutInseconds);
+    
+Parameter Description:
+
+* `MessageType type`: Get the category of the message, **Can accept MessageType.MESSAGE_TYPE_GROUP and MessageType.MESSAGE_TYPE_ROOM**
+
+*  `long xid`: When type is equal to MessageType.MESSAGE_TYPE_GROUP, **xid is groupId**, when type is equal to MessageType.MESSAGE_TYPE_ROOM, **xid is roomId**
+
+* `Set<Long> mtypes`: If mtypes is null or empty, return all
+
+* `long begin`: Millisecond timestamp, start time, 0 will ignore time
+
+* `long end`: Millisecond timestamp, end time, if 0, the time is ignored
+
+* `int timeoutInseconds`: Sending timeout, lack of timeoutInseconds parameter, or timeoutInseconds is 0, the configuration of the RTM Server Client instance will be used, that is, call The timeout time set by client.setQuestTimeout(int timeout). If the RTM Server Client instance is not configured, the corresponding timeout configuration of fpnn will be used, and the default is 5seconds.
+
+* `GetMssageCountLambdaCallback callback`: Return interface for asynchronous callback, the result, error code and error message will be returned through callback
+        
+        public interface DoneLambdaCallback {
+            void done(RTMMessageCount result, int errorCode, String errorMessage);
+        }
+
+return value: 
+
+        public static class RTMMessageCount {
+            public int sender;
+            public int count;
+        }
+     
+* **sync**: When the synchronization interface is normal, it returns the RTMMessageCount object, the sender member is the number of people who sent the message (de-duplicated), and the member count is the number of messages; when an error returns, an exception RTMException or other systemic exceptions will be thrown. For RTMException exceptions, you can view them through the toString method. error information.
+
+* **async**: The asynchronous interface does not throw an exception. The interface call result RTMMessageCount object is returned through callback. The member sender is the number of people who sent the message (with deduplication), and the member count is the number of messages; when the errorCode is not equal to ErrorCode.FPNN_EC_OK.value(), then For error return, you can view the message error information.

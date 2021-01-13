@@ -33,8 +33,6 @@ public class RTMServerClientBase extends TCPClient {
         processor = new RTMServerQuestProcessor();
         setQuestTimeout(questTimeout);
         setQuestProcessor(processor, "com.fpnn.rtm.RTMServerQuestProcessor");
-        Random random = new Random(System.currentTimeMillis());
-        MidGenerator.randId = random.nextInt(255) + 1;
     }
 
     public void setServerPushMonitor(ServerPushMonitorAPI monitor){
@@ -66,6 +64,10 @@ public class RTMServerClientBase extends TCPClient {
         static private final long sequenceMask = -1 ^ (-1 << sequenceBits);
         static private long lastTime = 0;
         static public synchronized long gen() {
+            if(randId == 0 ){
+                Random random = new Random(System.currentTimeMillis());
+                randId = random.nextInt(255) + 1;
+            }
             long time = System.currentTimeMillis();
             count = (count + 1) & sequenceMask;
             if(count == 0){
@@ -235,6 +237,11 @@ public class RTMServerClientBase extends TCPClient {
         }
 
         return objectMapper.writeValueAsString(parentNode);
+    }
+
+    public static class RTMMessageCount {
+        public int sender;
+        public int count;
     }
 
     public static class RTMAudioFileInfo {

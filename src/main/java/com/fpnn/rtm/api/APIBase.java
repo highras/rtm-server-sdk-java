@@ -27,8 +27,8 @@ public interface APIBase {
 
     enum MessageType{
         MESSAGE_TYPE_P2P((byte)1),
-        MESSAGE_TYPE_ROOM((byte)2),
-        MESSAGE_TYPE_GROUP((byte)3),
+        MESSAGE_TYPE_GROUP((byte)2),
+        MESSAGE_TYPE_ROOM((byte)3),
         MESSAGE_TYPE_BROADCAST((byte)4);
 
         private final int value;

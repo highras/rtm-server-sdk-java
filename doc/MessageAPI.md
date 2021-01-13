@@ -281,4 +281,51 @@ client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client�
      
 * **sync**: 同步接口正常时返回空，错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
 
-* **async**: 异步接口不会抛出异常，通过callback返回接口调用结果，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.          
+* **async**: 异步接口不会抛出异常，通过callback返回接口调用结果，当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息.    
+
+### 获取房间或者群组内发送消息的统计
+
+Note：
+    只有被保存的消息才会进行统计，目前聊天消息默认保存，外加用户配置的消息类型会保存。 
+
+    // sync method
+    RTMMessageCount getMsgCount(MessageType type, long xid, Set<Long> mtypes, long begin, long end)；
+    RTMMessageCount getMsgCount(MessageType type, long xid, Set<Long> mtypes, long begin, long end, int timeoutInseconds)；
+    
+    // async method 
+    void getMsgCount(MessageType type, long xid, Set<Long> mtypes, long begin, long end, GetMssageCountLambdaCallback callback);
+    void getMsgCount(MessageType type, long xid, Set<Long> mtypes, long begin, long end,  GetMssageCountLambdaCallback callback, int timeoutInseconds);
+    
+参数说明：
+
+* `MessageType type`: 获取消息的类别，**可接受MessageType.MESSAGE_TYPE_GROUP 和 MessageType.MESSAGE_TYPE_ROOM**
+
+*  `long xid`: 当type等于MessageType.MESSAGE_TYPE_GROUP， **xid为groupId**， 当type等于MessageType.MESSAGE_TYPE_ROOM，**xid为roomId**
+
+* `Set<Long> mtypes`: 如果mtypes为null或者为空时，则返回所有
+
+* `long begin`: 毫秒级时间戳，开始时间，为0则忽略时间
+
+* `long end`: 毫秒级时间戳，结束时间，为0则忽略时间
+
+* `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
+client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.
+
+* `GetMssageCountLambdaCallback callback`: 为异步回调返回接口, 结果和错误码以及错误信息将通过callback返回
+        
+        public interface DoneLambdaCallback {
+            void done(RTMMessageCount result, int errorCode, String errorMessage);
+        }
+
+返回值:  
+
+        public static class RTMMessageCount {
+            public int sender;
+            public int count;
+        }
+     
+* **sync**: 同步接口正常时返回RTMMessageCount对象， 成员sender为发送消息的人数(去重的)，成员count为消息的数量；错误返回时将抛出异常RTMException或者其他系统性异常，对于RTMException异常可通过toString方法查看error信息.
+
+* **async**: 异步接口不会抛出异常，通过callback返回接口调用结果RTMMessageCount对象， 成员sender为发送消息的人数(去重的)，成员count为消息的数量；当errorCode不等于ErrorCode.FPNN_EC_OK.value()，则为error返回，可查看message错误信息. 
+
+

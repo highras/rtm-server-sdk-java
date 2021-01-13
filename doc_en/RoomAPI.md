@@ -233,12 +233,12 @@ return value:
 ### Get the number of members in the room
 
     // sync methods
-    int getRoomUserCount(long roomId);
-    int getRoomUserCount(long roomId, int timeoutInseconds);
+    Map<Long, Integer> getRoomUserCount(Set<Long> roomIds);
+    Map<Long, Integer> getRoomUserCount(Set<Long> roomIds, int timeoutInseconds);
     
     // async methods
-    void getRoomUserCount(long roomId, GetRoomUserCountCallback callback);
-    void getRoomUserCount(long roomId, GetRoomUserCountCallback callback, int timeoutInseconds);
+    void getRoomUserCount(Set<Long> roomIds, GetRoomUserCountCallback callback);
+    void getRoomUserCount(Set<Long> roomIds, GetRoomUserCountCallback callback, int timeoutInseconds);
     
 Parameter Description:
   
@@ -247,11 +247,11 @@ Parameter Description:
 * `GetRoomUserCountCallback callback`: return interface for asynchronous callback, the call result, error code and error information will be returned through callback
           
         interface GetRoomUserCountCallback{
-            void done(int count, int errorCode, String errorMessage);
+            void done(Map<Long, Integer> count, int errorCode, String errorMessage);
         }
   
 return value:       
   
-* **sync**: When the synchronization interface is normal, the number of users in the room will be returned. When an error is returned, an RTMException or other systemic exception will be thrown. For RTMException exceptions, you can view the error information through the toString method.
+* **sync**: When the synchronization interface is normal, room user number mapping will be returned. When an error is returned, an RTMException or other systemic exception will be thrown. For RTMException exceptions, you can view the error information through the toString method.
   
-* **async**: The asynchronous interface will not throw an exception, and the number of users in the room will be returned through callback. When the errorCode is not equal to ErrorCode.FPNN_EC_OK.value(), it will be returned as an error. You can view the message error information.
+* **async**: The asynchronous interface will not throw an exception, and the room user number mapping will be returned through callback. When the errorCode is not equal to ErrorCode.FPNN_EC_OK.value(), it will be returned as an error. You can view the message error information.

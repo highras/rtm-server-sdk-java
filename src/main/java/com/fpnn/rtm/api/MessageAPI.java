@@ -2,11 +2,18 @@ package com.fpnn.rtm.api;
 
 import com.fpnn.rtm.RTMErrorCode;
 import com.fpnn.rtm.RTMException;
+import com.fpnn.rtm.RTMServerClientBase;
+import com.fpnn.rtm.RTMServerClientBase.RTMMessageCount;
 import com.fpnn.rtm.RTMServerClientBase.RTMHistoryMessageUnit;
 import com.fpnn.sdk.*;
+import com.fpnn.sdk.proto.Answer;
+import com.fpnn.sdk.proto.Quest;
 
 import java.io.IOException;
+import java.net.InterfaceAddress;
 import java.security.GeneralSecurityException;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public interface MessageAPI extends MessageCoreAPI {
@@ -437,6 +444,84 @@ public interface MessageAPI extends MessageCoreAPI {
         return getMsg(messageId, fromUid, roomId, MessageType.MESSAGE_TYPE_ROOM);
     }
 
+    default RTMMessageCount getMsgCount(MessageType type, long xid, Set<Long> mtypes, long begin, long end)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        return getMsgCount(type, xid, mtypes, begin, end, 0);
+    }
+
+    default RTMMessageCount getMsgCount(MessageType type, long xid, Set<Long> mtypes, long begin, long end, int timeoutInseconds)
+            throws RTMException, GeneralSecurityException, IOException,InterruptedException {
+        RTMServerClientBase client = getCoreClient();
+        Quest quest = client.genBasicQuest("getmsgnum");
+        quest.param("type", type.value());
+        quest.param("xid", xid);
+        if(mtypes != null && mtypes.size() > 0){
+            quest.param("mtypes", mtypes);
+        }
+        if(begin > 0){
+            quest.param("begin", begin);
+        }
+        if(end > 0) {
+            quest.param("end", end);
+        }
+        Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
+        RTMMessageCount rtmMessageCount = new RTMMessageCount();
+        rtmMessageCount.sender = answer.getInt("sender", 0);
+        rtmMessageCount.count = answer.getInt("num", 0);
+        return rtmMessageCount;
+    }
+
+    interface GetMssageCountLambdaCallback{
+        void done(RTMMessageCount result, int errorCode, String errorMessage);
+    }
+
+    default void getMsgCount(MessageType type, long xid, Set<Long> mtypes, long begin, long end, GetMssageCountLambdaCallback callback) {
+        getMsgCount(type, xid, mtypes, begin, end, callback, 0);
+    }
+
+    default void getMsgCount(MessageType type, long xid, Set<Long> mtypes, long begin, long end,  GetMssageCountLambdaCallback callback, int timeoutInseconds) {
+        RTMServerClientBase client = getCoreClient();
+        Quest quest;
+        try{
+            quest = client.genBasicQuest("getmsgnum");
+        }catch (Exception ex){
+            ErrorRecorder.record("Generate getmsgnum message sign exception.", ex);
+            callback.done(null, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate getmsgnum message sign exception.");
+            return;
+        }
+        quest.param("type", type.value());
+        quest.param("xid", xid);
+        if(mtypes != null && mtypes.size() > 0){
+            quest.param("mtypes", mtypes);
+        }
+        if(begin > 0){
+            quest.param("begin", begin);
+        }
+        if(end > 0) {
+            quest.param("end", end);
+        }
+        AnswerCallback answerCallback = new AnswerCallback() {
+            @Override
+            public void onAnswer(Answer answer) {
+                RTMMessageCount rtmMessageCount = new RTMMessageCount();
+                rtmMessageCount.sender = answer.getInt("sender", 0);
+                rtmMessageCount.count = answer.getInt("num", 0);
+                callback.done(rtmMessageCount, ErrorCode.FPNN_EC_OK.value(), "");
+            }
+
+            @Override
+            public void onException(Answer answer, int i) {
+                String info = null;
+                if(answer != null){
+                    info = (String) answer.get("ex", "");
+                }
+                callback.done(null, i, info);
+
+            }
+        };
+        client.sendQuest(quest, answerCallback, timeoutInseconds);
+    }
+
     default RTMHistoryMessageUnit getRoomMsg(long messageId, long fromUid, long roomId, int timeInseconds)
             throws RTMException, GeneralSecurityException, IOException,InterruptedException {
         return getMsg(messageId, fromUid, roomId, MessageType.MESSAGE_TYPE_ROOM, timeInseconds);
@@ -491,5 +576,6 @@ public interface MessageAPI extends MessageCoreAPI {
     default void getBroadcastMsg(long messageId, long fromUid, GetRetrievedMessageLambdaCallback callback, int timeInseconds){
         getMsg(messageId, fromUid, 0, MessageType.MESSAGE_TYPE_BROADCAST, callback, timeInseconds);
     }
+
 
 }

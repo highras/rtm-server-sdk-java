@@ -10,9 +10,7 @@ import com.fpnn.sdk.proto.Quest;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public interface RoomAPI extends APIBase {
 
@@ -380,43 +378,57 @@ public interface RoomAPI extends APIBase {
     }
 
     interface GetRoomUserCountCallback{
-        void done(int count, int errorCode, String errorMessage);
+        void done(Map<Long, Integer> count, int errorCode, String errorMessage);
     }
 
-    default int getRoomUserCount(long roomId)
+    default Map<Long, Integer> getRoomUserCount(Set<Long> roomIds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
-        return getRoomUserCount(roomId, 0);
+        return getRoomUserCount(roomIds, 0);
     }
 
-    default int getRoomUserCount(long roomId, int timeoutInseconds)
+    default Map<Long, Integer> getRoomUserCount(Set<Long> roomIds, int timeoutInseconds)
             throws RTMException, GeneralSecurityException, IOException, InterruptedException{
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("getroomcount");
-        quest.param("rid", roomId);
+        quest.param("rids", roomIds);
         Answer answer = client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
-        int count = answer.getInt("cn", 0);
+        Object o = answer.get("cn", null);
+        Map<Long, Integer> count = new HashMap<>();
+        if(o != null){
+            Map<Object, Object> data = (Map<Object, Object>)o;
+            for(Map.Entry<Object, Object> entry : data.entrySet()){
+                count.put(Long.valueOf(String.valueOf(entry.getKey())), Integer.valueOf(String.valueOf(entry.getValue())));
+            }
+        }
         return count;
     }
 
-    default void getRoomUserCount(long roomId, GetRoomUserCountCallback callback) {
-        getRoomUserCount(roomId, callback,0);
+    default void getRoomUserCount(Set<Long> roomIds, GetRoomUserCountCallback callback) {
+        getRoomUserCount(roomIds, callback,0);
     }
 
-    default void getRoomUserCount(long roomId, GetRoomUserCountCallback callback, int timeoutInseconds){
+    default void getRoomUserCount(Set<Long> roomIds, GetRoomUserCountCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
             quest = client.genBasicQuest("getroomcount");
         }catch (Exception ex){
             ErrorRecorder.record("Generate getroomcount message sign exception.", ex);
-            callback.done(0, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate getroomcount message sign exception.");
+            callback.done(null, ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate getroomcount message sign exception.");
             return;
         }
-        quest.param("rid", roomId);
+        quest.param("rids", roomIds);
         AnswerCallback answerCallback = new AnswerCallback() {
             @Override
             public void onAnswer(Answer answer) {
-                int count = answer.getInt("cn", 0);
+                Object o = answer.get("cn", null);
+                Map<Long, Integer> count = new HashMap<>();
+                if(o != null){
+                    Map<Object, Object> data = (Map<Object, Object>)o;
+                    for(Map.Entry<Object, Object> entry : data.entrySet()){
+                        count.put(Long.valueOf(String.valueOf(entry.getKey())), Integer.valueOf(String.valueOf(entry.getValue())));
+                    }
+                }
                 callback.done(count, ErrorCode.FPNN_EC_OK.value(), "");
             }
 
@@ -426,7 +438,7 @@ public interface RoomAPI extends APIBase {
                 if(answer != null){
                     info = (String)answer.get("ex","");
                 }
-                callback.done(0, i, info);
+                callback.done(null, i, info);
 
             }
         };

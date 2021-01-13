@@ -9,6 +9,7 @@ import com.fpnn.sdk.ErrorCode;
 import com.fpnn.sdk.ErrorRecorder;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static java.lang.Thread.sleep;
@@ -90,7 +91,7 @@ public class RoomAPIFunctions {
             System.out.println("sync return getRoomMembers success, values: " + members);
 
             // getRoomUserCount
-            int count = client.getRoomUserCount(rid);
+            Map<Long, Integer> count = client.getRoomUserCount(new HashSet<Long>(){{add(rid);}});
             System.out.println("sync return getRoomUserCount success, count: " + count);
 
             // delRoomMember
@@ -180,7 +181,7 @@ public class RoomAPIFunctions {
                 }
             });
 
-            client.getRoomUserCount(rid, (count, errorCode, errorMessage) -> {
+            client.getRoomUserCount(new HashSet<Long>(){{add(rid);}}, (count, errorCode, errorMessage) -> {
                 if(errorCode != ErrorCode.FPNN_EC_OK.value()){
                     System.out.println("async return getRoomUserCount error answer errorCode = " + errorCode + " ,errorMessage =  " + errorMessage);
                 }
