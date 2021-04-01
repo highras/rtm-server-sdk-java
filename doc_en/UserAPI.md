@@ -10,17 +10,13 @@
 
     // sync methods
     void kickOut(long uid);
-    void kickOut(long uid, String ce);
-    void kickOut(long uid, String ce, int timeoutInseconds);
+    void kickOut(long uid, int timeoutInseconds);
     
     // async methods
     void kickOut(long uid, DoneLambdaCallback callback);
-    void kickOut(long uid, String ce, DoneLambdaCallback callback);
-    void kickOut(long uid, String ce, DoneLambdaCallback callback, int timeoutInseconds);
+    void kickOut(long uid, DoneLambdaCallback callback, int timeoutInseconds);
     
 Parameter Description:  
-
-* `String ce`: When ce is not empty, only one of the links will be kicked out, multi-user login situation
 
 * `int timeoutInseconds`: Sending timeout, lack of timeoutInseconds parameter, or timeoutInseconds is 0, the configuration of the RTM Server Client instance will be used, that is, call The timeout time set by client.setQuestTimeout(int timeout). If the RTM Server Client instance is not configured, the corresponding timeout configuration of fpnn will be used, and the default is 5seconds.
   

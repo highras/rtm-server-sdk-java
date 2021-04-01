@@ -10,17 +10,13 @@
 
     // sync methods
     void kickOut(long uid);
-    void kickOut(long uid, String ce);
-    void kickOut(long uid, String ce, int timeoutInseconds);
+    void kickOut(long uid, int timeoutInseconds);
     
     // async methods
     void kickOut(long uid, DoneLambdaCallback callback);
-    void kickOut(long uid, String ce, DoneLambdaCallback callback);
-    void kickOut(long uid, String ce, DoneLambdaCallback callback, int timeoutInseconds);
+    void kickOut(long uid, DoneLambdaCallback callback, int timeoutInseconds);
     
 参数说明:  
-
-* `String ce`: 当ce不为空时，则只踢掉其中的一个链接，多用户登录情况
 
 * `int timeoutInseconds`: 发送超时，缺少timeoutInseconds参数，或timeoutInseconds为0时，将采用RTM Server Client实例的配置，即调用   
   client.setQuestTimeout(int timeout)设置的超时时间，若RTM Server Client实例未配置，将采用 fpnn相应的超时配置，默认为5seconds.

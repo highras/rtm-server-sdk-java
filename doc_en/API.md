@@ -106,3 +106,9 @@ Please refer to: [Value-added service related interface](UtilitiesAPI.md)
 Block user related interfaces
 
 Please refer to: [Block user related interfaces](BlacklistAPI.md)
+
+## RealTime-Voice Functions
+
+Real-time voice related interface
+
+Please refer to：[Real-time voice related interface](RealTimeVoiceAPI.md)

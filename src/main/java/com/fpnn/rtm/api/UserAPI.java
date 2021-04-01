@@ -14,35 +14,24 @@ import java.util.*;
 
 public interface UserAPI extends APIBase {
 
-    default void kickOut(long uid, String ce)
-            throws RTMException, GeneralSecurityException, IOException,InterruptedException{
-        kickOut(uid, ce,0);
-    }
-
     default void kickOut(long uid)
             throws RTMException, GeneralSecurityException, IOException,InterruptedException{
-        kickOut(uid, null ,0);
+        kickOut(uid, 0);
     }
 
-    default void kickOut(long uid, String ce, int timeoutInseconds)
-            throws RTMException, GeneralSecurityException, IOException, InterruptedException{
+    default void kickOut(long uid, int timeoutInseconds)
+            throws RTMException, GeneralSecurityException, IOException, InterruptedException {
         RTMServerClientBase client = getCoreClient();
         Quest quest = client.genBasicQuest("kickout");
         quest.param("uid", uid);
-        if(ce != null && ce.length() > 0)
-            quest.param("ce", ce);
         client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
     }
 
-    default void kickOut(long uid, String ce, DoneLambdaCallback callback){
-        kickOut(uid, ce, callback, 0);
-    }
-
     default void kickOut(long uid, DoneLambdaCallback callback){
-        kickOut(uid, null, callback, 0);
+        kickOut(uid, callback, 0);
     }
 
-    default void kickOut(long uid, String ce, DoneLambdaCallback callback, int timeoutInseconds){
+    default void kickOut(long uid, DoneLambdaCallback callback, int timeoutInseconds){
         RTMServerClientBase client = getCoreClient();
         Quest quest;
         try{
@@ -54,8 +43,6 @@ public interface UserAPI extends APIBase {
             return;
         }
         quest.param("uid", uid);
-        if(ce != null && ce.length() > 0)
-            quest.param("ce", ce);
         AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
         client.sendQuest(quest, answerCallback, timeoutInseconds);
     }

@@ -20,7 +20,7 @@ Java 8
     <dependency>
         <groupId>com.github.highras</groupId>
         <artifactId>rtm-server-sdk</artifactId>
-        <version>2.4.0-RELEASE</version>
+        <version>2.5.0-RELEASE</version>
     </dependency>
     
 ### Import package
