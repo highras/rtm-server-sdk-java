@@ -1,7 +1,5 @@
 package com.fpnn.rtm;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fpnn.rtm.api.ServerPushMonitorAPI;
 import com.fpnn.sdk.ErrorRecorder;
 import com.fpnn.sdk.proto.Answer;
