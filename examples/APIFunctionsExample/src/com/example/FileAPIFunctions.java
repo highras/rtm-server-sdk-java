@@ -20,7 +20,7 @@ public class FileAPIFunctions {
         RTMServerClient client = RTMServerClient.create(11000001, "ef3617e5-e886-4a4e-9eef-7263c0320628",
                 "161.189.171.91:13315");
         //-- Optional
-        client.setAutoCleanup(false);
+        //client.setAutoCleanup(false);
 
         //-- Optional when need process connect event or willClose event or closed event, maybe set these callback
         RTMClientConnectCallback connectCallback = (peerAddress, connected, reConnect, regressiveState) -> {
@@ -29,7 +29,7 @@ public class FileAPIFunctions {
                 System.out.println("rtm client connected " + peerAddress.toString());
             }
             else if(regressiveState != null){
-                String info = "RTMReconnect time at " + regressiveState.connectStartMilliseconds + " ,currentFailedCount = " + regressiveState.currentFailedCount;
+                String info = "RTM last connected time at " + regressiveState.connectSuccessMilliseconds + " ,currentFailedCount = " + regressiveState.currentFailedCount;
                 System.out.println("rtm client not connected " + peerAddress.toString() + " ,can reconnet: " + reConnect + " ,reconnect infos: " +info);
             }
         };
@@ -38,7 +38,7 @@ public class FileAPIFunctions {
 
         RTMClientHasClosedCallback hasClosedCallback = (peerAddress, causedByError, reConnect, regressiveState) ->{
             if(regressiveState != null){
-                String info = "RTMReconnect time at " + regressiveState.connectStartMilliseconds + " ,currentFailedCount = " + regressiveState.currentFailedCount;
+                String info = "RTM last connected time at " + regressiveState.connectSuccessMilliseconds + " ,currentFailedCount = " + regressiveState.currentFailedCount;
                 System.out.println("rtm client has closed " + "cause by error: " + causedByError + " ,can reconnect: " + reConnect + " ,reconnect infos: " + info);
             }
         };
@@ -173,7 +173,7 @@ public class FileAPIFunctions {
         recorder.println();
 
         //-- Optional: Only when client.setAutoCleanup(false); must call this function for cleaning up;
-        client.SDKCleanup();
+        //client.SDKCleanup();
 
     }
 }

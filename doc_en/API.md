@@ -109,6 +109,6 @@ Please refer to: [Block user related interfaces](BlacklistAPI.md)
 
 ## RealTime-Voice Functions
 
-Real-time voice related interface
+Real-time Communication related interface
 
-Please refer to：[Real-time voice related interface](RealTimeVoiceAPI.md)
+Please refer to：[Real-time voice related interface](RTCAPI.md)

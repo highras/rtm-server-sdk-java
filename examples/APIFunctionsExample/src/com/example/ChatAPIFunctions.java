@@ -27,36 +27,10 @@ public class ChatAPIFunctions {
     public static void main(String[] args) {
 
         // get your project params from RTM Console.
-        RTMServerClient client = RTMServerClient.create(11000001, "ef3617e5-e886-4a4e-9eef-7263c0320628",
-                "161.189.171.91:13315");
+        RTMServerClient client = RTMServerClient.create(80000172, "6ae478c8-8997-4607-878f-485f81478a4e",
+                "rtm-nx-back.ilivedata.com:13315");
         //-- Optional
-        client.setAutoCleanup(false);
-
-        //-- Optional when need process connect event or willClose event or closed event, maybe set these callback
-        RTMClientConnectCallback connectCallback = (peerAddress, connected, reConnect, regressiveState) -> {
-            if(connected)
-            {
-                System.out.println("rtm client connected " + peerAddress.toString());
-            }
-            else if(regressiveState != null){
-                String info = "RTMReconnect time at " + regressiveState.connectStartMilliseconds + " ,currentFailedCount = " + regressiveState.currentFailedCount;
-                System.out.println("rtm client not connected " + peerAddress.toString() + " ,can reconnet: " + reConnect + " ,reconnect infos: " +info);
-            }
-        };
-
-        RTMClientWillCloseCallback willCloseCallback = (peerAddress, causedByError) -> System.out.println("rtm client will close " + "cause by error: " + causedByError);
-
-        RTMClientHasClosedCallback hasClosedCallback = (peerAddress, causedByError, reConnect, regressiveState) ->{
-            if(regressiveState != null){
-                String info = "RTMReconnect time at " + regressiveState.connectStartMilliseconds + " ,currentFailedCount = " + regressiveState.currentFailedCount;
-                System.out.println("rtm client has closed " + "cause by error: " + causedByError + " ,can reconnect: " + reConnect + " ,reconnect infos: " + info);
-            }
-        };
-
-        client.setRTMClientConnectedCallback(connectCallback);
-        client.setRTMClientWillCloseCallback(willCloseCallback);
-        client.setRTMClientHasClosedCallback(hasClosedCallback);
-
+        //client.setAutoCleanup(false);
 
         try{
             sendP2PChat(client);
@@ -77,18 +51,18 @@ public class ChatAPIFunctions {
         client.close();
         //-- Wait for close event is processed.
         try{
-            sleep(1000);
+            sleep(200000);
         }catch (Exception ex){
             System.out.println("fun exception msg: ");
             ex.printStackTrace();
         }
-
-        //-- Optional
+//
+//        //-- Optional
         ErrorRecorder recorder = (ErrorRecorder)ErrorRecorder.getInstance();
         recorder.println();
-
-        //-- Optional: Only when client.setAutoCleanup(false); must call this function for cleaning up;
-        client.SDKCleanup();
+//
+//        //-- Optional: Only when client.setAutoCleanup(false); must call this function for cleaning up;
+//        client.SDKCleanup();
     }
 
     private static void sendP2PChat(RTMServerClient client){

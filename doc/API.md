@@ -111,6 +111,6 @@
 
 ## RealTime-Voice Functions
 
-实时语音相关接口
+实时音视频相关接口
 
-具体请参见：[实时语音相关接口](RealTimeVoiceAPI.md)
+具体请参见：[实时音视频相关接口](RTCAPI.md)
