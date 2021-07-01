@@ -107,7 +107,7 @@ Block user related interfaces
 
 Please refer to: [Block user related interfaces](BlacklistAPI.md)
 
-## RealTime-Voice Functions
+## RTC Functions
 
 Real-time Communication related interface
 

@@ -109,7 +109,7 @@
 具体请参见: [拉黑用户相关接口](BlacklistAPI.md)
 
 
-## RealTime-Voice Functions
+## RTC Functions
 
 实时音视频相关接口
 

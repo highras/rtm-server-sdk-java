@@ -1,4 +1,4 @@
-# RTM Server Java SDK RealTimeRTC API Docs
+# RTM Server Java SDK RTC API Docs
 
 # Index
 
