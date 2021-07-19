@@ -8,14 +8,15 @@ import com.google.gson.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Formatter;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.zip.CRC32;
 
 public class RTMServerClientBase extends TCPClient {
     private int pid;
@@ -56,14 +57,87 @@ public class RTMServerClientBase extends TCPClient {
 
         static private long count = 0;
         static private int randId = 0;
-        static private final long randBits = 8;
+        static private final long randBits = 4;
+        static private int macCode = 0;
+        static private final long macBits = 4;
+        static private int ipCode = 0;
+        static private final long ipBits = 8;
         static private final long sequenceBits = 6;
         static private final long sequenceMask = -1 ^ (-1 << sequenceBits);
         static private long lastTime = 0;
+        private static int getMacAddrCode(InetAddress ia) throws Exception {
+            byte[] mac = NetworkInterface.getByInetAddress(ia).getHardwareAddress();
+            StringBuffer sb = new StringBuffer();
+            for(int i = 0; i < mac.length; i++){
+                if(i != 0){
+                    sb.append("-");
+                }
+                String s = Integer.toHexString(mac[i] & 0xFF);
+                sb.append(s.length() == 1 ? 0 + s : s);
+            }
+            String ss = sb.toString().toUpperCase();
+            CRC32 crc32 = new CRC32();
+            crc32.update(ss.getBytes());
+            long value = crc32.getValue() % 15 + 1;
+            return (int)value;
+        }
+
+        private static int getIpCode(InetAddress ia){
+            int code = 0;
+            String localIp = ia.getHostAddress();
+            String[] datas = localIp.split("\\.");
+            if(datas.length == 4){
+                try{
+                    code = Integer.parseInt(datas[3]);
+                }catch(NumberFormatException ex){
+                }
+            }
+
+            if(code == 0){
+                Random random = new Random(System.currentTimeMillis());
+                code = random.nextInt(255) + 1;
+            }
+            return code;
+        }
+
         static public synchronized long gen() {
             if(randId == 0 ){
-                Random random = new Random(System.currentTimeMillis());
-                randId = random.nextInt(255) + 1;
+                try{
+                    boolean find = false;
+                    Enumeration<NetworkInterface> nifs = NetworkInterface.getNetworkInterfaces();
+                    while(nifs.hasMoreElements()) {
+                        NetworkInterface nif = nifs.nextElement();
+                        if (nif.isUp() && !nif.isLoopback()){
+                            Enumeration<InetAddress> addrs = nif.getInetAddresses();
+                            while(addrs.hasMoreElements()){
+                                InetAddress address = addrs.nextElement();
+                                if(address instanceof Inet4Address){
+                                    ipCode = MidGenerator.getIpCode(address);
+                                    macCode = MidGenerator.getMacAddrCode(address);
+                                    find = true;
+                                    break;
+                                }
+                            }
+                            if(find){
+                                break;
+                            }
+                        }
+                    }
+
+                    if(ipCode == 0){
+                        Random random1 = new Random(System.currentTimeMillis());
+                        ipCode = random1.nextInt(255) + 1;
+                    }
+                    if(macCode == 0){
+                        Random random2 = new Random(System.currentTimeMillis());
+                        macCode = random2.nextInt(15) + 1;
+                    }
+
+                    Random random3 = new Random(System.currentTimeMillis());
+                    randId = random3.nextInt(15) + 1;
+                }catch(Exception e){
+                    ErrorRecorder.record(e);
+                }
             }
             long time = System.currentTimeMillis();
             count = (count + 1) & sequenceMask;
@@ -71,7 +145,7 @@ public class RTMServerClientBase extends TCPClient {
                 time = getNextMillis(lastTime);
             }
             lastTime = time;
-            long id = (time<< (randBits + sequenceBits)) | randId<< sequenceBits| count;
+            long id = (time<< (randBits + macBits +ipBits + sequenceBits)) | randId<< (sequenceBits + ipBits + macBits) | macCode << (ipBits + sequenceBits) | ipCode << sequenceBits | count;
             return id;
         }
 

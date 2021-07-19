@@ -20,7 +20,7 @@ Java 8
     <dependency>
         <groupId>com.github.highras</groupId>
         <artifactId>rtm-server-sdk</artifactId>
-        <version>2.5.2-RELEASE</version>
+        <version>2.5.3-RELEASE</version>
     </dependency>
     
 ### Import package
@@ -103,7 +103,13 @@ If client.setAutoConnect(false) is called, this explicit connecting method MUST 
     
 ### ClientIsConnect
 
-    boolean ok = client.connected();        
+    boolean ok = client.connected();
+    
+### Client KeepAlive(Optional)
+    
+    client.setKeepAlive(boolean keepAlive)
+       
+Note: The default connection is not keepAlive     
     
 ### SDK Version
 
@@ -194,7 +200,6 @@ Please refer:
 
 * [API docs](doc/API.md)       
 * [API docs_EN](doc_en/API.md)
-
 
 ## Directory Structure
 
