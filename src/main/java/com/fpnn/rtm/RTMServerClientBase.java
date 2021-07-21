@@ -124,11 +124,11 @@ public class RTMServerClientBase extends TCPClient {
                         }
                     }
 
-                    if(ipCode == 0){
+                    if(ipCode <= 0){
                         Random random1 = new Random(System.currentTimeMillis());
                         ipCode = random1.nextInt(255) + 1;
                     }
-                    if(macCode == 0){
+                    if(macCode <= 0){
                         Random random2 = new Random(System.currentTimeMillis());
                         macCode = random2.nextInt(15) + 1;
                     }
