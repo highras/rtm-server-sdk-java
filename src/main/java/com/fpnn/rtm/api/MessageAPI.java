@@ -407,6 +407,43 @@ public interface MessageAPI extends MessageCoreAPI {
         deleteMsg(messageId, fromUid, 0, MessageType.MESSAGE_TYPE_BROADCAST, callback, timeInseconds);
     }
 
+    //----------------------deleteConversationMsg-------------------------------
+    default void deleteConversationMsg(long from, long xid, MessageType type)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException {
+        deleteConversationMsg(from ,xid, type, 0);
+    }
+
+    default void deleteConversationMsg(long from, long xid, MessageType type, int timeoutInseconds)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException {
+        RTMServerClientBase client = getCoreClient();
+        Quest quest = client.genBasicQuest("delconversationmsgs");
+        quest.param("from", from);
+        quest.param("xid", xid);
+        quest.param("type", type.value());
+        client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
+    }
+
+    default void deleteConversationMsg(long from, long xid, MessageType type, DoneLambdaCallback callback) {
+        deleteConversationMsg(from, xid, type, callback, 0);
+    }
+
+    default void deleteConversationMsg(long from, long xid, MessageType type, DoneLambdaCallback callback, int timeoutInseconds){
+        RTMServerClientBase client = getCoreClient();
+        Quest quest;
+        try{
+            quest = client.genBasicQuest("delconversationmsgs");
+        }catch (Exception ex){
+            ErrorRecorder.record("Generate delconversationmsgs message sign exception.", ex);
+            callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate delconversationmsgs message sign exception.");
+            return;
+        }
+        quest.param("from", from);
+        quest.param("xid", xid);
+        quest.param("type", type.value());
+
+        AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
+        client.sendQuest(quest, answerCallback, timeoutInseconds);
+    }
 
     //----------------------getMsg-------------------------------
     default RTMHistoryMessageUnit getMsg(long messageId, long from, long xid, MessageType type)
@@ -577,5 +614,82 @@ public interface MessageAPI extends MessageCoreAPI {
         getMsg(messageId, fromUid, 0, MessageType.MESSAGE_TYPE_BROADCAST, callback, timeInseconds);
     }
 
+    //----------------------editMsg-------------------------------
+    default void editMsg(long messageId, long from, long xid, MessageType type, String msg, String attrs, long timeLimit)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException {
+        editMsg(messageId, from ,xid, type, msg, attrs,timeLimit, 0);
+    }
 
+    default void editMsg(long messageId, long from, long xid, MessageType type, String msg, String attrs, long timeLimit, int timeoutInseconds)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException {
+        RTMServerClientBase client = getCoreClient();
+        Quest quest = client.genBasicQuest("editmsg");
+        quest.param("mid", messageId);
+        quest.param("from", from);
+        quest.param("xid", xid);
+        quest.param("type", type.value());
+        quest.param("msg", msg);
+        quest.param("attrs", attrs);
+        quest.param("timeLimit", timeLimit);
+        client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
+    }
+
+    default void editMsg(long messageId, long from, long xid, MessageType type, String msg, String attrs, long timeLimit, DoneLambdaCallback callback) {
+        editMsg(messageId, from, xid, type, msg, attrs, timeLimit, callback, 0);
+    }
+
+    default void editMsg(long messageId, long from, long xid, MessageType type, String msg, String attrs, long timeLimit, DoneLambdaCallback callback, int timeoutInseconds){
+        RTMServerClientBase client = getCoreClient();
+        Quest quest;
+        try{
+            quest = client.genBasicQuest("editmsg");
+        }catch (Exception ex){
+            ErrorRecorder.record("Generate editmsg message sign exception.", ex);
+            callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate editmsg message sign exception.");
+            return;
+        }
+        quest.param("mid", messageId);
+        quest.param("from", from);
+        quest.param("xid", xid);
+        quest.param("type", type.value());
+        quest.param("msg", msg);
+        quest.param("attrs", attrs);
+        quest.param("timeLimit", timeLimit);
+
+        AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
+        client.sendQuest(quest, answerCallback, timeoutInseconds);
+    }
+
+    //----------------------clearProjectMsg-------------------------------
+    default void clearProjectMsg(ClearType type)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException {
+        clearProjectMsg(type, 0);
+    }
+
+    default void clearProjectMsg(ClearType type, int timeoutInseconds)
+            throws RTMException, GeneralSecurityException, InterruptedException, IOException {
+        RTMServerClientBase client = getCoreClient();
+        Quest quest = client.genBasicQuest("clearprojectmsg");
+        quest.param("type", type.value());
+        client.sendQuestAndCheckAnswer(quest, timeoutInseconds);
+    }
+
+    default void clearProjectMsg(ClearType type, DoneLambdaCallback callback) {
+        clearProjectMsg(type, callback, 0);
+    }
+
+    default void clearProjectMsg(ClearType type, DoneLambdaCallback callback, int timeoutInseconds){
+        RTMServerClientBase client = getCoreClient();
+        Quest quest;
+        try{
+            quest = client.genBasicQuest("clearprojectmsg");
+        }catch (Exception ex){
+            ErrorRecorder.record("Generate clearprojectmsg message sign exception.", ex);
+            callback.done(ErrorCode.FPNN_EC_CORE_UNKNOWN_ERROR.value(), "Generate clearprojectmsg message sign exception.");
+            return;
+        }
+        quest.param("type", type.value());
+        AnswerCallback answerCallback = new FPNNDoneLambdaCallbackWrapper(callback);
+        client.sendQuest(quest, answerCallback, timeoutInseconds);
+    }
 }

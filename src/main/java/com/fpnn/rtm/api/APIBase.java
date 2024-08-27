@@ -39,6 +39,19 @@ public interface APIBase {
         }
     }
 
+    enum ClearType{
+        CLEAR_TYPE_P2P((byte)0),
+        CLEAR_TYPE_ROOM((byte)1),
+        CLEAR_TYPE_GROUP((byte)2),
+        CLEAR_TYPE_BROADCAST((byte)3),
+        CLEAR_TYPE_ALL((byte)4);
+
+        private  final int value;
+        ClearType(byte type) {value = type;}
+
+        public int value() {return value;}
+    }
+
     //-----------------------------------------------------//
     //--         Utilities classes & interfaces          --//
     //-----------------------------------------------------//
